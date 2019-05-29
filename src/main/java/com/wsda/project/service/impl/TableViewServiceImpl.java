@@ -1,5 +1,7 @@
 package com.wsda.project.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wsda.project.dao.ClassTreeMapper;
 import com.wsda.project.dao.TableViewMapper;
 import com.wsda.project.model.Tree;
@@ -30,14 +32,36 @@ public class TableViewServiceImpl implements TableViewService {
      * @return
      */
     @Override
-    public List<Map<String, Object>> getTableView(String tableCode) {
-        List<Map<String, Object>> parms = null;
+    public Map<String,Object> getTableView(String tableCode, int pageNum, int PageSize) {
+        Map<String,Object> mapObj=new HashMap<>();//返回结果集
+        List<Map<String, String>> arrayList = new ArrayList<>();
         try {
-            parms = tableViewMapper.getTableView(tableCode);
+            arrayList = tableViewMapper.getTableView(tableCode);//获取展示列
+            Map<String,String> columnMap=new HashMap<>();
+            if(arrayList.size()>0){
+                for (int i = 0; i <arrayList.size() ; i++) {
+                    for (String str:arrayList.get(i).keySet()) {
+                        if("NAME".equals(str)){
+                            arrayList.get(i).put(str,arrayList.get(i).get(str).toUpperCase());//转小写
+                            columnMap.put(arrayList.get(i).get(str),arrayList.get(i).get(str));
+                        }
+                    }
+                }
+            }
+            String tableName=tableViewMapper.getTableByTableCode(tableCode);//获取实体表名称
+            if(tableName!=null){
+                columnMap.put("RECORDCODE","RECORDCODE");
+                PageHelper.startPage(pageNum, PageSize);//分页
+                PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap));//存放入分页的pageInfo中
+                mapObj.put("tableColums",arrayList);//展示列
+                mapObj.put("pageInfo",listPageInfo);//实体表内容
+            }else{
+                return null;
+            }
         } catch (Exception e) {
             System.err.println("查询视图列失败：" + e.getMessage() + "tableCode");
         }
-        return parms;
+        return mapObj;
     }
 
 
@@ -135,7 +159,15 @@ public class TableViewServiceImpl implements TableViewService {
         return rootTree;
     }
 
-
+    /**
+     * 获取录入界面
+     * @param tableCode
+     * @return
+     */
+    @Override
+    public List<Map<String, String>> getInputCard(String tableCode) {
+        return tableViewMapper.getInputCard(tableCode);
+    }
 
 
 }

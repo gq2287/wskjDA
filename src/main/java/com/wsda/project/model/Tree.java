@@ -3,7 +3,7 @@ package com.wsda.project.model;
 import io.swagger.annotations.ApiModel;
 
 @ApiModel
-public class Tree {
+public class Tree  {
     private String id;//数据库表名
     private String text;//树名
     private Object children;//子节点

@@ -1,12 +1,11 @@
 package com.wsda.project.service.impl;
 
-import com.wsda.project.service.DBService;
 import com.wsda.project.dao.DBMapper;
+import com.wsda.project.service.DBService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Map;
-
 @Service
 public class DBServiceImpl implements DBService {
 

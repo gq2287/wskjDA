@@ -13,7 +13,7 @@
              v.WIDTH,v.ENTITYCODE,
              t.TABLECODE,t.VISIBLE
          FROM TABLECOLUMNDESCRIPTION t
-         LEFT JOIN TABLEINTERFACELISTVIEW v on v.COLUMNCODE=t.COLUMNCODE
+         INNER JOIN TABLEINTERFACELISTVIEW v on v.COLUMNCODE=t.COLUMNCODE
          WHERE t.COLUMNCODE IN (SELECT COLUMNCODE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE= #{tableCode} )
          ORDER BY  v.SERIAL
     </select>
@@ -24,6 +24,21 @@
         WHERE COLUMNCODE IN( SELECT COLUMNCODE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode} )
     </select>
 
+    <!--获取实体表数据-->
+    <select id="getTableInfo" resultType="java.util.Map" parameterType="java.lang.String">
+        select
+        <foreach collection="columnMap.keys" item="key" open=" " separator=","  close=" " >
+            ${key}
+        </foreach>
+        from ${tableName}
+    </select>
 
-
+    <!--获取选中实体表名-->
+    <select id="getTableByTableCode" resultType="java.lang.String">
+          SELECT NAME FROM TABLEDESCRIPTION WHERE TABLECODE=#{tableCode}
+    </select>
+    <!--获取录入界面-->
+    <select id="getInputCard" resultType="java.util.HashMap">
+          SELECT * FROM TABLEINTERFACECARD WHERE TABLECODE=#{tableCode}
+    </select>
 </mapper>

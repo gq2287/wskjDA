@@ -1,9 +1,9 @@
 package com.wsda.project.dataSourceConfig;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.wsda.wsda.WsdaApplication;
 import com.wsda.project.controller.DataSourceController;
 import com.wsda.project.util.StringUtil;
+import com.wsda.wsda.WsdaApplication;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +33,10 @@ public class DataSourceConfig {
             dataSource.setUrl(properties.getString("spring.datasource.url"));
             dataSource.setUsername(properties.getString("spring.datasource.username"));
             dataSource.setPassword(properties.getString("spring.datasource.password"));
+            //重新设置
+//            properties.setReloadingStrategy(new FileChangedReloadingStrategy());
+//            //自动保存
+//            properties.setAutoSave(true);
         } catch (Exception e) {
             logger.error("获取数据库配置文件失败" + e);
         }

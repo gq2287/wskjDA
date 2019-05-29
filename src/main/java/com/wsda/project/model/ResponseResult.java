@@ -1,5 +1,6 @@
 package com.wsda.project.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
 
 /**

@@ -1,6 +1,6 @@
 package com.wsda.project.model;
 
-public class ClassNode {
+public class ClassNode  {
     private String nodeCode;
     private String parentCode;
     private String name;
@@ -87,4 +87,5 @@ public class ClassNode {
 
     public ClassNode() {
     }
+
 }

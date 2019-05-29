@@ -23,7 +23,7 @@
     <!--树根节点-->
     <select id="getClassI" resultType="java.util.Map">
         SELECT NODECODE,PARENTCODE,NAME,TYPE,CLASSCODE,CLASSTABLECODE,TABLECODE,SERIAL FROM CLASSNODE
-        WHERE 1=1
+        WHERE 1=1 AND NODECODE != 'D_FILES'
         <if test="TYPE != null and TYPE != ''">
             AND TYPE =#{TYPE}
         </if>
