@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsda.project.dao.DepartementMapper">
+    <!--根据父级部门编号获取子集部门对象-->
+    <select id="getDepartementByParentCode" resultType="com.wsda.project.model.Departement">
+        SELECT * from SYSTEMDEPARTMENT where PARENTCODE=#{parentCode} order by PARENTCODE
+    </select>
+
+    <!--根据部门编号获取部门名称-->
+    <select id="getDepartementNameByDepartementCode" resultType="java.lang.String">
+        SELECT NAME from SYSTEMDEPARTMENT where DEPARTMENTCODE =#{departementCode}
+    </select>
+</mapper>

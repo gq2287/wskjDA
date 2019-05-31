@@ -7,9 +7,9 @@ import java.util.Map;
 
 public interface TableViewService {
 
-    Map<String,Object> getTableView(String tableCode, int page, int size);
+    Map<String,Object> getTableView(String tableCode, int page, int size, List<Map<String,String>> conditions, List<Map<String,String>> sorts);
     Tree getTreeMenu();
-    List<Map<String,String>> getInputCard(String tableCode);
+    List<Map<String,Object>> getInputCard(String tableCode);
 
 
 }

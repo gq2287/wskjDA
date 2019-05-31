@@ -11,7 +11,9 @@
              t.CHINESENAME as TITLE,
              t.NAME as NAME,
              v.WIDTH,v.ENTITYCODE,
-             t.TABLECODE,t.VISIBLE
+             t.TABLECODE,
+             t.VISIBLE,
+             t.INPUTTYPE
          FROM TABLECOLUMNDESCRIPTION t
          INNER JOIN TABLEINTERFACELISTVIEW v on v.COLUMNCODE=t.COLUMNCODE
          WHERE t.COLUMNCODE IN (SELECT COLUMNCODE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE= #{tableCode} )
@@ -41,4 +43,20 @@
     <select id="getInputCard" resultType="java.util.HashMap">
           SELECT * FROM TABLEINTERFACECARD WHERE TABLECODE=#{tableCode}
     </select>
+    <!--获取录入界面-->
+    <select id="getInputTypeByTableCodeAndName" resultType="java.util.HashMap">
+          SELECT TYPE,INPUTTYPE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode} and NAME=#{name}
+    </select>
+
+    <!--获取录入实体表数据-->
+    <insert id="addTableInfo" parameterType="java.util.Map">
+          INSERT INTO ${tableName}
+            <foreach collection="columnMap.keys" item="key" open="(" close=")" separator=",">
+                ${key}
+            </foreach>
+          VALUES
+            <foreach collection="columnMap.values" item="value" open="(" close=")" separator=",">
+                #{value}
+            </foreach>
+    </insert>
 </mapper>

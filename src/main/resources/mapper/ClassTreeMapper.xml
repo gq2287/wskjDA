@@ -56,9 +56,6 @@
         SELECT * from CLASSNODE WHERE PARENTCODE = #{nodeCode}
     </select>
 
-    <!--获取数据字典表-->
-    <select id="getAllDictionaryData" resultType="java.util.Map">
-        SELECT * FROM SYSTEMDICTIONARYCATALOG
-    </select>
+
 
 </mapper>

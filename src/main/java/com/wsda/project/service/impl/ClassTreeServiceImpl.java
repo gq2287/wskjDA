@@ -90,17 +90,6 @@ public class ClassTreeServiceImpl implements ClassTreeService {
         return trees;
     }
 
-    /**
-     * 获取字典集合
-     * @param
-     * @return
-     */
-    @Override
-    public List<Map<String, String>> getAllDictionaryData() {
-        return classTreeMapper.getAllDictionaryData();
-    }
-
-
 
     /**
      * 根据父节点nodecode获取旗下实体表

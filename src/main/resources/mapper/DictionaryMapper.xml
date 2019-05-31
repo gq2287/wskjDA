@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsda.project.dao.DictionaryMapper">
+    <!--获取数据字典表-->
+    <select id="getAllDictionaryData" resultType="com.wsda.project.model.Dictionary">
+        SELECT * FROM SYSTEMDICTIONARY WHERE DICTIONARYCATALOGCODE=(
+        SELECT DICTIONARYCATALOGCODE FROM SYSTEMDICTIONARYCATALOG WHERE NAME=#{dictName}
+        )
+    </select>
+</mapper>

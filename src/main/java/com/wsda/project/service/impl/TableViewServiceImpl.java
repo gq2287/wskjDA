@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wsda.project.dao.ClassTreeMapper;
 import com.wsda.project.dao.TableViewMapper;
+import com.wsda.project.model.Dictionary;
 import com.wsda.project.model.Tree;
 import com.wsda.project.service.TableViewService;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,11 @@ public class TableViewServiceImpl implements TableViewService {
 
     @Resource
     private ClassTreeServiceImpl classTreeService ;
+    @Resource
+    private DepartementServiceImpl  departementService ;
+
+    @Resource
+    private DictionaryServiceImpl  dictionaryService ;
 
     /**
      * 获取当前实体表列
@@ -32,7 +38,7 @@ public class TableViewServiceImpl implements TableViewService {
      * @return
      */
     @Override
-    public Map<String,Object> getTableView(String tableCode, int pageNum, int PageSize) {
+    public Map<String,Object> getTableView(String tableCode, int pageNum, int PageSize, List<Map<String,String>>conditions, List<Map<String,String>> sorts) {
         Map<String,Object> mapObj=new HashMap<>();//返回结果集
         List<Map<String, String>> arrayList = new ArrayList<>();
         try {
@@ -48,12 +54,32 @@ public class TableViewServiceImpl implements TableViewService {
                     }
                 }
             }
+            //Start
+            StringBuffer whereSql=new StringBuffer();//查询条件
+            StringBuffer sortSql=new StringBuffer();//排序条件
+            //处理查询的条件
+            if(conditions!=null&&conditions.size()>0){
+                whereSql.append(" WHERE ");
+                whereSql.append("");//列名
+                whereSql.append(" =");
+                whereSql.append("'%"+""+"%'");//值
+                whereSql.append(",");
+            }
+            //处理排序的条件
+            if(sorts!=null&&sorts.size()>0){
+                sortSql.append(" ORDER BY ");
+                sortSql.append(",");
+            }
+            //End
+
+            //业务
             String tableName=tableViewMapper.getTableByTableCode(tableCode);//获取实体表名称
             if(tableName!=null){
                 columnMap.put("RECORDCODE","RECORDCODE");
                 PageHelper.startPage(pageNum, PageSize);//分页
-                PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap));//存放入分页的pageInfo中
+                PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql)));//存放入分页的pageInfo中
                 mapObj.put("tableColums",arrayList);//展示列
+                setDepartementName(listPageInfo);
                 mapObj.put("pageInfo",listPageInfo);//实体表内容
             }else{
                 return null;
@@ -159,16 +185,67 @@ public class TableViewServiceImpl implements TableViewService {
         return rootTree;
     }
 
+
     /**
      * 获取录入界面
      * @param tableCode
      * @return
      */
     @Override
-    public List<Map<String, String>> getInputCard(String tableCode) {
-        return tableViewMapper.getInputCard(tableCode);
+    public List<Map<String, Object>> getInputCard(String tableCode) {
+        List<Map<String, Object>> inputCardList=tableViewMapper.getInputCard(tableCode);
+        List<Map<String, Object>> newInputCardList=new ArrayList<>();//返回集合
+            if(inputCardList!=null&&inputCardList.size()>0){
+                for (int i = 0; i <inputCardList.size() ; i++) {
+                    Map<String,Object> stringMap=inputCardList.get(i);
+                    for (String name:stringMap.keySet()) {
+                        if(stringMap.get(name)!=null&&"FIELDNAME".equals(name)&&!"null".equals(stringMap.get(name))){
+                            List<Map<String,String>> inputTypelist=tableViewMapper.getInputTypeByTableCodeAndName(tableCode,String.valueOf(stringMap.get(name)));
+                            if(inputTypelist!=null&&inputTypelist.size()>0){
+                                for (int j = 0; j <inputTypelist.size() ; j++) {
+                                    for (String input:inputTypelist.get(j).keySet()) {
+                                        if("TYPE".equals(input)&&inputTypelist.get(j).get(input)!=null){
+                                            stringMap.put("TYPE",inputTypelist.get(j).get(input));
+                                        }else if("INPUTTYPE".equals(input)&&inputTypelist.get(j).get(input)!=null){
+                                            stringMap.put("INPUTTYPE",inputTypelist.get(j).get(input));
+                                            if("S".equals(inputTypelist.get(j).get(input))){
+                                                String dictName=String.valueOf(stringMap.get("PROPERTIESINFO1"));
+                                                if(dictName!=null&&!"".equals(dictName)){
+                                                    List<Dictionary> dictionaryList=dictionaryService.getAllDictionaryData(dictName);
+                                                    stringMap.put("PROPERTIESINFO2",dictionaryList);
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            newInputCardList.add(stringMap);
+                            break;
+                        }
+                    }
+                }
+        }
+        return newInputCardList;
     }
 
+    /**
+     * 转换查询列的部门编号为部门名称
+     * @param listPageInfo
+     */
+    private  void setDepartementName(PageInfo<Map<String,String>> listPageInfo){
+        for (int i = 0; i <listPageInfo.getList().size() ; i++) {
+            for (String ss:listPageInfo.getList().get(i).keySet()) {
+                if("DEPARTMENTCODE".equals(ss)&&listPageInfo.getList().get(i).get(ss)!=null&&!"".equals(listPageInfo.getList().get(i).get(ss))){
+                    String departementName=departementService.getDepartementNameByDepartementCode(listPageInfo.getList().get(i).get(ss));//获取部门名称
+                    if(departementName!=null&&!"".equals(departementName)){
+                        listPageInfo.getList().get(i).put("DEPARTMENTCODE",departementName);
+                    }
+                    break;
+                }
+            }
+        }
+    }
 
 }
 

@@ -20,10 +20,6 @@ public interface ClassTreeMapper {
     //C，底层门类，中间门类 数量
     Integer getClassCLCount(@Param("nodeCode") String nodeCode);
 
-
-    //获取数据字典表
-    List<Map<String,String>> getAllDictionaryData();
-
     //根据父节点nodeCode获取实体表数据
     List<Map<String,String>> getTableByNodeCode(@Param("nodeCode") String nodeCode);
 

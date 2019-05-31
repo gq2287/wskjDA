@@ -11,9 +11,4 @@ public interface ClassTreeService {
      * @return
      */
     Tree getTreeMenu();
-    /**
-     * 获取数据字典表
-     * @return
-     */
-    List<Map<String,String>> getAllDictionaryData();
 }
