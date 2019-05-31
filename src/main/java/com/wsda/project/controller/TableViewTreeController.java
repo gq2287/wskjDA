@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,22 +31,24 @@ public class TableViewTreeController {
 
     @ApiOperation(value = "获取实体表数据", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getTableView", method = RequestMethod.POST)
-    public ResponseResult getTableView(@ApiParam(required =true, name = "tableCode", value = "表编号")@RequestParam(name = "tableCode",required = true)String tableCode,
-    @ApiParam(required =true, name = "pageNum", value = "当前页")@RequestParam(name = "pageNum", required = true)int pageNum,
-    @ApiParam(required =true, name = "pageSize", value = "每页条目数")@RequestParam(name = "pageSize", required = true)int pageSize,
-    @ApiParam(required =true, name = "conditions", value = "查询条件")@RequestParam(name = "conditions", required = false)String conditions,
-    @ApiParam(required =true, name = "sorts", value = "排序条件")@RequestParam(name = "sorts", required = false)String sorts) {
-        List<Map<String,String>> conditionsMap = new ArrayList<>();
-        List<Map<String,String>> sortsMap= new ArrayList<>();
-        Type typeObj = new TypeToken<List<Object>>() {}.getType();
-        if(conditions!=null){
-            conditionsMap = JSONObject.parseObject(conditions,typeObj);//JSONObject转换map
+    public ResponseResult getTableView(@ApiParam(required = true, name = "tableCode", value = "表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                       @ApiParam(required = true, name = "pageNum", value = "当前页") @RequestParam(name = "pageNum", required = true) int pageNum,
+                                       @ApiParam(required = true, name = "pageSize", value = "每页条目数") @RequestParam(name = "pageSize", required = true) int pageSize,
+                                       @ApiParam(required = false, name = "conditions", value = "查询条件") @RequestParam(name = "conditions", required = false) String conditions,
+                                       @ApiParam(required = false, name = "sorts", value = "排序条件") @RequestParam(name = "sorts", required = false) String sorts) {
+        System.err.println(conditions+"\n********\n"+sorts+"********\n");
+        List<Map<String, String>> conditionsMap = new ArrayList<>();
+        List<Map<String, String>> sortsMap = new ArrayList<>();
+        Type typeObj = new TypeToken<List<Map<String, String>>>() {
+        }.getType();
+        if (conditions != null) {
+            conditionsMap = JSONObject.parseObject(conditions, typeObj);//JSONObject转换map
         }
-        if(sorts!=null){
-            sortsMap = JSONObject.parseObject(sorts,typeObj);//JSONObject转换map
+        if (sorts != null) {
+            sortsMap = JSONObject.parseObject(sorts, typeObj);//JSONObject转换map
         }
         if (tableCode != null) {
-            Map<String,Object> parms = tableViewService.getTableView(tableCode,pageNum,pageSize,conditionsMap,sortsMap);
+            Map<String, Object> parms = tableViewService.getTableView(tableCode, pageNum, pageSize, conditionsMap, sortsMap);
             if (parms != null) {
                 return new ResponseResult(ResponseResult.OK, "查询成功 ", parms, true);
             } else {
@@ -60,21 +63,34 @@ public class TableViewTreeController {
     @ApiOperation(value = "获取视图树", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getTableViewTree", method = RequestMethod.GET)
     public ResponseResult getTableViewTree() {
-        Tree tree=tableViewService.getTreeMenu();
+        Tree tree = tableViewService.getTreeMenu();
         return new ResponseResult(ResponseResult.OK, "成功", tree, true);
     }
 
 
     @ApiOperation(value = "获取录入数据", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getInputCard", method = RequestMethod.POST)
-    public ResponseResult getInputCard(@ApiParam(required =true, name = "tableCode", value = "表编号")@RequestParam(name = "tableCode",required = true)String tableCode) {
-        List<Map<String,Object>> inputCard=tableViewService.getInputCard(tableCode);
+    public ResponseResult getInputCard(@ApiParam(required = true, name = "tableCode", value = "表编号") @RequestParam(name = "tableCode", required = true) String tableCode) {
+        List<Map<String, Object>> inputCard = tableViewService.getInputCard(tableCode);
         return new ResponseResult(ResponseResult.OK, "成功", inputCard, true);
     }
 
-
-
-
-
+    @ApiOperation(value = "添加档案条目", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/addTableInfo", method = RequestMethod.POST)
+    public ResponseResult addTableInfo(@ApiParam(required = true, name = "tableCode", value = "表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                       @ApiParam(required = true, name = "tableInfo", value = "档案对象数据") @RequestParam(name = "tableInfo", required = true) String tableInfo) {
+        Map<String, String> tableInfoMap  = new HashMap<>();
+        Type typeObj = new TypeToken<Map<String, String>>() {}.getType();
+        if (tableInfo != null) {
+            tableInfoMap = JSONObject.parseObject(tableInfo, typeObj);//JSONObject转换map
+        }
+        tableInfoMap.put("tableCode",tableCode);
+        boolean bool = tableViewService.addTableInfo(tableInfoMap);
+        if(bool){
+            return new ResponseResult(ResponseResult.OK, "成功", bool, true);
+        }else {
+            return new ResponseResult(ResponseResult.OK, "失败", bool, false);
+        }
+    }
 
 }

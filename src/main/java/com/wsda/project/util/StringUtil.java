@@ -414,4 +414,12 @@ public class StringUtil {
         return realPath;
     }
 
+
+//    public static void main(String[] args) {//"conditions":
+//        String column="sss-12343423";
+//        String start=column.substring(0,column.lastIndexOf("-"));//sss
+//        System.out.println(start);
+//        String end=column.substring(column.lastIndexOf("-")+1,column.length());//12343423
+//        System.out.println(end);
+//    }
 }

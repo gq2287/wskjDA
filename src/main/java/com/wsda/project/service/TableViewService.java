@@ -11,5 +11,6 @@ public interface TableViewService {
     Tree getTreeMenu();
     List<Map<String,Object>> getInputCard(String tableCode);
 
+    boolean addTableInfo(Map<String,String> info);
 
 }

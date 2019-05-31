@@ -33,17 +33,24 @@
             ${key}
         </foreach>
         from ${tableName}
+        <if test="whereSql != null and whereSql != ''">
+            ${whereSql}
+        </if>
+        <if test="sortSql != null and sortSql != ''">
+             ${sortSql}
+        </if>
+
     </select>
 
     <!--获取选中实体表名-->
-    <select id="getTableByTableCode" resultType="java.lang.String">
+    <select id="getTableNameByTableCode" resultType="java.lang.String">
           SELECT NAME FROM TABLEDESCRIPTION WHERE TABLECODE=#{tableCode}
     </select>
     <!--获取录入界面-->
     <select id="getInputCard" resultType="java.util.HashMap">
-          SELECT * FROM TABLEINTERFACECARD WHERE TABLECODE=#{tableCode}
+          SELECT * FROM TABLEINTERFACECARD WHERE TABLECODE=#{tableCode} ORDER BY LOADNO
     </select>
-    <!--获取录入界面-->
+    <!--获取录入界面字段的类型-->
     <select id="getInputTypeByTableCodeAndName" resultType="java.util.HashMap">
           SELECT TYPE,INPUTTYPE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode} and NAME=#{name}
     </select>
@@ -51,12 +58,12 @@
     <!--获取录入实体表数据-->
     <insert id="addTableInfo" parameterType="java.util.Map">
           INSERT INTO ${tableName}
-            <foreach collection="columnMap.keys" item="key" open="(" close=")" separator=",">
-                ${key}
+            <foreach collection="columns" item="item" open="(" separator=","  close=")" >
+                ${item}
             </foreach>
           VALUES
-            <foreach collection="columnMap.values" item="value" open="(" close=")" separator=",">
-                #{value}
+            <foreach collection="values" item="item" open="(" separator=","  close=")" >
+                ${item}
             </foreach>
     </insert>
 </mapper>

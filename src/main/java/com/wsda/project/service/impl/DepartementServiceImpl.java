@@ -53,7 +53,12 @@ public class DepartementServiceImpl implements DepartementService {
                 childrenTree.setText(departementList.get(i).getNAME());
                 childrenTree.setLi_attr(departementList.get(i));
                 treeList.add(childrenTree);
-                childrenTree.setChildren(getListSystemDepartement(departementList.get(i)));//存放节点
+                List<Tree> treeListChildren =getListSystemDepartement(departementList.get(i));
+                if(treeListChildren!=null&&treeListChildren.size()!=0){
+                    childrenTree.setChildren(treeListChildren);//存放节点
+                }else{
+                    childrenTree.setChildren(null);//存放节点
+                }
             }
             return  treeList;
         }

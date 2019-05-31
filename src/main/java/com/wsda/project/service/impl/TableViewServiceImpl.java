@@ -7,6 +7,7 @@ import com.wsda.project.dao.TableViewMapper;
 import com.wsda.project.model.Dictionary;
 import com.wsda.project.model.Tree;
 import com.wsda.project.service.TableViewService;
+import com.wsda.project.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,6 +31,7 @@ public class TableViewServiceImpl implements TableViewService {
 
     @Resource
     private DictionaryServiceImpl  dictionaryService ;
+
 
     /**
      * 获取当前实体表列
@@ -55,25 +57,40 @@ public class TableViewServiceImpl implements TableViewService {
                 }
             }
             //Start
-            StringBuffer whereSql=new StringBuffer();//查询条件
+            StringBuffer whereSql=new StringBuffer();//查询条件   RECORDCODE添加的唯一主键
             StringBuffer sortSql=new StringBuffer();//排序条件
             //处理查询的条件
             if(conditions!=null&&conditions.size()>0){
                 whereSql.append(" WHERE ");
-                whereSql.append("");//列名
-                whereSql.append(" =");
-                whereSql.append("'%"+""+"%'");//值
-                whereSql.append(",");
+                for (int i = 0; i <conditions.size() ; i++) {
+                    for (String cod:conditions.get(i).keySet()) {
+                        whereSql.append(cod);//列名
+                        whereSql.append(" like ");
+                        whereSql.append("'%"+conditions.get(i).get(cod)+"%'");//值
+                        if(i!=conditions.size()-1){
+                            whereSql.append(" or ");
+                        }
+                    }
+                }
             }
             //处理排序的条件
             if(sorts!=null&&sorts.size()>0){
                 sortSql.append(" ORDER BY ");
-                sortSql.append(",");
+                for (int i = 0; i <sorts.size() ; i++) {
+                    for (String so:sorts.get(i).keySet()) {
+                        sortSql.append(so);//列名
+                        sortSql.append(" "+sorts.get(i).get(so));
+                        if(i!=sorts.size()-1){
+                            sortSql.append(", ");
+                        }
+                    }
+                }
             }
+//            System.err.println(whereSql+"---\n"+sortSql);
             //End
 
             //业务
-            String tableName=tableViewMapper.getTableByTableCode(tableCode);//获取实体表名称
+            String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//获取实体表名称
             if(tableName!=null){
                 columnMap.put("RECORDCODE","RECORDCODE");
                 PageHelper.startPage(pageNum, PageSize);//分页
@@ -81,6 +98,7 @@ public class TableViewServiceImpl implements TableViewService {
                 mapObj.put("tableColums",arrayList);//展示列
                 setDepartementName(listPageInfo);
                 mapObj.put("pageInfo",listPageInfo);//实体表内容
+                mapObj.put("sorts",sorts);//排序纪录
             }else{
                 return null;
             }
@@ -227,6 +245,46 @@ public class TableViewServiceImpl implements TableViewService {
                 }
         }
         return newInputCardList;
+    }
+
+    /**
+     * 添加档案
+     * @param infoMap
+     * @return
+     */
+    @Override
+    public boolean addTableInfo(Map<String, String> infoMap) {
+        Map<String, String> dataType = new HashMap();//数据库为Oracle字段类型
+        dataType.put("1", "VARCHAR2");
+        dataType.put("2", "NUMBER");
+        dataType.put("3", "NUMBER");
+        dataType.put("4", "DATE");
+        dataType.put("5", "VARCHAR2");
+        String tableCode=infoMap.get("tableCode");//获取表编号
+        infoMap.remove("tableCode");
+        //获取表名
+        String tableName=tableViewMapper.getTableNameByTableCode(tableCode);
+        List<String> columnList=new ArrayList<>();
+        columnList.add("RECORDCODE");
+        List<String> valuesList=new ArrayList<>();
+        valuesList.add(StringUtil.getRandomStr(6));
+        for (String column:infoMap.keySet()) {
+            String startColumn=column.substring(0,column.lastIndexOf("-"));//获取数据列名
+            columnList.add(startColumn);//添加列
+            String endType=column.substring(column.lastIndexOf("-")+1,column.length());//获取数据类型
+            if(dataType.containsValue(endType)){//包涵当前的类型
+                String typeName=dataType.get(endType);//类型名称
+                String value=infoMap.get(column);//获得值
+                if("VARCHAR2".equals(typeName)){
+                    valuesList.add("'"+value+"'");
+                }else if("NUMBER".equals(typeName)){
+                    valuesList.add(value);
+                }else if("DATE".equals(typeName)){
+                    valuesList.add("TO_DATE('"+value+"','YYYY-MM-DD')");
+                }
+            }
+        }
+        return tableViewMapper.addTableInfo(tableName,columnList,valuesList);
     }
 
     /**
