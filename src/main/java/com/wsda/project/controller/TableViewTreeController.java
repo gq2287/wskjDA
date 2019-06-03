@@ -93,4 +93,22 @@ public class TableViewTreeController {
         }
     }
 
+
+    @ApiOperation(value = "获取全宗", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/getAllSystemFonds", method = RequestMethod.POST)
+    public ResponseResult getAllSystemFonds() {
+        List<Map<String, String>> systemFonds = tableViewService.getAllSystemFonds();
+        return new ResponseResult(ResponseResult.OK, "成功", systemFonds, true);
+    }
+
+    @ApiOperation(value = "获取实体分类", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/getAllSystemFondsTree", method = RequestMethod.POST)
+    public ResponseResult getAllSystemFondsTree(@RequestParam(name = "fondsCode", required = true) String fondsCode) {
+        List<Tree> systemFonds = tableViewService.getAllSystemFondsTree(fondsCode);
+        if(systemFonds!=null){
+            return new ResponseResult(ResponseResult.OK, "成功", systemFonds, true);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "成功", systemFonds, false);
+        }
+    }
 }

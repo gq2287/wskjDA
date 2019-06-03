@@ -13,4 +13,8 @@ public interface TableViewService {
 
     boolean addTableInfo(Map<String,String> info);
 
+    List<Map<String,String>> getAllSystemFonds();
+
+    List<Tree> getAllSystemFondsTree(String fondsCode);
+
 }

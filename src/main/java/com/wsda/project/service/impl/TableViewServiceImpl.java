@@ -3,6 +3,8 @@ package com.wsda.project.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wsda.project.dao.ClassTreeMapper;
+import com.wsda.project.dao.DepartementMapper;
+import com.wsda.project.dao.SystemCataLogMapper;
 import com.wsda.project.dao.TableViewMapper;
 import com.wsda.project.model.Dictionary;
 import com.wsda.project.model.Tree;
@@ -28,9 +30,13 @@ public class TableViewServiceImpl implements TableViewService {
     private ClassTreeServiceImpl classTreeService ;
     @Resource
     private DepartementServiceImpl  departementService ;
+    @Resource
+    private DepartementMapper departementMapper ;
 
     @Resource
     private DictionaryServiceImpl  dictionaryService ;
+    @Resource
+    private SystemCataLogMapper systemCataLogMapper ;
 
 
     /**
@@ -59,16 +65,43 @@ public class TableViewServiceImpl implements TableViewService {
             //Start
             StringBuffer whereSql=new StringBuffer();//查询条件   RECORDCODE添加的唯一主键
             StringBuffer sortSql=new StringBuffer();//排序条件
+            Map<String, String> dataType = new HashMap();//数据库为Oracle字段类型
+            dataType.put("1", "VARCHAR2");
+            dataType.put("2", "NUMBER");
+            dataType.put("3", "NUMBER");
+            dataType.put("4", "DATE");
+            dataType.put("5", "VARCHAR2");
             //处理查询的条件
             if(conditions!=null&&conditions.size()>0){
                 whereSql.append(" WHERE ");
                 for (int i = 0; i <conditions.size() ; i++) {
                     for (String cod:conditions.get(i).keySet()) {
-                        whereSql.append(cod);//列名
-                        whereSql.append(" like ");
-                        whereSql.append("'%"+conditions.get(i).get(cod)+"%'");//值
-                        if(i!=conditions.size()-1){
-                            whereSql.append(" or ");
+                        String startColumn=cod.substring(0,cod.lastIndexOf("-"));//获取数据列名
+                        String endType=cod.substring(cod.lastIndexOf("-")+1,cod.length());//获取数据类型
+                        String valueStr=conditions.get(i).get(cod);//键对应值
+                        if(dataType.containsKey(endType)){//包涵当前的类型
+                            if("1".equals(endType)||"2".equals(endType)||"3".equals(endType)){
+                                whereSql.append(startColumn);//列名
+                                whereSql.append(" like ");
+                                whereSql.append("'%"+valueStr+"%'");//值
+                                if(i!=conditions.size()-1){
+                                    whereSql.append(" or ");
+                                }
+                            }else if("4".equals(endType)){
+                                String valueStart=valueStr.substring(0,valueStr.lastIndexOf("@"));
+                                String valueEnd=valueStr.substring(valueStr.lastIndexOf("@")+1,valueStr.length());//获取数据类型
+                                whereSql.append(" to_date(to_char("+startColumn+", 'yyyy-MM-dd'), 'yyyy-mm-dd') BETWEEN to_date('"+valueStart+"', 'yyyy-mm-dd') AND to_date('"+valueEnd+"', 'yyyy-mm-dd') ");//值
+                                if(i!=conditions.size()-1){
+                                    whereSql.append(" or ");
+                                }
+                            }else if("5".equals(endType)){
+                                String valueStart=valueStr.substring(0,valueStr.lastIndexOf("@"));
+                                String valueEnd=valueStr.substring(valueStr.lastIndexOf("@")+1,valueStr.length());//获取数据类型
+                                whereSql.append(" to_date(to_char("+startColumn+", 'yyyy-MM-dd'), 'yyyy-mm-dd') BETWEEN TO_DATE('"+valueStart+"', 'yyyy-mm-dd') AND TO_DATE('"+valueEnd+"','yyyy-mm-dd') ");//值
+                                if(i!=conditions.size()-1){
+                                    whereSql.append(" or ");
+                                }
+                            }
                         }
                     }
                 }
@@ -86,7 +119,7 @@ public class TableViewServiceImpl implements TableViewService {
                     }
                 }
             }
-//            System.err.println(whereSql+"---\n"+sortSql);
+            System.err.println(whereSql+"---\n"+sortSql);
             //End
 
             //业务
@@ -224,6 +257,8 @@ public class TableViewServiceImpl implements TableViewService {
                                     for (String input:inputTypelist.get(j).keySet()) {
                                         if("TYPE".equals(input)&&inputTypelist.get(j).get(input)!=null){
                                             stringMap.put("TYPE",inputTypelist.get(j).get(input));
+                                        }else if("CANNULL".equals(input)&&inputTypelist.get(j).get(input)!=null){
+                                            stringMap.put("CANNULL",inputTypelist.get(j).get(input));
                                         }else if("INPUTTYPE".equals(input)&&inputTypelist.get(j).get(input)!=null){
                                             stringMap.put("INPUTTYPE",inputTypelist.get(j).get(input));
                                             if("S".equals(inputTypelist.get(j).get(input))){
@@ -263,14 +298,15 @@ public class TableViewServiceImpl implements TableViewService {
         String tableCode=infoMap.get("tableCode");//获取表编号
         infoMap.remove("tableCode");
         //获取表名
-        String tableName=tableViewMapper.getTableNameByTableCode(tableCode);
-        List<String> columnList=new ArrayList<>();
-        columnList.add("RECORDCODE");
-        List<String> valuesList=new ArrayList<>();
-        valuesList.add(StringUtil.getRandomStr(6));
+        String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
+        List<String> columnList=new ArrayList<>();//添加表 字段列集合
+        columnList.add("RECORDCODE");//主键
+        List<String> valuesList=new ArrayList<>();//添加表 字段列对应值集合
+        valuesList.add(StringUtil.getUuid());//唯一主键
         for (String column:infoMap.keySet()) {
+            //例：RECORDCODE-1
             String startColumn=column.substring(0,column.lastIndexOf("-"));//获取数据列名
-            columnList.add(startColumn);//添加列
+            columnList.add(startColumn);//添加表字段列
             String endType=column.substring(column.lastIndexOf("-")+1,column.length());//获取数据类型
             if(dataType.containsValue(endType)){//包涵当前的类型
                 String typeName=dataType.get(endType);//类型名称
@@ -287,6 +323,64 @@ public class TableViewServiceImpl implements TableViewService {
         return tableViewMapper.addTableInfo(tableName,columnList,valuesList);
     }
 
+    @Override
+    public List<Map<String, String>> getAllSystemFonds() {
+        return systemCataLogMapper.getAllSystemFonds();
+    }
+    /**
+     * 查询实体分类号
+     */
+    @Override
+    public List<Tree> getAllSystemFondsTree(String fondsCode) {
+        List<Map<String, String>> departementList=systemCataLogMapper.getAllSystemCataLogByFondsCode(null,fondsCode);
+        List<Tree> treeList=new ArrayList<>(departementList.size());//存放节点树
+        if(departementList!=null&&departementList.size()>0){
+            for (int i = 0; i < departementList.size(); i++) {
+                Tree rootTree=new Tree();//根节点
+                rootTree.setId(departementList.get(i).get("DEPARTMENTCODE"));
+                rootTree.setText(departementList.get(i).get("NAME"));
+                rootTree.setLi_attr(departementList.get(i));
+                treeList.add(rootTree);
+                List<Tree> treeListChildren=getSystemFondsTree(departementList.get(i).get("DEPARTMENTCODE"));//获取旗下子节点
+                if(treeListChildren!=null&&treeListChildren.size()>0){//获取旗下子节点
+                    rootTree.setChildren(treeListChildren);//存放节点
+                }else{
+                    rootTree.setChildren(null);//存放节点
+                }
+            }
+            return treeList;
+        }else{
+            return null;
+        }
+    }
+
+
+    /**
+     * 获取旗下子节点
+     * @param departmentCode 部门编号
+     * @return
+     */
+    private  List<Tree> getSystemFondsTree(String departmentCode){
+        List<Map<String,String>> list=systemCataLogMapper.getAllSystemCataLogByFondsCode(departmentCode,null);
+        List<Tree> treeList=new ArrayList<>(list.size());//存放节点树
+        if(list!=null&&list.size()>0){
+            for (int i = 0; i <list.size() ; i++) {
+                Tree rootTree=new Tree();
+                rootTree.setId(list.get(i).get("FONDSDEPARTMENTCODE"));
+                rootTree.setText(list.get(i).get("NAME"));
+                rootTree.setLi_attr(list.get(i));
+                treeList.add(rootTree);
+                List<Tree> treeListChildren= getSystemFondsTree(list.get(i).get("DEPARTMENTCODE"));
+                if(treeListChildren!=null&&treeListChildren.size()>0){
+                    rootTree.setChildren(treeListChildren);//存放节点
+                }else{
+                    rootTree.setChildren(null);//存放节点
+                }
+            }
+            return  treeList;
+        }
+        return treeList;
+    }
     /**
      * 转换查询列的部门编号为部门名称
      * @param listPageInfo
@@ -304,6 +398,5 @@ public class TableViewServiceImpl implements TableViewService {
             }
         }
     }
-
 }
 
