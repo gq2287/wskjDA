@@ -13,6 +13,7 @@ import com.wsda.project.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -129,7 +130,8 @@ public class TableViewServiceImpl implements TableViewService {
                 PageHelper.startPage(pageNum, PageSize);//分页
                 PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql)));//存放入分页的pageInfo中
                 mapObj.put("tableColums",arrayList);//展示列
-                setDepartementName(listPageInfo);
+                setDepartementName(listPageInfo);//转换查询列的部门编号为部门名称
+                toDataByTime(arrayList,listPageInfo);//转换日期格式
                 mapObj.put("pageInfo",listPageInfo);//实体表内容
                 mapObj.put("sorts",sorts);//排序纪录
             }else{
@@ -394,6 +396,30 @@ public class TableViewServiceImpl implements TableViewService {
                         listPageInfo.getList().get(i).put("DEPARTMENTCODE",departementName);
                     }
                     break;
+                }
+            }
+        }
+    }
+    /**
+     * 日期转换为标准格式
+     * @param listPageInfo
+     */
+    private  void toDataByTime(List<Map<String, String>> arrayList,PageInfo<Map<String,String>> listPageInfo){
+        if(arrayList!=null&&arrayList.size()>0&&listPageInfo.getList()!=null&&listPageInfo.getList().size()>0){
+            for (int i = 0; i <arrayList.size() ; i++) {
+                for (String cloumn:arrayList.get(i).keySet()) {
+                    if("INPUTTYPE".equals(cloumn)&&"D".equals(arrayList.get(i).get(cloumn))){
+                        String cloumnName=arrayList.get(i).get("NAME");//列英文名
+                        for (int j = 0; j < listPageInfo.getList().size() ;j++) {
+                            for (String infoE:listPageInfo.getList().get(j).keySet()) {
+                                if(cloumnName.equals(infoE)){
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    String time=formatter.format(listPageInfo.getList().get(j).get(infoE));
+                                    listPageInfo.getList().get(j).put(infoE,time);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
