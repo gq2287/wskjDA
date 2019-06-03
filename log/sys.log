@@ -105,3 +105,54 @@
 2019-06-03 15:47:18,715 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
 2019-06-03 15:47:18,718 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
 2019-06-03 15:47:22,374 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 4.626 seconds (JVM running for 5.937)
+2019-06-03 17:16:48,209 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 9748 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:16:48,216 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:16:48,217 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:16:52,064 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 4.797 seconds (JVM running for 6.2)
+2019-06-03 17:45:13,323 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 10924 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:45:13,327 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:45:13,327 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:45:16,783 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 4.366 seconds (JVM running for 5.909)
+2019-06-03 17:47:10,777 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 12784 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:47:10,780 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:47:10,781 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:47:20,088 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 12472 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:47:20,092 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:47:20,094 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:47:24,321 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 5.237 seconds (JVM running for 6.578)
+2019-06-03 17:49:08,497 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 2984 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:49:08,505 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:49:08,506 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:49:12,381 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 5.034 seconds (JVM running for 6.331)
+2019-06-03 17:50:10,684 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 12920 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:50:10,689 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:50:10,690 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:50:14,756 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 5.199 seconds (JVM running for 6.624)
+2019-06-03 17:53:01,150 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 12480 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:53:01,155 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:53:01,156 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:53:04,858 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 4.632 seconds (JVM running for 6.138)
+2019-06-03 17:56:45,399 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 12048 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:56:45,403 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:56:45,404 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:56:49,713 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 5.197 seconds (JVM running for 6.67)
+2019-06-03 17:57:29,912 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 12968 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 17:57:29,930 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 17:57:29,931 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 17:57:33,954 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 5.042 seconds (JVM running for 6.33)
+2019-06-03 18:32:00,423 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 9440 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 18:32:00,427 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 18:32:00,428 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 18:32:06,338 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 7.244 seconds (JVM running for 8.559)
+2019-06-03 18:42:25,218 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 12992 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 18:42:25,224 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 18:42:25,225 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 18:42:29,718 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 5.316 seconds (JVM running for 6.563)
+2019-06-03 18:43:37,416 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 12984 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 18:43:37,421 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 18:43:37,425 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 18:43:42,053 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 5.681 seconds (JVM running for 7.726)
+2019-06-03 18:54:56,308 INFO (StartupInfoLogger.java:50)- Starting WsdaApplication on USER-20180713SF with PID 9928 (D:\IDEAWorkSpace\wsda\target\classes started by Administrator in D:\IDEAWorkSpace\wsda)
+2019-06-03 18:54:56,313 DEBUG (StartupInfoLogger.java:53)- Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE
+2019-06-03 18:54:56,316 INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+2019-06-03 18:55:00,030 INFO (StartupInfoLogger.java:59)- Started WsdaApplication in 5.091 seconds (JVM running for 7.267)

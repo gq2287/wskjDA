@@ -11,6 +11,7 @@ import com.wsda.project.model.Tree;
 import com.wsda.project.service.TableViewService;
 import com.wsda.project.util.StringUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -289,8 +290,10 @@ public class TableViewServiceImpl implements TableViewService {
      * @param infoMap
      * @return
      */
+    @Transactional
     @Override
     public boolean addTableInfo(Map<String, String> infoMap) {
+        boolean bool=true;
         Map<String, String> dataType = new HashMap();//数据库为Oracle字段类型
         dataType.put("1", "VARCHAR2");
         dataType.put("2", "NUMBER");
@@ -304,25 +307,34 @@ public class TableViewServiceImpl implements TableViewService {
         List<String> columnList=new ArrayList<>();//添加表 字段列集合
         columnList.add("RECORDCODE");//主键
         List<String> valuesList=new ArrayList<>();//添加表 字段列对应值集合
-        valuesList.add(StringUtil.getUuid());//唯一主键
+        valuesList.add("'"+ StringUtil.getRandomStr(6)+"'");//唯一主键
         for (String column:infoMap.keySet()) {
             //例：RECORDCODE-1
             String startColumn=column.substring(0,column.lastIndexOf("-"));//获取数据列名
-            columnList.add(startColumn);//添加表字段列
-            String endType=column.substring(column.lastIndexOf("-")+1,column.length());//获取数据类型
-            if(dataType.containsValue(endType)){//包涵当前的类型
-                String typeName=dataType.get(endType);//类型名称
-                String value=infoMap.get(column);//获得值
-                if("VARCHAR2".equals(typeName)){
-                    valuesList.add("'"+value+"'");
-                }else if("NUMBER".equals(typeName)){
-                    valuesList.add(value);
-                }else if("DATE".equals(typeName)){
-                    valuesList.add("TO_DATE('"+value+"','YYYY-MM-DD')");
+            if(infoMap.get(column)!=null&&!"".equals(infoMap.get(column))){
+                columnList.add(startColumn);//添加表字段列
+                String endType=column.substring(column.lastIndexOf("-")+1,column.length());//获取数据类型
+                if(dataType.containsKey(endType)){//包涵当前的类型
+                    String typeName=dataType.get(endType);//类型名称
+                    String value=infoMap.get(column);//获得值
+                    if("VARCHAR2".equals(typeName)){
+                        valuesList.add("'"+value+"'");
+                    }else if("NUMBER".equals(typeName)){
+                        valuesList.add(value);
+                    }else if("DATE".equals(typeName)){
+                        valuesList.add("TO_DATE('"+value+"','YYYY-MM-DD')");
+                    }
                 }
             }
         }
-        return tableViewMapper.addTableInfo(tableName,columnList,valuesList);
+        bool=tableViewMapper.addTableInfo(tableName,columnList,valuesList);
+//        try {
+//        bool=tableViewMapper.addTableInfo(tableName,columnList,valuesList);
+//        }catch (Exception e){
+//            System.out.println("添加档案条目："+e.getMessage());
+//            bool=false;
+//        }
+        return bool;
     }
 
     @Override

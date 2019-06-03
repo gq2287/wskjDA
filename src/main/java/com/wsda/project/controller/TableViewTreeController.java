@@ -82,7 +82,7 @@ public class TableViewTreeController {
         Map<String, String> tableInfoMap  = new HashMap<>();
         Type typeObj = new TypeToken<Map<String, String>>() {}.getType();
         if (tableInfo != null) {
-            tableInfoMap = JSONObject.parseObject(tableInfo, typeObj);//JSONObject转换map
+            tableInfoMap = JSONObject.parseObject(String.valueOf(tableInfo), typeObj);//JSONObject转换map
         }
         tableInfoMap.put("tableCode",tableCode);
         boolean bool = tableViewService.addTableInfo(tableInfoMap);
