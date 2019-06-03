@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsda.project.dao.SystemCataLogMapper">
+    <!--获取全宗号-->
+    <select id="getAllSystemFonds" resultType="java.util.Map">
+        SELECT * FROM SYSTEMFONDS ORDER BY FONDSCODE
+    </select>
+    <!--获取系统全宗信息-->
+    <select id="getAllSystemCataLogByFondsCode" resultType="java.util.Map">
+        SELECT
+            F.FONDSDEPARTMENTCODE,F.FONDSCODE,S.DEPARTMENTCODE,S.NAME
+        FROM
+            SYSTEMDEPARTMENT S
+        INNER JOIN SYSTEMFONDSDEPARTMENT F ON F.DEPARTMENTCODE=S.DEPARTMENTCODE
+        WHERE
+            PARENTCODE != '00000000'
+        <if test="parentCode != null and parentCode != ''">
+            AND PARENTCODE=#{parentCode}
+        </if>
+        <if test="fondsCode != null and fondsCode != ''">
+            AND FONDSCODE = #{fondsCode}
+        </if>
+            ORDER BY S.DEPARTMENTCODE
+    </select>
+
+</mapper>
