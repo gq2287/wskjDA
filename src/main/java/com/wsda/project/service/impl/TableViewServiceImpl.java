@@ -3,7 +3,6 @@ package com.wsda.project.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wsda.project.dao.ClassTreeMapper;
-import com.wsda.project.dao.DepartementMapper;
 import com.wsda.project.dao.SystemCataLogMapper;
 import com.wsda.project.dao.TableViewMapper;
 import com.wsda.project.model.Dictionary;
@@ -32,8 +31,6 @@ public class TableViewServiceImpl implements TableViewService {
     private ClassTreeServiceImpl classTreeService ;
     @Resource
     private DepartementServiceImpl  departementService ;
-    @Resource
-    private DepartementMapper departementMapper ;
 
     @Resource
     private DictionaryServiceImpl  dictionaryService ;
@@ -48,7 +45,7 @@ public class TableViewServiceImpl implements TableViewService {
      * @return
      */
     @Override
-    public Map<String,Object> getTableView(String tableCode, int pageNum, int PageSize, List<Map<String,String>>conditions, List<Map<String,String>> sorts) {
+    public Map<String,Object> getTableView(String tableCode, int pageNum, int PageSize, List<Map<String,String>>conditions, List<Map<String,String>> sorts,String type) {
         Map<String,Object> mapObj=new HashMap<>();//返回结果集
         List<Map<String, String>> arrayList = new ArrayList<>();
         try {
@@ -75,7 +72,7 @@ public class TableViewServiceImpl implements TableViewService {
             dataType.put("5", "VARCHAR2");
             //处理查询的条件
             if(conditions!=null&&conditions.size()>0){
-                whereSql.append(" WHERE ");
+                whereSql.append(" AND ");
                 for (int i = 0; i <conditions.size() ; i++) {
                     for (String cod:conditions.get(i).keySet()) {
                         String startColumn=cod.substring(0,cod.lastIndexOf("-"));//获取数据列名
@@ -129,7 +126,7 @@ public class TableViewServiceImpl implements TableViewService {
             if(tableName!=null){
                 columnMap.put("RECORDCODE","RECORDCODE");
                 PageHelper.startPage(pageNum, PageSize);//分页
-                PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql)));//存放入分页的pageInfo中
+                PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql),type));//存放入分页的pageInfo中
                 mapObj.put("tableColums",arrayList);//展示列
                 setDepartementName(listPageInfo);//转换查询列的部门编号为部门名称
                 toDataByTime(arrayList,listPageInfo);//转换日期格式
@@ -305,9 +302,12 @@ public class TableViewServiceImpl implements TableViewService {
         //获取表名
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
         List<String> columnList=new ArrayList<>();//添加表 字段列集合
-        columnList.add("RECORDCODE");//主键
         List<String> valuesList=new ArrayList<>();//添加表 字段列对应值集合
-        valuesList.add("'"+ StringUtil.getRandomStr(6)+"'");//唯一主键
+        columnList.add("RECORDCODE");//主键
+        valuesList.add("'"+ StringUtil.getRandomStr(8)+"'");//唯一主键
+
+        infoMap.put("TRASHSTATUS-1","0");//回收站标志 0默认，1删除
+        infoMap.put("OPERATETIME-5",StringUtil.getDate(1));//操作日期
         for (String column:infoMap.keySet()) {
             //例：RECORDCODE-1
             String startColumn=column.substring(0,column.lastIndexOf("-"));//获取数据列名
@@ -328,12 +328,6 @@ public class TableViewServiceImpl implements TableViewService {
             }
         }
         bool=tableViewMapper.addTableInfo(tableName,columnList,valuesList);
-//        try {
-//        bool=tableViewMapper.addTableInfo(tableName,columnList,valuesList);
-//        }catch (Exception e){
-//            System.out.println("添加档案条目："+e.getMessage());
-//            bool=false;
-//        }
         return bool;
     }
 
@@ -366,6 +360,84 @@ public class TableViewServiceImpl implements TableViewService {
         }else{
             return null;
         }
+    }
+
+    /**
+     * 修改当前档案
+     * @param tableCode 表编号
+     * @param recordCode 修改条目的主键
+     * @param trashStatus 0恢复，1删除
+     * @return
+     */
+    @Override
+    public boolean upArchives(String tableCode, String recordCode,String trashStatus) {
+        boolean bool=true;
+        String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
+        bool=tableViewMapper.upArchives(tableName,recordCode,trashStatus);
+        return bool;
+    }
+
+    /**
+     * 获取档案条目
+     * @param tableCode
+     * @param recordCode
+     * @return
+     */
+    @Override
+    public Map<String,String> getArchives(String tableCode, String recordCode) {
+        Map<String,String> parmsMap=new HashMap<>();
+        String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
+        List<Map<String,Object>> columnList=tableViewMapper.getTypeByTableCode(tableCode);
+        Map<String,String> archives=tableViewMapper.getArchivesByRecordCode(tableName,recordCode);
+        if(columnList!=null&&columnList.size()>0){
+            for (int i = 0; i < columnList.size(); i++) {
+                for (String column:columnList.get(i).keySet()) {
+                    if(column!=null&&"NAME".equals(column)){
+                        for (String str:archives.keySet()) {
+                            if(columnList.get(i).get(column).toString().equalsIgnoreCase(str)){//判断是否相等
+                                String value=null;
+                                if("4".equals(columnList.get(i).get("TYPE"))){
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    value=formatter.format(archives.get(str));
+                                }else{
+                                    Object val=archives.get(str);
+                                    value=String.valueOf(val);
+                                }
+                                String key=columnList.get(i).get(column).toString()+"-"+columnList.get(i).get("TYPE").toString();
+                                parmsMap.put(key,value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return parmsMap;
+    }
+
+    /**
+     * 修改档案条目
+     * @param tableCode
+     * @param recordCode
+     * @param parms
+     * @return
+     */
+    @Override
+    public boolean upArchivesByRecordCode(String tableCode, String recordCode, Map<String, String> parms) {
+        String tableName=tableViewMapper.getTableNameByTableCode(tableCode);
+        boolean bool=tableViewMapper.upArchivesByRecordCode(tableName,recordCode,parms);
+        return bool;
+    }
+
+    /**
+     * 分组
+     * @param tableCode
+     * @param group
+     * @return
+     */
+    @Override
+    public List<String> getGroup(String tableCode, String group) {
+        String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
+        return tableViewMapper.getGroup(tableName,group);
     }
 
 

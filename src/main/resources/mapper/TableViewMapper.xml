@@ -33,6 +33,10 @@
             ${key}
         </foreach>
         from ${tableName}
+        where 1=1 AND
+        <if test="type != null and type != ''">
+            TRASHSTATUS=#{type}
+        </if>
         <if test="whereSql != null and whereSql != ''">
             ${whereSql}
         </if>
@@ -66,4 +70,35 @@
                 ${item}
             </foreach>
     </insert>
+
+<!--修改表列数据 0默认，1删除-->
+    <update id="upArchives" parameterType="java.util.Map">
+        UPDATE ${tableName} SET
+           TRASHSTATUS=#{trashStatus}
+        WHERE RECORDCODE=#{recordCode}
+    </update>
+
+<!--分组-->
+    <select id="getGroup" resultType="java.util.Map">
+          SELECT ${group} FROM ${tableName} GROUP BY ${group}
+    </select>
+
+    <!--修改表列数据-->
+    <update id="upArchivesByRecordCode" parameterType="java.util.Map">
+        UPDATE ${tableName} SET
+           TRASHSTATUS=#{trashStatus}
+        WHERE RECORDCODE=#{recordCode}
+    </update>
+
+    <!--查询档案条目-->
+    <select id="getArchivesByRecordCode" resultType="java.util.Map">
+          SELECT * FROM ${tableName}
+           WHERE RECORDCODE=#{recordCode}
+    </select>
+
+    <!--获取档案字段的类型-->
+    <select id="getTypeByTableCode" resultType="java.util.HashMap">
+          SELECT NAME,TYPE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode}
+    </select>
+
 </mapper>

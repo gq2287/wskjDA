@@ -35,7 +35,8 @@ public class TableViewTreeController {
                                        @ApiParam(required = true, name = "pageNum", value = "当前页") @RequestParam(name = "pageNum", required = true) int pageNum,
                                        @ApiParam(required = true, name = "pageSize", value = "每页条目数") @RequestParam(name = "pageSize", required = true) int pageSize,
                                        @ApiParam(required = false, name = "conditions", value = "查询条件") @RequestParam(name = "conditions", required = false) String conditions,
-                                       @ApiParam(required = false, name = "sorts", value = "排序条件") @RequestParam(name = "sorts", required = false) String sorts) {
+                                       @ApiParam(required = false, name = "sorts", value = "排序条件") @RequestParam(name = "sorts", required = false) String sorts,
+                                       @ApiParam(required = true, name = "type", value = "回收站标志（0不是回收站,1是回收站）") @RequestParam(name = "type", required = true) String type) {
         System.err.println(conditions+"\n********\n"+sorts+"********\n");
         List<Map<String, String>> conditionsMap = new ArrayList<>();
         List<Map<String, String>> sortsMap = new ArrayList<>();
@@ -48,7 +49,7 @@ public class TableViewTreeController {
             sortsMap = JSONObject.parseObject(sorts, typeObj);//JSONObject转换map
         }
         if (tableCode != null) {
-            Map<String, Object> parms = tableViewService.getTableView(tableCode, pageNum, pageSize, conditionsMap, sortsMap);
+            Map<String, Object> parms = tableViewService.getTableView(tableCode, pageNum, pageSize, conditionsMap, sortsMap,type);
             if (parms != null) {
                 return new ResponseResult(ResponseResult.OK, "查询成功 ", parms, true);
             } else {
@@ -111,4 +112,62 @@ public class TableViewTreeController {
             return new ResponseResult(ResponseResult.OK, "成功", systemFonds, false);
         }
     }
+
+    @ApiOperation(value = "分组", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/getGroup", method = RequestMethod.POST)
+    public ResponseResult getGroup(@ApiParam(required = true, name = "tableCode", value = "表编号")@RequestParam(name = "tableCode", required = true) String tableCode,
+                                   @ApiParam(required = true, name = "group", value = "分组列 字段英文名") @RequestParam(name = "group", required = true) String group) {
+        List<String> groupList = tableViewService.getGroup(tableCode,group);
+        if(groupList!=null){
+            return new ResponseResult(ResponseResult.OK, "成功", groupList, true);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "成功", groupList, false);
+        }
+    }
+
+    @ApiOperation(value = "恢复删除档案条目", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/upArchives", method = RequestMethod.POST)
+    public ResponseResult upArchives(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                     @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode", required = true) String recordCode,
+                                     @ApiParam(required = true, name = "trashStatus", value = "回收站(0恢复,1放入回收站)") @RequestParam(name = "trashStatus", required = true) String trashStatus) {
+        boolean result=tableViewService.upArchives(tableCode,recordCode,trashStatus);
+        if(result){//不能真正删除档案，只做状态码的改变放入回收站即可
+            return new ResponseResult(ResponseResult.OK, "成功", result, true);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "失败", result, false);
+        }
+    }
+
+    @ApiOperation(value = "获取当前档案条目详情", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/getArchives", method = RequestMethod.POST)
+    public ResponseResult getArchives(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                     @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode", required = true) String recordCode) {
+        Map<String,String> result=tableViewService.getArchives(tableCode,recordCode);
+        if(result!=null&&result.size()>0){
+            return new ResponseResult(ResponseResult.OK, "成功", result, true);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "失败", result, false);
+        }
+    }
+
+
+    @ApiOperation(value = "修改档案条目", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/upArchivesByRecordCode", method = RequestMethod.POST)
+    public ResponseResult upArchivesByRecordCode(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                                 @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode", required = true) String recordCode,
+                                                 @ApiParam(required = true, name = "parms", value = "修改列详情") @RequestParam(name = "parms", required = true) String parms) {
+        Map<String, String> parmsMap = new HashMap<>();
+        Type typeObj = new TypeToken<Map<String, String>>() {}.getType();
+        if (parms != null) {
+            parmsMap = JSONObject.parseObject(parms, typeObj);//JSONObject转换map
+        }
+        boolean result=tableViewService.upArchivesByRecordCode(tableCode,recordCode,parmsMap);
+        if(result){
+            return new ResponseResult(ResponseResult.OK, "成功", result, true);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "失败", result, false);
+        }
+    }
+
+
 }
