@@ -23,7 +23,7 @@ public interface TableViewMapper {
     //恢复删除档案纪录
     boolean upArchives(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("trashStatus") String trashStatus);
     //修改档案
-    boolean upArchivesByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("parms") Map<String,String> parms);
+    boolean upArchivesByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("columnMap") Map<String,String> parms);
     //查询档案条目
     Map<String,String> getArchivesByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode);
 //    获取档案字段类型

@@ -6,6 +6,7 @@ import com.wsda.project.dao.ClassTreeMapper;
 import com.wsda.project.dao.SystemCataLogMapper;
 import com.wsda.project.dao.TableViewMapper;
 import com.wsda.project.model.Dictionary;
+import com.wsda.project.model.GroupMode;
 import com.wsda.project.model.Tree;
 import com.wsda.project.service.TableViewService;
 import com.wsda.project.util.StringUtil;
@@ -363,7 +364,7 @@ public class TableViewServiceImpl implements TableViewService {
     }
 
     /**
-     * 修改当前档案
+     * 删除恢复当前档案
      * @param tableCode 表编号
      * @param recordCode 修改条目的主键
      * @param trashStatus 0恢复，1删除
@@ -371,13 +372,13 @@ public class TableViewServiceImpl implements TableViewService {
      */
     @Transactional
     @Override
-    public boolean upArchives(String tableCode, String[] recordCode,String trashStatus)throws Exception {
+    public boolean upArchives(String tableCode, List<String> recordCode,String trashStatus)throws Exception {
         boolean bool=true;
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
         if(recordCode!=null){
-            for (int i = 0; i < recordCode.length; i++) {
+            for (int i = 0; i < recordCode.size(); i++) {
                 if(bool){
-                    bool=tableViewMapper.upArchives(tableName,recordCode[i],trashStatus);
+                    bool=tableViewMapper.upArchives(tableName,recordCode.get(i),trashStatus);
                 }else {
                     return false;
                 }
@@ -405,7 +406,7 @@ public class TableViewServiceImpl implements TableViewService {
                         for (String str:archives.keySet()) {
                             if(columnList.get(i).get(column).toString().equalsIgnoreCase(str)){//判断是否相等
                                 String value=null;
-                                if("4".equals(columnList.get(i).get("TYPE"))){
+                                if("4".equals(String.valueOf(columnList.get(i).get("TYPE")))){
                                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                                     value=formatter.format(archives.get(str));
                                 }else{
@@ -427,11 +428,11 @@ public class TableViewServiceImpl implements TableViewService {
      * 修改档案条目
      * @param tableCode
      * @param recordCode
-     * @param parms
+     * @param params
      * @return
      */
     @Override
-    public boolean upArchivesByRecordCode(String tableCode, String recordCode, Map<String, String> parms) {
+    public boolean upArchivesByRecordCode(String tableCode, String recordCode, Map<String, String> params) {
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);
         Map<String, String> dataType = new HashMap();//数据库为Oracle字段类型
         dataType.put("1", "VARCHAR2");
@@ -440,18 +441,18 @@ public class TableViewServiceImpl implements TableViewService {
         dataType.put("4", "DATE");
         dataType.put("5", "VARCHAR2");
         Map<String,String> parmsMap=new HashMap<>();//修改参数
-        for (String key:parms.keySet()) {
+        for (String key:params.keySet()) {
             String startColumn=key.substring(0,key.lastIndexOf("-"));//获取数据列名
             String endType=key.substring(key.lastIndexOf("-")+1,key.length());//获取数据类型
             for (String type:dataType.keySet()) {
                 if(type.equalsIgnoreCase(endType)){
                    String typeName =dataType.get(endType);
                     if("VARCHAR2".equals(typeName)){
-                        parmsMap.put(startColumn,"'"+parms.get(startColumn)+"'");
+                        parmsMap.put(startColumn,"'"+params.get(key)+"'");
                     }else if("NUMBER".equals(typeName)){
-                        parmsMap.put(startColumn,parms.get(startColumn));
+                        parmsMap.put(startColumn,params.get(key));
                     }else if("DATE".equals(typeName)){
-                        String date="TO_DATE('"+parms.get(startColumn)+"', 'YYYY-MM-DD')";
+                        String date="TO_DATE('"+params.get(key)+"', 'YYYY-MM-DD')";
                         parmsMap.put(startColumn,date);
                     }
                 }
@@ -468,9 +469,35 @@ public class TableViewServiceImpl implements TableViewService {
      * @return
      */
     @Override
-    public List<String> getGroup(String tableCode, String group) {
+    public List<Object> getGroup(String tableCode, List<String> group) {
+        List<Object> listMap=new ArrayList<>();
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
-        return tableViewMapper.getGroup(tableName,group);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if(group!=null&&group.size()>0){
+            for (int i = 0; i < group.size(); i++) {
+
+                String groupName=group.get(i).substring(0,group.get(i).indexOf("-"));//获取数据列名中文
+                String groupColumn=group.get(i).substring(group.get(i).indexOf("-")+1,group.get(i).lastIndexOf("-"));//获取数据列英文
+                String groupType=group.get(i).substring(group.get(i).lastIndexOf("-")+1,group.get(i).length());//获取数据类型
+
+                List<String> groupList=tableViewMapper.getGroup(tableName,groupColumn);
+                while (groupList.remove(null));
+                for (int j = 0; j <groupList.size() ; j++) {
+                    if(StringUtil.isValidDate(groupList.get(i))){
+                        groupList.set(i,formatter.format(groupList.get(i)));
+                    }
+                }
+                GroupMode groupMode=new GroupMode();
+                groupMode.setChineseName(groupName);
+                groupMode.setEnglishName(groupColumn);
+                groupMode.setColumnType(groupType);
+                groupMode.setGroupList(groupList);
+                listMap.add(groupMode);
+            }
+        }else{
+            listMap=null;
+        }
+        return listMap;
     }
 
 
@@ -541,5 +568,7 @@ public class TableViewServiceImpl implements TableViewService {
             }
         }
     }
+
+
 }
 

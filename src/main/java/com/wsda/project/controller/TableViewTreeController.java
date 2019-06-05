@@ -117,22 +117,30 @@ public class TableViewTreeController {
     @RequestMapping(value = "/getGroup", method = RequestMethod.POST)
     public ResponseResult getGroup(@ApiParam(required = true, name = "tableCode", value = "表编号")@RequestParam(name = "tableCode", required = true) String tableCode,
                                    @ApiParam(required = true, name = "group", value = "分组列 字段英文名") @RequestParam(name = "group", required = true) String group) {
-        List<String> groupList = tableViewService.getGroup(tableCode,group);
-        if(groupList!=null){
-            return new ResponseResult(ResponseResult.OK, "成功", groupList, true);
+        if(group!=null){
+            Type typeObj = new TypeToken<List<String>>() {}.getType();
+            List<String> groupList= JSONObject.parseObject(group, typeObj);//JSONObject转换map
+            List<Object> groupListMap = tableViewService.getGroup(tableCode,groupList);
+            if(groupList!=null){
+                return new ResponseResult(ResponseResult.OK, "成功", groupListMap, true);
+            }else{
+                return new ResponseResult(ResponseResult.OK, "失败", groupListMap, false);
+            }
         }else{
-            return new ResponseResult(ResponseResult.OK, "成功", groupList, false);
+            return new ResponseResult(ResponseResult.OK, "缺少分组参数", null, false);
         }
     }
 
     @ApiOperation(value = "恢复删除档案条目", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/upArchives", method = RequestMethod.POST)
-    public ResponseResult upArchives(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
-                                     @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode", required = true) String[] recordCode,
+    public ResponseResult upArchives(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode",required = true) String tableCode,
+                                     @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode",required = true)  String recordCode,
                                      @ApiParam(required = true, name = "trashStatus", value = "回收站(0恢复,1放入回收站)") @RequestParam(name = "trashStatus", required = true) String trashStatus) {
         boolean result=true;
         try {
-            result=tableViewService.upArchives(tableCode,recordCode,trashStatus);
+            Type typeObj = new TypeToken<List<String>>() {}.getType();
+            List<String> recordCodeList= JSONObject.parseObject(recordCode, typeObj);//JSONObject转换map
+            result=tableViewService.upArchives(tableCode,recordCodeList,trashStatus);
         }catch (Exception e){
             result=false;
         }
@@ -160,13 +168,13 @@ public class TableViewTreeController {
     @RequestMapping(value = "/upArchivesByRecordCode", method = RequestMethod.POST)
     public ResponseResult upArchivesByRecordCode(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
                                                  @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode", required = true) String recordCode,
-                                                 @ApiParam(required = true, name = "parms", value = "修改列详情") @RequestParam(name = "parms", required = true) String parms) {
-        Map<String, String> parmsMap = new HashMap<>();
+                                                 @ApiParam(required = true, name = "params", value = "修改列详情") @RequestParam(name = "params", required = true) String params) {
+        Map<String, String> paramsMap = new HashMap<>();
         Type typeObj = new TypeToken<Map<String, String>>() {}.getType();
-        if (parms != null) {
-            parmsMap = JSONObject.parseObject(parms, typeObj);//JSONObject转换map
+        if (params != null) {
+            paramsMap = JSONObject.parseObject(params, typeObj);//JSONObject转换map
         }
-        boolean result=tableViewService.upArchivesByRecordCode(tableCode,recordCode,parmsMap);
+        boolean result=tableViewService.upArchivesByRecordCode(tableCode,recordCode,paramsMap);
         if(result){
             return new ResponseResult(ResponseResult.OK, "成功", result, true);
         }else{

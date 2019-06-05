@@ -79,7 +79,7 @@
     </update>
 
 <!--分组-->
-    <select id="getGroup" resultType="java.util.Map">
+    <select id="getGroup" resultType="java.lang.String">
           SELECT ${group} FROM ${tableName} GROUP BY ${group}
     </select>
 

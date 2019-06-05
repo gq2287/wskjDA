@@ -3,6 +3,7 @@ package com.wsda.project.util;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Base64.Decoder;
@@ -414,12 +415,37 @@ public class StringUtil {
         return realPath;
     }
 
+    /**
+     * 验证日期格式 是否为yyyy-MM-dd
+     * @param str
+     * @return
+     */
+    public static boolean isValidDate(String str) {
+        boolean convertSuccess=true;
+        // 指定日期格式为四位年/两位月份/两位日期，注意yyyy/MM/dd区分大小写；
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            // 设置lenient为false. 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
+            format.setLenient(false);
+            format.parse(str);
+        } catch (ParseException e) {
+            // e.printStackTrace();
+            // 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
+            convertSuccess=false;
+        }
+        return convertSuccess;
+    }
+
 
 //    public static void main(String[] args) {//"conditions":
-//        String column="sss-12343423";
-//        String start=column.substring(0,column.lastIndexOf("-"));//sss
+//        String column="AAAA-12343423-sss";
+//        String start=column.substring(0,column.indexOf("-"));//sss
 //        System.out.println(start);
-//        String end=column.substring(column.lastIndexOf("-")+1,column.length());//12343423
+//
+//        String startEnd=column.substring(column.indexOf("-")+1,column.lastIndexOf("-"));//12343423
+//        System.out.println(startEnd);
+//
+//        String end=column.substring(column.lastIndexOf("-")+1,column.length());//sss
 //        System.out.println(end);
 //    }
 }
