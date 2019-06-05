@@ -128,9 +128,14 @@ public class TableViewTreeController {
     @ApiOperation(value = "恢复删除档案条目", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/upArchives", method = RequestMethod.POST)
     public ResponseResult upArchives(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
-                                     @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode", required = true) String recordCode,
+                                     @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode", required = true) String[] recordCode,
                                      @ApiParam(required = true, name = "trashStatus", value = "回收站(0恢复,1放入回收站)") @RequestParam(name = "trashStatus", required = true) String trashStatus) {
-        boolean result=tableViewService.upArchives(tableCode,recordCode,trashStatus);
+        boolean result=true;
+        try {
+            result=tableViewService.upArchives(tableCode,recordCode,trashStatus);
+        }catch (Exception e){
+            result=false;
+        }
         if(result){//不能真正删除档案，只做状态码的改变放入回收站即可
             return new ResponseResult(ResponseResult.OK, "成功", result, true);
         }else{

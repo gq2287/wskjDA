@@ -86,7 +86,9 @@
     <!--修改表列数据-->
     <update id="upArchivesByRecordCode" parameterType="java.util.Map">
         UPDATE ${tableName} SET
-           TRASHSTATUS=#{trashStatus}
+            <foreach collection="columnMap" index="key" item="vlue" open=" " separator=","  close=" " >
+                ${key}=${vlue}
+            </foreach>
         WHERE RECORDCODE=#{recordCode}
     </update>
 

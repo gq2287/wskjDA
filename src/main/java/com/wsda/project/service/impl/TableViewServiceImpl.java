@@ -369,11 +369,20 @@ public class TableViewServiceImpl implements TableViewService {
      * @param trashStatus 0恢复，1删除
      * @return
      */
+    @Transactional
     @Override
-    public boolean upArchives(String tableCode, String recordCode,String trashStatus) {
+    public boolean upArchives(String tableCode, String[] recordCode,String trashStatus)throws Exception {
         boolean bool=true;
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
-        bool=tableViewMapper.upArchives(tableName,recordCode,trashStatus);
+        if(recordCode!=null){
+            for (int i = 0; i < recordCode.length; i++) {
+                if(bool){
+                    bool=tableViewMapper.upArchives(tableName,recordCode[i],trashStatus);
+                }else {
+                    return false;
+                }
+            }
+        }
         return bool;
     }
 
@@ -424,7 +433,31 @@ public class TableViewServiceImpl implements TableViewService {
     @Override
     public boolean upArchivesByRecordCode(String tableCode, String recordCode, Map<String, String> parms) {
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);
-        boolean bool=tableViewMapper.upArchivesByRecordCode(tableName,recordCode,parms);
+        Map<String, String> dataType = new HashMap();//数据库为Oracle字段类型
+        dataType.put("1", "VARCHAR2");
+        dataType.put("2", "NUMBER");
+        dataType.put("3", "NUMBER");
+        dataType.put("4", "DATE");
+        dataType.put("5", "VARCHAR2");
+        Map<String,String> parmsMap=new HashMap<>();//修改参数
+        for (String key:parms.keySet()) {
+            String startColumn=key.substring(0,key.lastIndexOf("-"));//获取数据列名
+            String endType=key.substring(key.lastIndexOf("-")+1,key.length());//获取数据类型
+            for (String type:dataType.keySet()) {
+                if(type.equalsIgnoreCase(endType)){
+                   String typeName =dataType.get(endType);
+                    if("VARCHAR2".equals(typeName)){
+                        parmsMap.put(startColumn,"'"+parms.get(startColumn)+"'");
+                    }else if("NUMBER".equals(typeName)){
+                        parmsMap.put(startColumn,parms.get(startColumn));
+                    }else if("DATE".equals(typeName)){
+                        String date="TO_DATE('"+parms.get(startColumn)+"', 'YYYY-MM-DD')";
+                        parmsMap.put(startColumn,date);
+                    }
+                }
+            }
+        }
+        boolean bool=tableViewMapper.upArchivesByRecordCode(tableName,recordCode,parmsMap);
         return bool;
     }
 

@@ -2,6 +2,7 @@ package com.wsda.project.service;
 
 import com.wsda.project.model.Tree;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public interface TableViewService {
 
     List<Tree> getAllSystemFondsTree(String fondsCode);
 
-    boolean upArchives(String tableCode,String recordCode,String trashStatus);
+    boolean upArchives(String tableCode,String[] recordCode,String trashStatus) throws SQLException, Exception;
 
     Map<String,String> getArchives(String tableCode,String recordCode);
 
