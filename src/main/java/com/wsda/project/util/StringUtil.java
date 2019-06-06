@@ -437,15 +437,11 @@ public class StringUtil {
     }
 
 
-//    public static void main(String[] args) {//"conditions":
-//        String column="AAAA-12343423-sss";
-//        String start=column.substring(0,column.indexOf("-"));//sss
-//        System.out.println(start);
-//
-//        String startEnd=column.substring(column.indexOf("-")+1,column.lastIndexOf("-"));//12343423
-//        System.out.println(startEnd);
-//
-//        String end=column.substring(column.lastIndexOf("-")+1,column.length());//sss
-//        System.out.println(end);
-//    }
+    public static void main(String[] args) {//"conditions":
+        String column="AAAA-12343423-sss";
+        for (int i = 0; i <column.split("-").length ; i++) {
+            System.out.println(column.split("-")[i]);
+            System.out.println(getUuid().length());
+        }
+    }
 }

@@ -483,8 +483,8 @@ public class TableViewServiceImpl implements TableViewService {
                 List<String> groupList=tableViewMapper.getGroup(tableName,groupColumn);
                 while (groupList.remove(null));
                 for (int j = 0; j <groupList.size() ; j++) {
-                    if(StringUtil.isValidDate(groupList.get(i))){
-                        groupList.set(i,formatter.format(groupList.get(i)));
+                    if(StringUtil.isValidDate(groupList.get(j))){
+                        groupList.set(j,formatter.format(groupList.get(j)));
                     }
                 }
                 GroupMode groupMode=new GroupMode();
