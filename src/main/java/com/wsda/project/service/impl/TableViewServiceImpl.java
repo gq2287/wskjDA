@@ -14,11 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class TableViewServiceImpl implements TableViewService {
@@ -62,6 +60,7 @@ public class TableViewServiceImpl implements TableViewService {
                     }
                 }
             }
+
             //Start
             StringBuffer whereSql=new StringBuffer();//查询条件   RECORDCODE添加的唯一主键
             StringBuffer sortSql=new StringBuffer();//排序条件
@@ -548,7 +547,7 @@ public class TableViewServiceImpl implements TableViewService {
      * 日期转换为标准格式
      * @param listPageInfo
      */
-    private  void toDataByTime(List<Map<String, String>> arrayList,PageInfo<Map<String,String>> listPageInfo){
+    private  void toDataByTime(List<Map<String, String>> arrayList,PageInfo<Map<String,String>> listPageInfo) throws ParseException {
         if(arrayList!=null&&arrayList.size()>0&&listPageInfo.getList()!=null&&listPageInfo.getList().size()>0){
             for (int i = 0; i <arrayList.size() ; i++) {
                 for (String cloumn:arrayList.get(i).keySet()) {
@@ -557,9 +556,18 @@ public class TableViewServiceImpl implements TableViewService {
                         for (int j = 0; j < listPageInfo.getList().size() ;j++) {
                             for (String infoE:listPageInfo.getList().get(j).keySet()) {
                                 if(cloumnName.equals(infoE)){
-                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                                    String time=formatter.format(listPageInfo.getList().get(j).get(infoE));
-                                    listPageInfo.getList().get(j).put(infoE,time);
+                                    String dateStr=String.valueOf(listPageInfo.getList().get(j).get(infoE));
+                                    if(!dateStr.contains("-")){
+                                        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+                                        formatter.setLenient(false);
+                                        Date newDate= formatter.parse(listPageInfo.getList().get(j).get(infoE));
+                                        formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                        listPageInfo.getList().get(j).put(infoE, formatter.format(newDate));
+                                    }else{
+                                        SimpleDateFormat SFDate = new SimpleDateFormat("yyyy-MM-dd");
+                                        String date=SFDate.format(SFDate.parse(dateStr));
+                                        listPageInfo.getList().get(j).put(infoE, date);
+                                    }
                                 }
                             }
                         }
@@ -568,7 +576,5 @@ public class TableViewServiceImpl implements TableViewService {
             }
         }
     }
-
-
 }
 

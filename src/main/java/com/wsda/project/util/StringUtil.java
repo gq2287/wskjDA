@@ -90,7 +90,7 @@ public class StringUtil {
     /**
      * .
      * 获取时间
-     * @param type 时间格式 1日期  2字符串
+     * @param type 时间格式 1时间日期  2字符串 3日期
      * @return 返回当前时间字符串
      */
     public static String getDate(int type){
@@ -99,6 +99,8 @@ public class StringUtil {
             df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         }else if(type==2){
             df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
+        }if(type==3){
+            df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         }
         return df.format(new Date());
     }
@@ -437,11 +439,10 @@ public class StringUtil {
     }
 
 
-    public static void main(String[] args) {//"conditions":
-        String column="AAAA-12343423-sss";
-        for (int i = 0; i <column.split("-").length ; i++) {
-            System.out.println(column.split("-")[i]);
-            System.out.println(getUuid().length());
-        }
+    public static void main(String[] args) throws ParseException {//"conditions":
+        String dateStr="20021119";
+        String NoToDate=dateStr.substring(0,dateStr.indexOf(":")-2).trim();
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(format.format(format.parse(dateStr)));
     }
 }
