@@ -3,10 +3,7 @@ package com.wsda.project.util;
 import com.aspose.words.SaveFormat;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.RandomAccessFileOrArray;
-import com.itextpdf.text.pdf.codec.TiffImage;
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
@@ -71,46 +68,46 @@ public class Change2PDF {
      * @param filePath
      * @param pdfPath
      */
-    public void tif2PDF(String filePath, String pdfPath) {
-        Document document = new Document(PageSize.A4);
-        int pages = 0, comps = 0;
-        try {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
-            document.open();
-            PdfContentByte cb = writer.getDirectContent();
-            RandomAccessFileOrArray ra = null;
-            try {
-                ra = new RandomAccessFileOrArray(filePath);
-                comps = TiffImage.getNumberOfPages(ra);
-            } catch (Throwable e) {
-                System.out.println("Exception in " + filePath + " "
-                        + e.getMessage());
-            }
-            for (int c = 0; c < comps; ++c) {
-                try {
-                    Image img = TiffImage.getTiffImage(ra, c + 1);
-                    if (img != null) {
-                        float heigth = img.getHeight();
-                        float width = img.getWidth();
-                        int percent = getPercent(heigth, width);
-                        img.setAbsolutePosition(0, 0);
-                        img.setAlignment(Image.MIDDLE);
-                        img.scalePercent(percent);
-                        cb.addImage(img);
-                        document.newPage();
-                        ++pages;
-                    }
-                } catch (Throwable e) {
-                    System.out.println("Exception " + filePath + " page "
-                            + (c + 1) + " " + e.getMessage());
-                }
-            }
-            ra.close();
-            document.close();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
+//    public void tif2PDF(String filePath, String pdfPath) {
+//        Document document = new Document(PageSize.A4);
+//        int pages = 0, comps = 0;
+//        try {
+//            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
+//            document.open();
+//            PdfContentByte cb = writer.getDirectContent();
+//            RandomAccessFileOrArray ra = null;
+//            try {
+//                ra = new RandomAccessFileOrArray(filePath);
+//                comps = TiffImage.getNumberOfPages(ra);
+//            } catch (Throwable e) {
+//                System.out.println("Exception in " + filePath + " "
+//                        + e.getMessage());
+//            }
+//            for (int c = 0; c < comps; ++c) {
+//                try {
+//                    Image img = TiffImage.getTiffImage(ra, c + 1);
+//                    if (img != null) {
+//                        float heigth = img.getHeight();
+//                        float width = img.getWidth();
+//                        int percent = getPercent(heigth, width);
+//                        img.setAbsolutePosition(0, 0);
+//                        img.setAlignment(Image.MIDDLE);
+//                        img.scalePercent(percent);
+//                        cb.addImage(img);
+//                        document.newPage();
+//                        ++pages;
+//                    }
+//                } catch (Throwable e) {
+//                    System.out.println("Exception " + filePath + " page "
+//                            + (c + 1) + " " + e.getMessage());
+//                }
+//            }
+//            ra.close();
+//            document.close();
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void doc2pdfA(String filePath, String pdfPath) {
         FileOutputStream os = null;
