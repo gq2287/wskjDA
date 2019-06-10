@@ -7,5 +7,5 @@ import java.util.Map;
 
 public interface OriginaFilesMapper {
 
-    List<Map<String,String>> getFilesByRecordCode(@Param("tableCode") String tableCode,@Param("recordCode") String recordCode);
+    List<Map<String,String>> getFilesByRecordCode(@Param("recordCode") String recordCode);
 }
