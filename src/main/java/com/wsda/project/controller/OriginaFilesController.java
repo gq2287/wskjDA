@@ -23,7 +23,7 @@ public class OriginaFilesController {
     private OriginaFilesServiceImpl originaFilesService;
     @ApiOperation(value = "获取档案下原文信息", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getOriginaFileSByRecordCode", method = RequestMethod.POST)
-    public ResponseResult getOriginaFileSByRecordCode(@ApiParam(required = true, name = "tableCode", value = "表编号")@RequestParam(name = "tableCode", required = true)String tableCode,
+    public ResponseResult getOriginaFileSByRecordCode(@ApiParam(required = true, name = "tableCode", value = "表编号")@RequestParam(name = "tableCode", required = false,defaultValue = "187530")String tableCode,
                                                       @ApiParam(required = true, name = "recordCode", value = "档案唯一编号")@RequestParam(name = "recordCode", required = true)String recordCode,
                                                       @ApiParam(required = false, name = "pageNum", value = "当前页") @RequestParam(name = "pageNum", required = true)Integer pageNum,
                                                       @ApiParam(required = false, name = "pageSize", value = "每页条目数")@RequestParam(name = "pageSize", required = true)Integer pageSize) {
