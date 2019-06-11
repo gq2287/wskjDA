@@ -439,10 +439,13 @@ public class StringUtil {
     }
 
 
-    public static void main(String[] args) throws ParseException {//"conditions":
-        String dateStr="20021119";
-        String NoToDate=dateStr.substring(0,dateStr.indexOf(":")-2).trim();
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-        System.out.println(format.format(format.parse(dateStr)));
+    public static void main(String[] args) throws ParseException {
+//        String fileText="E:\\Desktop\\wapgame\\省厅堡垒机访问策略调查表.xls";
+//        String filePdf="E:\\Desktop\\wapgame\\ACIV_ZXTSZTDA_LY.pdf";
+//        try {
+//            Change2PDF.excel2PDF(fileText,filePdf);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }

@@ -21,11 +21,11 @@ public interface TableViewMapper {
     //添加档案纪录
     boolean addTableInfo(@Param("tableName")String tableName,@Param("columns")List<String> columns,@Param("values")List<String> values);
     //恢复删除档案纪录
-    boolean upArchives(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("trashStatus") String trashStatus);
+    boolean upArchives(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("trashStatus") String trashStatus,@Param("CODE") String CODE);
     //修改档案
-    boolean upArchivesByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("columnMap") Map<String,String> parms);
+    boolean upArchivesByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("columnMap") Map<String,String> parms,@Param("CODE") String CODE);
     //查询档案条目
-    Map<String,String> getArchivesByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode);
+    Map<String,String> getArchivesByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("CODE") String CODE);
 //    获取档案字段类型
     List<Map<String,Object>> getTypeByTableCode(@Param("tableCode")String tableCode);
 

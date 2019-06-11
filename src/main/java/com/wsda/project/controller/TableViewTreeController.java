@@ -140,7 +140,7 @@ public class TableViewTreeController {
         try {
             Type typeObj = new TypeToken<List<String>>() {}.getType();
             List<String> recordCodeList= JSONObject.parseObject(recordCode, typeObj);//JSONObject转换map
-            result=tableViewService.upArchives(tableCode,recordCodeList,trashStatus);
+            result=tableViewService.upArchives(tableCode,recordCodeList,trashStatus,0);
         }catch (Exception e){
             result=false;
         }
@@ -155,7 +155,7 @@ public class TableViewTreeController {
     @RequestMapping(value = "/getArchives", method = RequestMethod.POST)
     public ResponseResult getArchives(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
                                      @ApiParam(required = true, name = "recordCode", value = "档案主键") @RequestParam(name = "recordCode", required = true) String recordCode) {
-        Map<String,String> result=tableViewService.getArchives(tableCode,recordCode);
+        Map<String,String> result=tableViewService.getArchives(tableCode,recordCode,0);
         if(result!=null&&result.size()>0){
             return new ResponseResult(ResponseResult.OK, "成功", result, true);
         }else{
@@ -174,7 +174,7 @@ public class TableViewTreeController {
         if (params != null) {
             paramsMap = JSONObject.parseObject(params, typeObj);//JSONObject转换map
         }
-        boolean result=tableViewService.upArchivesByRecordCode(tableCode,recordCode,paramsMap);
+        boolean result=tableViewService.upArchivesByRecordCode(tableCode,recordCode,paramsMap,0);
         if(result){
             return new ResponseResult(ResponseResult.OK, "成功", result, true);
         }else{

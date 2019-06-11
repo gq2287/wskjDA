@@ -367,17 +367,22 @@ public class TableViewServiceImpl implements TableViewService {
      * @param tableCode 表编号
      * @param recordCode 修改条目的主键
      * @param trashStatus 0恢复，1删除
+     * @param type 判断是档案条目还是亚原文条目（0，1）
      * @return
      */
     @Transactional
     @Override
-    public boolean upArchives(String tableCode, List<String> recordCode,String trashStatus)throws Exception {
+    public boolean upArchives(String tableCode, List<String> recordCode,String trashStatus,int type)throws Exception {
         boolean bool=true;
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
         if(recordCode!=null){
             for (int i = 0; i < recordCode.size(); i++) {
                 if(bool){
-                    bool=tableViewMapper.upArchives(tableName,recordCode.get(i),trashStatus);
+                    if(type==0){
+                        bool=tableViewMapper.upArchives(tableName,recordCode.get(i),trashStatus,"RECORDCODE");
+                    }else if(type==1){
+                        bool=tableViewMapper.upArchives(tableName,recordCode.get(i),trashStatus,"FILECODE");
+                    }
                 }else {
                     return false;
                 }
@@ -390,14 +395,20 @@ public class TableViewServiceImpl implements TableViewService {
      * 获取档案条目
      * @param tableCode
      * @param recordCode
+     * @param type 判断是档案条目还是亚原文条目（0，1）
      * @return
      */
     @Override
-    public Map<String,String> getArchives(String tableCode, String recordCode) {
+    public Map<String,String> getArchives(String tableCode, String recordCode,int type) {
         Map<String,String> parmsMap=new HashMap<>();
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//添加表 表名称
         List<Map<String,Object>> columnList=tableViewMapper.getTypeByTableCode(tableCode);
-        Map<String,String> archives=tableViewMapper.getArchivesByRecordCode(tableName,recordCode);
+        Map<String,String> archives=null;
+        if(type==0){
+            archives=tableViewMapper.getArchivesByRecordCode(tableName,recordCode,"RECORDCODE");
+        }else if(type==1){
+            archives=tableViewMapper.getArchivesByRecordCode(tableName,recordCode,"FILECODE");
+        }
         if(columnList!=null&&columnList.size()>0){
             for (int i = 0; i < columnList.size(); i++) {
                 for (String column:columnList.get(i).keySet()) {
@@ -428,10 +439,11 @@ public class TableViewServiceImpl implements TableViewService {
      * @param tableCode
      * @param recordCode
      * @param params
+     * @param type 判断是档案条目还是原文条目（0，1）
      * @return
      */
     @Override
-    public boolean upArchivesByRecordCode(String tableCode, String recordCode, Map<String, String> params) {
+    public boolean upArchivesByRecordCode(String tableCode, String recordCode, Map<String, String> params,int type) {
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);
         Map<String, String> dataType = new HashMap();//数据库为Oracle字段类型
         dataType.put("1", "VARCHAR2");
@@ -443,8 +455,8 @@ public class TableViewServiceImpl implements TableViewService {
         for (String key:params.keySet()) {
             String startColumn=key.substring(0,key.lastIndexOf("-"));//获取数据列名
             String endType=key.substring(key.lastIndexOf("-")+1,key.length());//获取数据类型
-            for (String type:dataType.keySet()) {
-                if(type.equalsIgnoreCase(endType)){
+            for (String type1:dataType.keySet()) {
+                if(type1.equalsIgnoreCase(endType)){
                    String typeName =dataType.get(endType);
                     if("VARCHAR2".equals(typeName)){
                         parmsMap.put(startColumn,"'"+params.get(key)+"'");
@@ -457,7 +469,12 @@ public class TableViewServiceImpl implements TableViewService {
                 }
             }
         }
-        boolean bool=tableViewMapper.upArchivesByRecordCode(tableName,recordCode,parmsMap);
+        boolean bool=true;
+        if(type==0){
+            bool=tableViewMapper.upArchivesByRecordCode(tableName,recordCode,parmsMap,"RECORDCODE");
+        }else if(type==1){
+            bool=tableViewMapper.upArchivesByRecordCode(tableName,recordCode,parmsMap,"FILECODE");
+        }
         return bool;
     }
 

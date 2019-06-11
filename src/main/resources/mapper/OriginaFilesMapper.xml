@@ -3,7 +3,7 @@
 
 <mapper namespace="com.wsda.project.dao.OriginaFilesMapper">
     <!--根据recordCode获取档案旗下原文-->
-    <select id="getFilesByRecordCode" resultType="com.wsda.project.model.OriginalFiles">
+    <select id="getFilesByRecordCode" resultType="java.util.HashMap">
         select * FROM ORIGINALFILES WHERE RECORDCODE=#{recordCode}
     </select>
 

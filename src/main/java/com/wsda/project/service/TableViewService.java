@@ -18,11 +18,11 @@ public interface TableViewService {
 
     List<Tree> getAllSystemFondsTree(String fondsCode);
 
-    boolean upArchives(String tableCode,List<String> recordCode,String trashStatus) throws SQLException, Exception;
+    boolean upArchives(String tableCode,List<String> recordCode,String trashStatus,int type) throws SQLException, Exception;
 
-    Map<String,String> getArchives(String tableCode,String recordCode);
+    Map<String,String> getArchives(String tableCode,String recordCode,int type);
 
-    boolean upArchivesByRecordCode(String tableCode,String recordCode,Map<String,String> parms);
+    boolean upArchivesByRecordCode(String tableCode,String recordCode,Map<String,String> parms,int type);
     //分组
     List<Object> getGroup(String tableCode,List<String> group );
 

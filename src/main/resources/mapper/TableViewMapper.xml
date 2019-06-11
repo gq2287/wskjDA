@@ -75,7 +75,7 @@
     <update id="upArchives" parameterType="java.util.Map">
         UPDATE ${tableName} SET
            TRASHSTATUS=#{trashStatus}
-        WHERE RECORDCODE=#{recordCode}
+        WHERE  ${CODE}=#{recordCode}
     </update>
 
 <!--分组-->
@@ -89,13 +89,13 @@
             <foreach collection="columnMap" index="key" item="vlue" open=" " separator=","  close=" " >
                 ${key}=${vlue}
             </foreach>
-        WHERE RECORDCODE=#{recordCode}
+        WHERE  ${CODE}=#{recordCode}
     </update>
 
     <!--查询档案条目-->
     <select id="getArchivesByRecordCode" resultType="java.util.Map">
           SELECT * FROM ${tableName}
-           WHERE RECORDCODE=#{recordCode}
+           WHERE ${CODE}=#{recordCode}
     </select>
 
     <!--获取档案字段的类型-->
