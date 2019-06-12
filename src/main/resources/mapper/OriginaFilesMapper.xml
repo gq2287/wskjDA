@@ -19,15 +19,101 @@
 
 
     <!--添加录入原文纪录表数据-->
-    <insert id="addUpLoadFileOriginaFiles" parameterType="java.util.Map">
+    <insert id="addUpLoadFileOriginaFiles" parameterType="com.wsda.project.model.OriginalFiles">
         INSERT INTO ORIGINALFILES
-        <foreach collection="columns" item="item" open="(" separator=","  close=")" >
-            ${item}
-        </foreach>
-        VALUES
-        <foreach collection="values" item="item" open="(" separator=","  close=")" >
-            ${item}
-        </foreach>
+        (
+        <if test="FILECODE != null and FILECODE != ''">
+            FILECODE,
+        </if>
+        <if test="RECORDCODE != null and RECORDCODE != ''">
+            RECORDCODE,
+        </if>
+        <if test="FILENAME != null and FILENAME != ''">
+            FILENAME,
+        </if>
+        <if test="FILETYPE != null and FILETYPE != ''">
+            FILETYPE,
+        </if>
+        <if test="FILELENGTH != null and FILELENGTH != ''">
+            FILELENGTH,
+        </if>
+        <if test="USERCODE != null and USERCODE != ''">
+            USERCODE,
+        </if>
+        <if test="DEPARTMENTCODE != null and DEPARTMENTCODE != ''">
+            DEPARTMENTCODE,
+        </if>
+        <if test="UPLOADTIME != null and UPLOADTIME != ''">
+            UPLOADTIME,
+        </if>
+        <if test="FONDSNO != null and FONDSNO != ''">
+            FONDSNO,
+        </if>
+        <if test="FILLINGYEAR != null and FILLINGYEAR != ''">
+            FILLINGYEAR,
+        </if>
+        <if test="MAINTITLE != null and MAINTITLE != ''">
+            MAINTITLE,
+        </if>
+        <if test="PDFPATH != null and PDFPATH != ''">
+            PDFPATH,
+        </if>
+        <if test="ORIGINAPATH != null and ORIGINAPATH != ''">
+            ORIGINAPATH,
+        </if>
+        <if test="TRASHSTATUS != null and TRASHSTATUS != ''">
+            TRASHSTATUS
+        </if>
+        )
+        VALUES(
+        <if test="FILECODE != null and FILECODE != ''">
+            #{FILECODE},
+        </if>
+        <if test="RECORDCODE != null and RECORDCODE != ''">
+            #{RECORDCODE},
+        </if>
+        <if test="FILENAME != null and FILENAME != ''">
+            #{FILENAME},
+        </if>
+        <if test="FILETYPE != null and FILETYPE != ''">
+            #{FILETYPE},
+        </if>
+        <if test="FILELENGTH != null and FILELENGTH != ''">
+            #{FILELENGTH},
+        </if>
+        <if test="USERCODE != null and USERCODE != ''">
+            #{USERCODE},
+        </if>
+        <if test="DEPARTMENTCODE != null and DEPARTMENTCODE != ''">
+            #{DEPARTMENTCODE},
+        </if>
+        <if test="UPLOADTIME != null and UPLOADTIME != ''">
+            ${UPLOADTIME},
+        </if>
+        <if test="FONDSNO != null and FONDSNO != ''">
+            #{FONDSNO},
+        </if>
+        <if test="FILLINGYEAR != null and FILLINGYEAR != ''">
+            #{FILLINGYEAR},
+        </if>
+        <if test="MAINTITLE != null and MAINTITLE != ''">
+            #{MAINTITLE},
+        </if>
+        <if test="PDFPATH != null and PDFPATH != ''">
+            #{PDFPATH},
+        </if>
+        <if test="ORIGINAPATH != null and ORIGINAPATH != ''">
+            #{ORIGINAPATH},
+        </if>
+        <if test="TRASHSTATUS != null and TRASHSTATUS != ''">
+            #{TRASHSTATUS}
+        </if>
+        )
     </insert>
 
+
+    <!--获取pdf存放地址-->
+    <select id="getPDFUrlByFileCode" resultType="java.util.HashMap">
+        SELECT PDFPATH,ORIGINAPATH FROM ORIGINALFILES  where FILECODE=#{fileCode}
+    </select>
 </mapper>

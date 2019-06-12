@@ -4,8 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wsda.project.dao.OriginaFilesMapper;
 import com.wsda.project.dao.TableViewMapper;
+import com.wsda.project.model.OriginalFiles;
 import com.wsda.project.service.OriginaFilesService;
+import com.wsda.project.util.DeleteFileUtil;
+import com.wsda.project.util.StringUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -44,7 +48,7 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
             String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//获取实体表名称
             if(tableName!=null){
                 PageHelper.startPage(pageNum, PageSize);
-                PageInfo<Map<String, String>> originaFilePageInfo = new PageInfo<>(originaFilesMapper.getFilesByRecordCode(tableName,recordCode,"0"));
+                PageInfo<Map<String, String>> originaFilePageInfo = new PageInfo<>(originaFilesMapper.getFilesByRecordCode(tableName,recordCode,type));
                 parmsMap.put("tableColums", arrayList);//展示列
                 tableViewService.toDataByTime(arrayList,originaFilePageInfo);
                 parmsMap.put("originaFilePageInfo", originaFilePageInfo);//实体表内容
@@ -65,14 +69,79 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
      * @param count
      * @return
      */
+    @Transactional
     @Override
-    public boolean upLoadFiles(Map<String,String> parmsMap, String tableCode,String recordCode,int count) {
+    public boolean addUpLoadFiles(Map<String,String> parmsMap, String tableCode,String recordCode,int count) {
         boolean bool=true;
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//实体表名
         int oldCount=tableViewMapper.getYuanWenCountByRecordCode(tableName,recordCode);//查询当前条目的原文数量
         bool=tableViewMapper.upArchivesYuanWenCountByRecordCode(tableName,recordCode,String.valueOf(oldCount+count));//修改档案的原文数量
-        if(parmsMap.get("pdfPath")!=null){
-
+        OriginalFiles originalFiles=null;
+        if(parmsMap.get("type")!=null){
+            if("0".equals(parmsMap.get("type"))){//pdf文件
+                originalFiles =new OriginalFiles();
+                originalFiles.setFILECODE(StringUtil.getUuid());//唯一编号
+                originalFiles.setRECORDCODE(recordCode);//档案表条目编号
+                if(parmsMap.get("originFileName")!=null){
+                    String originFileName=parmsMap.get("originFileName");//原文名称
+                    originalFiles.setFILENAME(originFileName);//文件原文名称
+                    originalFiles.setMAINTITLE(originFileName);//文件题名
+                }
+                if(parmsMap.get("originFileName")!=null){
+                    String originFileName=parmsMap.get("originFileName");
+                    originFileName=originFileName.substring(originFileName.lastIndexOf(".")+1,originFileName.length());//原文后缀
+                    originalFiles.setFILETYPE(originFileName);//文件原文名称
+                }
+                if(parmsMap.get("fileSize")!=null){
+                    String fileSize=parmsMap.get("fileSize");
+                    originalFiles.setFILELENGTH(fileSize);//文件长度
+                }
+                if(parmsMap.get("fileSize")!=null){
+                    String fileSize=parmsMap.get("fileSize");
+                    originalFiles.setFILELENGTH(fileSize);//文件长度
+                }
+                if(parmsMap.get("pdfPath")!=null){
+                    String pdfPath=parmsMap.get("pdfPath");
+                    originalFiles.setPDFPATH(pdfPath);//pdf路径
+                }
+                originalFiles.setUPLOADTIME("TO_DATE('"+StringUtil.getDate(3)+"','YYYY-MM-DD')");//上传时间
+                originalFiles.setTRASHSTATUS("0");//未删除的文件 0未删除，1删除
+            }else{//没有pdf文件
+                originalFiles =new OriginalFiles();
+                originalFiles.setFILECODE(StringUtil.getUuid());//唯一编号
+                originalFiles.setRECORDCODE(recordCode);//档案表条目编号
+                if(parmsMap.get("originFileName")!=null){
+                    String originFileName=parmsMap.get("originFileName");//原文名称
+                    originalFiles.setFILENAME(originFileName);//文件原文名称
+                    originalFiles.setMAINTITLE(originFileName);//文件题名
+                }
+                if(parmsMap.get("originFileName")!=null){
+                    String originFileName=parmsMap.get("originFileName");
+                    originFileName=originFileName.substring(originFileName.lastIndexOf(".")+1,originFileName.length());//原文后缀
+                    originalFiles.setFILETYPE(originFileName);//文件原文后缀
+                }
+                if(parmsMap.get("fileSize")!=null){
+                    String fileSize=parmsMap.get("fileSize");
+                    originalFiles.setFILELENGTH(fileSize);//文件长度
+                }
+                if(parmsMap.get("fileSize")!=null){
+                    String fileSize=parmsMap.get("fileSize");
+                    originalFiles.setFILELENGTH(fileSize);//文件长度
+                }
+                originalFiles.setUPLOADTIME("TO_DATE('"+StringUtil.getDate(3)+"','YYYY-MM-DD')");//上传时间
+                originalFiles.setTRASHSTATUS("0");//未删除的文件 0未删除，1删除
+            }
+            if(parmsMap.get("originFilePath")!=null){
+                String originFilePath=parmsMap.get("originFilePath");
+                originalFiles.setORIGINAPATH(originFilePath);//原文存放路径
+            }
+            bool =originaFilesMapper.addUpLoadFileOriginaFiles(originalFiles);
+        }else {
+            if(parmsMap.get("pdfPath")!=null){
+                String pdfPath=parmsMap.get("pdfPath");
+                DeleteFileUtil.deleteFile(pdfPath);
+            }
+            bool=false;
         }
         //添加原文数据
         return bool;
@@ -85,6 +154,11 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
     @Override
     public Map<String, String> getUpLoadFilePath() {
         return originaFilesMapper.getUpLoadFilePath();
+    }
+
+    @Override
+    public Map<String,String> getPDFUrlByFileCode(String fileCode) {
+        return originaFilesMapper.getPDFUrlByFileCode(fileCode);
     }
 
 }

@@ -491,7 +491,7 @@ public class StringUtil {
     public static String getFileData(String fileDirectoryPath, String[] dates) {
         StringBuffer datePath = new StringBuffer();//目录路径
         for (int i = 0; i < dates.length; i++) {
-            datePath.append(StringUtil.getDateByType(dates[i]));
+            datePath.append(StringUtil.getDateByType(dates[i].trim()));
             fileDirectoryPath = fileDirectoryPath + File.separator + datePath;
         }
         return fileDirectoryPath;
@@ -639,6 +639,8 @@ public class StringUtil {
 
     public static void main(String[] args) throws Exception {
         String originaFilePath = "D:\\archive\\aciv_zxwsda_ws\\ 2019\\ 201906\\ 20190612\\ 2019061210\\ 201906121020\\69f7edb73e8e402cbfc0d8386d18dc6e-default.jpg";
-        System.out.println(getPdfPath(originaFilePath));
+         originaFilePath=originaFilePath.substring(originaFilePath.indexOf(".")+1,originaFilePath.length());
+
+        System.out.println(originaFilePath);
     }
 }
