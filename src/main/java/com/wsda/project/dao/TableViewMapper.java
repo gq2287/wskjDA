@@ -30,4 +30,9 @@ public interface TableViewMapper {
     List<Map<String,Object>> getTypeByTableCode(@Param("tableCode")String tableCode);
 
     List<String> getGroup(@Param("tableName")String tableName,@Param("group") String group);
+
+//查看档案条目原文纪录总数
+    Integer getYuanWenCountByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode);
+//    修改原文数量
+    Boolean upArchivesYuanWenCountByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("count") String count);
 }

@@ -378,9 +378,9 @@ public class TableViewServiceImpl implements TableViewService {
         if(recordCode!=null){
             for (int i = 0; i < recordCode.size(); i++) {
                 if(bool){
-                    if(type==0){
+                    if(type==0){//档案表
                         bool=tableViewMapper.upArchives(tableName,recordCode.get(i),trashStatus,"RECORDCODE");
-                    }else if(type==1){
+                    }else if(type==1){//原文表
                         bool=tableViewMapper.upArchives(tableName,recordCode.get(i),trashStatus,"FILECODE");
                     }
                 }else {
@@ -564,7 +564,7 @@ public class TableViewServiceImpl implements TableViewService {
      * 日期转换为标准格式
      * @param listPageInfo
      */
-    private  void toDataByTime(List<Map<String, String>> arrayList,PageInfo<Map<String,String>> listPageInfo) throws ParseException {
+    public   void toDataByTime(List<Map<String, String>> arrayList,PageInfo<Map<String,String>> listPageInfo) throws ParseException {
         if(arrayList!=null&&arrayList.size()>0&&listPageInfo.getList()!=null&&listPageInfo.getList().size()>0){
             for (int i = 0; i <arrayList.size() ; i++) {
                 for (String cloumn:arrayList.get(i).keySet()) {

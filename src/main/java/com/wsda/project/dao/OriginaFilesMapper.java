@@ -7,5 +7,7 @@ import java.util.Map;
 
 public interface OriginaFilesMapper {
 
-    List<Map<String,String>> getFilesByRecordCode(@Param("recordCode") String recordCode);
+    List<Map<String,String>> getFilesByRecordCode(@Param("tableName") String tableName,@Param("recordCode") String recordCode,@Param("type") String type);
+
+    Map<String,String> getUpLoadFilePath();
 }

@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.wsda.project.dao.TableViewMapper">
+
     <select id="getTableView" resultType="java.util.Map">
          SELECT
              v.LISTCODE,
@@ -16,7 +17,7 @@
              t.INPUTTYPE
          FROM TABLECOLUMNDESCRIPTION t
          INNER JOIN TABLEINTERFACELISTVIEW v on v.COLUMNCODE=t.COLUMNCODE
-         WHERE t.COLUMNCODE IN (SELECT COLUMNCODE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE= #{tableCode} )
+         WHERE v.COLUMNCODE IN (SELECT COLUMNCODE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE= #{tableCode} )
          ORDER BY  v.SERIAL
     </select>
 
@@ -103,4 +104,16 @@
           SELECT NAME,TYPE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode}
     </select>
 
+
+    <!--获取档案的原文总数-->
+    <select id="getYuanWenCountByRecordCode" resultType="java.lang.Integer">
+          SELECT YUAN_WEN_SHU_LIANG FROM ${tableName} WHERE RECORDCODE=#{recordCode}
+    </select>
+
+    <!--修改表档案列原文数量-->
+    <update id="upArchivesYuanWenCountByRecordCode" parameterType="java.util.Map">
+        UPDATE ${tableName} SET
+        YUAN_WEN_SHU_LIANG=#{count}
+        WHERE  RECORDCODE=#{recordCode}
+    </update>
 </mapper>

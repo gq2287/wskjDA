@@ -30,24 +30,44 @@ public class Change2PDF {
 
     /**
      * 新text转pdf
+     *
      * @param filePath
      * @param pdfPath
      */
-    public static void txt2PDF(String filePath, String pdfPath) throws DocumentException, IOException  {
+    public static boolean txt2PDF(String filePath, String pdfPath){
+        boolean bool=true;
         Document document = new Document();
-        OutputStream os = new FileOutputStream(pdfPath);
-        PdfWriter.getInstance(document, os);
-        document.open();
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(pdfPath);
+            PdfWriter.getInstance(document, os);
+            document.open();
 //        方法一：使用Windows系统字体(TrueType)
-        BaseFont baseFont = BaseFont.createFont("C:\\Windows\\Fonts\\simhei.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        Font font = new Font(baseFont);
-        InputStreamReader isr = new InputStreamReader(new FileInputStream(filePath), "GBK");
-        BufferedReader bufferedReader = new BufferedReader(isr);
-        String str = "";
-        while ((str = bufferedReader.readLine()) != null) {
-            document.add(new Paragraph(str, font));
+            BaseFont baseFont = BaseFont.createFont("C:\\Windows\\Fonts\\simhei.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font font = new Font(baseFont);
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(filePath), "GBK");
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            String str = "";
+            while ((str = bufferedReader.readLine()) != null) {
+                document.add(new Paragraph(str, font));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            bool=false;
+        }finally {
+            if(document!=null){
+                document.close();
+            }
+            if(os!=null){
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    bool=false;
+                }
+            }
+            return bool;
         }
-        document.close();
     }
 
     /**
@@ -57,7 +77,7 @@ public class Change2PDF {
      * @param pdfPath
      */
     public static boolean tif2PDF(String filePath, String pdfPath) {
-        boolean bool=true;
+        boolean bool = true;
         Document document = new Document(PageSize.A4);
         int pages = 0, comps = 0;
         try {
@@ -69,9 +89,8 @@ public class Change2PDF {
                 ra = new RandomAccessFileOrArray(filePath);
                 comps = TiffImage.getNumberOfPages(ra);
             } catch (Throwable e) {
-                System.out.println("Exception in " + filePath + " "
-                        + e.getMessage());
-                bool=false;
+                System.out.println("Exception in " + filePath + " "+ e.getMessage());
+                bool = false;
                 return bool;
             }
             for (int c = 0; c < comps; ++c) {
@@ -88,17 +107,18 @@ public class Change2PDF {
                         document.newPage();
                         ++pages;
                     }
+                    System.out.println("tif to pdf success OK");
                 } catch (Throwable e) {
                     System.out.println("Exception " + filePath + " page "
                             + (c + 1) + " " + e.getMessage());
-                    bool=false;
+                    bool = false;
                     return bool;
                 }
             }
             ra.close();
             document.close();
         } catch (Throwable e) {
-            bool=false;
+            bool = false;
             return bool;
         }
         return bool;
@@ -106,49 +126,61 @@ public class Change2PDF {
 
     /**
      * 图片转换pdf(jpg,png等)
+     *
      * @param filePath
      * @param pdfPath
      * @throws IOException
      */
-    public static boolean Image2PDF(String filePath, String pdfPath) throws IOException {
-        boolean bool=true;
+    public static boolean Image2PDF(String filePath, String pdfPath)  {
+        boolean bool = true;
         File file = new File(filePath);
+        Document document = null;
+        FileOutputStream fos = null;
         if (file.exists()) {
-            Document document = new Document();
-
-            FileOutputStream fos = null;
             try {
-                fos = new FileOutputStream(pdfPath);
+                fos = new FileOutputStream(pdfPath);//pdf路径
+                document=new Document();
                 PdfWriter.getInstance(document, fos);
                 document.setPageSize(PageSize.A4);
                 document.open();
-                Image image = Image.getInstance(filePath);
+                Image image = Image.getInstance(filePath);//原图片
                 float imageHeight = image.getScaledHeight();
                 float imageWidth = image.getScaledWidth();
                 image.setAlignment(Image.ALIGN_CENTER);
                 int percent = getPercent(imageHeight, imageWidth);
                 image.scalePercent(percent);
                 document.add(image);
+                fos.flush();
+                System.out.println("Image to pdf success OK");
             } catch (DocumentException de) {
                 System.out.println(de.getMessage());
-                bool=false;
-                return bool;
+                bool = false;
             } catch (IOException ioe) {
                 System.out.println(ioe.getMessage());
-                bool=false;
+                bool = false;
+            }finally {
+                if(document!=null){
+                    document.close();
+                }
+                if(fos!=null){
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        bool=false;
+                    }
+                }
                 return bool;
             }
-            document.close();
-            fos.flush();
-            fos.close();
+        }else{
+            return false;
         }
-        bool=false;
-        return bool;
     }
 
 
     /**
      * 去除Aspose水印
+     *
      * @return
      */
     public static boolean getLicense() {
@@ -158,59 +190,65 @@ public class Change2PDF {
             License aposeLic = new License();
             aposeLic.setLicense(license);
         } catch (Exception e) {
-            result=false;
+            result = false;
         }
         return result;
     }
 
     /**
      * doc转换pdf(doc,docx)
+     *
      * @param filePath
      * @param pdfPath
      */
     public static boolean doc2PDF(String filePath, String pdfPath) {
-        boolean bool=true;
+        boolean bool = true;
         FileOutputStream os = null;
         try {
-            if(!getLicense()){
+            if (!getLicense()) {
                 System.out.println("授权失效,请联系管理员");
-                bool=false;
+                bool = false;
                 return bool;
             }
             File file = new File(pdfPath);
             os = new FileOutputStream(file);
             com.aspose.words.Document doc = new com.aspose.words.Document(filePath);
             doc.save(os, SaveFormat.PDF);
+            System.out.println("doc to pdf success OK");
         } catch (Exception e) {
             e.printStackTrace();
-            bool=false;
+            bool = false;
         } finally {
             if (os != null) {
                 try {
                     os.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    bool=false;
+                    bool = false;
                 }
             }
             return bool;
         }
     }
 
-
-
     /**
      * excel转换pdf(xls,xlsx)
+     *
      * @param excelPath
      * @param pdfPath
      * @return
-     * @throws Exception
      */
-    public static boolean excel2PDF(String excelPath,String pdfPath) throws Exception {
-        boolean bool=true;
-        if (getLicense()) {
+    public static boolean excel2PDF(String excelPath, String pdfPath) {
+        boolean bool = true;
+        OutputStream outputStream = null;
+        if (!getLicense()) {
+            System.out.println("授权失效,请联系管理员");
+            bool = false;
+            return bool;
+        }
+        try {
             InputStream inputStream = new FileInputStream(new File(excelPath));
-            OutputStream outputStream = new FileOutputStream(new File(pdfPath));
+            outputStream = new FileOutputStream(new File(pdfPath));
             com.aspose.cells.Workbook workbook = new com.aspose.cells.Workbook(inputStream);
             Worksheet ws = workbook.getWorksheets().get(0);
             com.aspose.cells.PdfSaveOptions pdfSaveOptions = new com.aspose.cells.PdfSaveOptions();
@@ -219,16 +257,23 @@ public class Change2PDF {
             ws.getVerticalPageBreaks().clear();
             workbook.save(outputStream, pdfSaveOptions);
             outputStream.flush();
-            outputStream.close();
             // TODO 当excel宽度太大时，在PDF中会拆断并分页。此处如何等比缩放。
             // 将不同的sheet单独保存为pdf
             //Get the count of the worksheets in the workbook
 //            int sheetCount = workbook.getWorksheets().getCount();
-            System.out.println("excel to pdf success");
-            return bool;
-        } else {
-            System.out.println("excel to pdf error");
-            bool=false;
+            System.out.println("excel to pdf success OK");
+        } catch (Exception e) {
+            e.printStackTrace();
+            bool = false;
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    bool = false;
+                }
+            }
             return bool;
         }
     }
@@ -236,6 +281,7 @@ public class Change2PDF {
 
     /**
      * 倍率
+     *
      * @param h
      * @param w
      * @return
@@ -253,17 +299,17 @@ public class Change2PDF {
     }
 
 
-
     /**
      * 水印图
-     * @param originalImagePath 	需打水印的原图片路径
-     * @param watermarkImagePath 	水印后的图片路径
-     * @param alpha 				透明度
-     * @param x 					距x轴的距离
-     * @param y 					距y轴的距离
+     *
+     * @param originalImagePath  需打水印的原图片路径
+     * @param watermarkImagePath 水印后的图片路径
+     * @param alpha              透明度
+     * @param x                  距x轴的距离
+     * @param y                  距y轴的距离
      * @return
      */
-    public static byte[] imageWatermarkProcess(String originalImagePath,String watermarkImagePath, float alpha, int x, int y) {
+    public static byte[] imageWatermarkProcess(String originalImagePath, String watermarkImagePath, float alpha, int x, int y) {
         try {
             // 原图
             java.awt.Image original = Toolkit.getDefaultToolkit().getImage(originalImagePath);
@@ -279,7 +325,7 @@ public class Change2PDF {
             int watermarkWidth = watermark.getWidth(null);
             int watermarkHeight = watermark.getHeight(null);
             graphics2d.setComposite(AlphaComposite.getInstance(10, alpha));
-            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int widthDiff = width - watermarkWidth;
             int heightDiff = height - watermarkHeight;
             // 若水印图尺寸大于原图，等比例缩小1/4
@@ -300,7 +346,7 @@ public class Change2PDF {
             else if (y > heightDiff) {
                 y = heightDiff;
             }
-            graphics2d.drawImage(watermark, x, y, watermarkWidth,watermarkHeight, null);
+            graphics2d.drawImage(watermark, x, y, watermarkWidth, watermarkHeight, null);
             graphics2d.dispose();
             String fileType = originalImagePath.substring(originalImagePath.lastIndexOf(".") + 1);
             ByteArrayOutputStream baops = new ByteArrayOutputStream();
@@ -314,37 +360,38 @@ public class Change2PDF {
 
     /**
      * 调用添加水印的方法
-     * @param pdfPath 添加水印的文件路径
+     *
+     * @param pdfPath  添加水印的文件路径
      * @param logoPath 水印logo
      * @return
      */
-    public static String mergeWaterMark(String pdfPath,String logoPath) {
+    public static String mergeWaterMark(String pdfPath, String logoPath) {
         if (null == pdfPath || -1 != pdfPath.indexOf("-merge-") || null == logoPath) {
             return "ERROR";
         }
-        String watermarkPath = pdfPath.substring(0,pdfPath.lastIndexOf('/')+1);
+        String watermarkPath = pdfPath.substring(0, pdfPath.lastIndexOf('/') + 1);
         // 添加随机4位的数字目的是为了避免切换其他logo合成水印后，页面图片依然显示第一次logo水印合成图片（缓存的原因）
-        String watermarkImagePath = pdfPath.substring(0,pdfPath.lastIndexOf("."))+"-merge-"+ new Random().nextInt(9999) +".jpg";
+        String watermarkImagePath = pdfPath.substring(0, pdfPath.lastIndexOf(".")) + "-merge-" + new Random().nextInt(9999) + ".jpg";
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
         File imgDir = new File(watermarkPath);
-        if(!imgDir.exists()){
+        if (!imgDir.exists()) {
             imgDir.mkdirs();
         }
         File fileImg = new File(watermarkImagePath);
         try {
             fos = new FileOutputStream(fileImg);
             bos = new BufferedOutputStream(fos);
-            bos.write(imageWatermarkProcess(pdfPath, logoPath, 1.0F,10,10));
+            bos.write(imageWatermarkProcess(pdfPath, logoPath, 1.0F, 10, 10));
         } catch (Exception e) {
             e.printStackTrace();
             return "ERROR";
         } finally {
             try {
-                if(null != bos){
+                if (null != bos) {
                     bos.close();
                 }
-                if(null != fos){
+                if (null != fos) {
                     fos.close();
                 }
             } catch (IOException e) {
@@ -355,13 +402,11 @@ public class Change2PDF {
     }
 
 
-
-
     public static void main(String[] args) throws ParseException {
-        String fileText="E:\\Desktop\\wapgame\\省厅堡垒机访问策略调查表.xls";
-        String filePdf="E:\\Desktop\\wapgame\\ACIV_ZXTSZTDA_LY.pdf";
+        String fileText = "E:\\Desktop\\wapgame\\ACIV_ZXTSZTDA_LY.xls";
+        String filePdf = "E:\\Desktop\\wapgame\\proxool.pdf";
         try {
-            Change2PDF.tif2PDF(fileText,filePdf);
+            Change2PDF.excel2PDF(fileText, filePdf);
         } catch (Exception e) {
             e.printStackTrace();
         }

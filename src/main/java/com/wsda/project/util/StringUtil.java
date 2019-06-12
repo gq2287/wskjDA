@@ -1,7 +1,11 @@
 package com.wsda.project.util;
 
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,7 +22,6 @@ import java.util.regex.Pattern;
  * @author seven
  */
 public class StringUtil {
-
     /**
      * .
      * 判断字符串是否为空
@@ -87,34 +90,52 @@ public class StringUtil {
     public static String getUuid() {
         return UUID.randomUUID().toString().replace("-", "");
     }
+
     /**
      * .
      * 获取时间
+     *
      * @param type 时间格式 1时间日期  2字符串 3日期
      * @return 返回当前时间字符串
      */
-    public static String getDate(int type){
-        SimpleDateFormat df=null;
-        if(type==1){
+    public static String getDate(int type) {
+        SimpleDateFormat df = null;
+        if (type == 1) {
             df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        }else if(type==2){
+        } else if (type == 2) {
             df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
-        }if(type==3){
+        }
+        if (type == 3) {
             df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         }
         return df.format(new Date());
     }
+
+    /**
+     * .
+     * 获取给定格式日期时间
+     *
+     * @param type (yyyyMMdd)
+     * @return 返回当前时间字符串
+     */
+    public static String getDateByType(String type) {
+        SimpleDateFormat df = new SimpleDateFormat(type);//设置日期格式
+        String date = df.format(new Date());
+        return date;
+    }
+
     /**
      * .
      * 获取min到max之间的随机数
      *
      * @return 返回随机数字符串
      */
-    public static String getRandom(int min, int max){
+    public static String getRandom(int min, int max) {
         Random random = new Random();
         int s = random.nextInt(max) % (max - min + 1) + min;
         return String.valueOf(s);
     }
+
     /**
      * .
      * 验证手机号是否合法
@@ -368,18 +389,20 @@ public class StringUtil {
 
     /**
      * 获取唯一文件名
+     *
      * @param file
      * @return
      */
-    public static String getFileName(File file){
-        Date date=new Date();
+    public static String getFileName(File file) {
+        Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhssmm");
-        String fileName=file.getName().substring(0,file.getName().lastIndexOf("."))+"_"+sdf.format(date);//文件名称
-        String suffixIndex =file.getName().substring(file.getName().lastIndexOf("."),file.getName().length());//后缀
-        fileName=fileName+suffixIndex;
+        String fileName = file.getName().substring(0, file.getName().lastIndexOf(".")) + "_" + sdf.format(date);//文件名称
+        String suffixIndex = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());//后缀
+        fileName = fileName + suffixIndex;
         System.out.println(fileName);
         return fileName;
     }
+
     /***
      * 在idea中读取同级目录config下的项目配置文件路径
      * @return
@@ -390,7 +413,7 @@ public class StringUtil {
         realPath = file.getAbsolutePath();//去掉了最前面的斜杠/
         try {
 //            realPath=realPath.substring(4,realPath.indexOf("FormDesigner"))+"config\\db.properties";//打包后修改为4
-            realPath=realPath.substring(0,realPath.indexOf("FormDesigner"))+"config\\db.properties";//idea运行为0
+            realPath = realPath.substring(0, realPath.indexOf("FormDesigner")) + "config\\db.properties";//idea运行为0
             System.out.println(realPath);
 
         } catch (Exception e) {
@@ -408,7 +431,7 @@ public class StringUtil {
         File file = new File(realPath);
         realPath = file.getAbsolutePath();//去掉了最前面的斜杠/
         try {
-            realPath=realPath.substring(realPath.lastIndexOf(":")-1,realPath.indexOf("wsda"))+"config\\db.properties";
+            realPath = realPath.substring(realPath.lastIndexOf(":") - 1, realPath.indexOf("wsda")) + "config\\db.properties";
             System.out.println(realPath);
 
         } catch (Exception e) {
@@ -419,11 +442,12 @@ public class StringUtil {
 
     /**
      * 验证日期格式 是否为yyyy-MM-dd
+     *
      * @param str
      * @return
      */
     public static boolean isValidDate(String str) {
-        boolean convertSuccess=true;
+        boolean convertSuccess = true;
         // 指定日期格式为四位年-两位月份-两位日期，注意yyyy/MM/dd区分大小写
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -433,19 +457,188 @@ public class StringUtil {
         } catch (ParseException e) {
             // e.printStackTrace();
             // 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
-            convertSuccess=false;
+            convertSuccess = false;
         }
         return convertSuccess;
     }
 
 
-    public static void main(String[] args) throws ParseException {
-//        String fileText="E:\\Desktop\\wapgame\\省厅堡垒机访问策略调查表.xls";
-//        String filePdf="E:\\Desktop\\wapgame\\ACIV_ZXTSZTDA_LY.pdf";
-//        try {
-//            Change2PDF.excel2PDF(fileText,filePdf);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    /**
+     * 获取系统所有磁盘名称
+     *
+     * @return
+     */
+    public static List<Map<String, String>> getSystemData() {
+        FileSystemView sys = FileSystemView.getFileSystemView();
+
+        File[] files = File.listRoots();
+        List<Map<String, String>> listData = new ArrayList<>();
+        for (int i = 0; i < files.length; i++) {
+            Map<String, String> mapFile = new HashMap<>();
+            mapFile.put(String.valueOf(files[i]), String.valueOf(files[i]).substring(0, String.valueOf(files[i]).lastIndexOf(":")) + sys.getSystemTypeDescription(files[i]));
+            System.out.println(files[i] + " -- " + String.valueOf(files[i]).substring(0, String.valueOf(files[i]).lastIndexOf(":")) + sys.getSystemTypeDescription(files[i]));
+        }
+        return listData;
+    }
+
+    /**
+     * 生成档案文件
+     *
+     * @param fileDirectoryPath 上传地址
+     * @param dates             目录组成集合
+     * @return
+     */
+    public static String getFileData(String fileDirectoryPath, String[] dates) {
+        StringBuffer datePath = new StringBuffer();//目录路径
+        for (int i = 0; i < dates.length; i++) {
+            datePath.append(StringUtil.getDateByType(dates[i]));
+            fileDirectoryPath = fileDirectoryPath + File.separator + datePath;
+        }
+        return fileDirectoryPath;
+    }
+
+    /**
+     * 判断文件大小
+     *
+     * @param len  文件长度
+     * @param size 限制大小
+     * @param unit 限制单位（B,K,M,G）
+     * @return
+     */
+    public static boolean checkFileSize(Long len, int size, String unit) {
+//        long len = file.length();
+        double fileSize = 0;
+        if ("KB".equals(unit.toUpperCase())) {
+            fileSize = (double) len / 1024;
+        }
+        if (fileSize > size) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * 获取文件后缀并转换pdf
+     *
+     * @param originaFilePath 原文
+     * @param pdfPath         pdf
+     * @return
+     */
+    public static boolean getFileSuffix(String originaFilePath, String pdfPath) {
+        String suffix = originaFilePath.substring(originaFilePath.lastIndexOf("."), originaFilePath.length());
+        if (".txt".equalsIgnoreCase(suffix) || ".xml".equalsIgnoreCase(suffix)) {
+            return uploadFileToPdf(originaFilePath, pdfPath, 1);
+        } else if (".tif".equalsIgnoreCase(suffix)) {
+            return uploadFileToPdf(originaFilePath, pdfPath, 2);
+        } else if (".png".equalsIgnoreCase(suffix) || ".jpg".equalsIgnoreCase(suffix) || ".jpeg".equalsIgnoreCase(suffix)) {
+            return uploadFileToPdf(originaFilePath, pdfPath, 3);
+        } else if (".doc".equalsIgnoreCase(suffix) || ".docx".equalsIgnoreCase(suffix)) {
+            return uploadFileToPdf(originaFilePath, pdfPath, 4);
+        } else if (".xls".equalsIgnoreCase(suffix) || ".xlsx".equalsIgnoreCase(suffix)) {
+            return uploadFileToPdf(originaFilePath, pdfPath, 5);
+        } else if (".pdf".equalsIgnoreCase(suffix)) {
+            return copyFileUsingFileStreams(originaFilePath,pdfPath);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 复制文件到指定位置（操作文档
+     *
+     * @param originaFilePath
+     * @param pdfPath
+     * @throws IOException
+     */
+    private static boolean copyFileUsingFileStreams(String originaFilePath, String pdfPath){
+        boolean bool=true;
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            File originaFile=new File(originaFilePath);
+            File pdfFile=new File(pdfPath);
+            input = new FileInputStream(originaFile);
+            output = new FileOutputStream(pdfFile);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buf)) > 0) {
+                output.write(buf, 0, bytesRead);
+            }
+        }catch (Exception e){
+            bool=false;
+        }finally {
+            if(input!=null){
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(output!=null){
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return bool;
+        }
+    }
+
+    /**
+     * 原文转换pdf
+     *
+     * @param originaFilePath
+     * @param pdfPath
+     * @return
+     */
+    public static boolean uploadFileToPdf(String originaFilePath, String pdfPath, int type) {
+        boolean bool = true;
+        if (1 == type) {//转换txt
+            bool = Change2PDF.txt2PDF(originaFilePath, pdfPath);
+        } else if (2 == type) {//转换tif
+            bool = Change2PDF.tif2PDF(originaFilePath, pdfPath);
+        } else if (3 == type) {//转换图片
+            bool = Change2PDF.Image2PDF(originaFilePath, pdfPath);
+        } else if (4 == type) {//转换doc
+            bool = Change2PDF.doc2PDF(originaFilePath, pdfPath);
+        } else if (5 == type) {//转换Excel
+            bool = Change2PDF.excel2PDF(originaFilePath, pdfPath);
+        }
+        return bool;
+    }
+
+    /**
+     * 原文转换pdf保存路径
+     *
+     * @param originaFilePath 原文路径
+     * @return
+     */
+    public static String getPdfPath(String originaFilePath) {
+        PropertiesConfiguration properties = null;
+        String pdfPath = "";
+        try {
+            properties = new PropertiesConfiguration(StringUtil.getRealPathByPack());
+            pdfPath = properties.getString("pdffilepath");//pdf保存地址
+            originaFilePath = originaFilePath.substring(originaFilePath.indexOf("\\") + 1, originaFilePath.length());
+            originaFilePath = originaFilePath.substring(originaFilePath.indexOf("\\") + 1, originaFilePath.length());//截取到D:\\archive\\
+            String filePath = pdfPath + File.separator + originaFilePath.substring(0, originaFilePath.lastIndexOf("\\"));
+            File file = new File(filePath);
+            if (!file.exists() || !file.isDirectory()) {
+                file.mkdirs();//创建文件夹
+            }
+            originaFilePath = originaFilePath.substring(originaFilePath.lastIndexOf("\\")+1,originaFilePath.lastIndexOf(".") );
+            pdfPath = file.getPath() + File.separator + originaFilePath + ".pdf";
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        } finally {
+            return pdfPath;
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        String originaFilePath = "D:\\archive\\aciv_zxwsda_ws\\ 2019\\ 201906\\ 20190612\\ 2019061210\\ 201906121020\\69f7edb73e8e402cbfc0d8386d18dc6e-default.jpg";
+        System.out.println(getPdfPath(originaFilePath));
     }
 }

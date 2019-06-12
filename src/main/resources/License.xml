@@ -1,6 +1,7 @@
 <License>
     <Data>
         <Products>
+            <Product>Aspose.Total for Java</Product>
             <Product>Aspose.Words for Java</Product>
         </Products>
         <EditionType>Enterprise</EditionType>

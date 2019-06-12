@@ -4,7 +4,30 @@
 <mapper namespace="com.wsda.project.dao.OriginaFilesMapper">
     <!--根据recordCode获取档案旗下原文-->
     <select id="getFilesByRecordCode" resultType="java.util.HashMap">
-        select * FROM ORIGINALFILES WHERE RECORDCODE=#{recordCode}
+        select * FROM ${tableName}
+        where  RECORDCODE=#{recordCode}
+        <if test="type != null and type != ''">
+            AND  TRASHSTATUS=#{type}
+        </if>
+
     </select>
+
+    <!--获取原文存放地址-->
+    <select id="getUpLoadFilePath" resultType="java.util.HashMap">
+        SELECT STORETYPE,FILELOC,TIMESTYLEPOS FROM ORIGINALMANAGESETTING
+    </select>
+
+
+    <!--添加录入原文纪录表数据-->
+    <insert id="addUpLoadFileOriginaFiles" parameterType="java.util.Map">
+        INSERT INTO ORIGINALFILES
+        <foreach collection="columns" item="item" open="(" separator=","  close=")" >
+            ${item}
+        </foreach>
+        VALUES
+        <foreach collection="values" item="item" open="(" separator=","  close=")" >
+            ${item}
+        </foreach>
+    </insert>
 
 </mapper>
