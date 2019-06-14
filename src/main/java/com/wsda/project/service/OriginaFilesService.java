@@ -13,4 +13,6 @@ public interface OriginaFilesService {
 
     //获取pdf地址
     Map<String,String> getPDFUrlByFileCode(String fileCode);
+    //    删除
+    boolean delOrigianFileByFileCode(String tableCode,String fileCode);
 }

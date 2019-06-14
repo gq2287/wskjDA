@@ -26,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -80,21 +79,12 @@ public class OriginaFilesController {
         }
     }
 
-    @ApiOperation(value = "恢复删除原文信息", notes = "返回信息 0成功，400失败 ")
+    @ApiOperation(value = "删除原文信息", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/upOriginaFilesArchives", method = RequestMethod.POST)
-    public ResponseResult upOriginaFilesArchives(@ApiParam(required = false, name = "tableCode", value = "原文表编号") @RequestParam(name = "tableCode", required = false, defaultValue = "187530") String tableCode,
-                                                 @ApiParam(required = true, name = "fileCode", value = "原文主键") @RequestParam(name = "fileCode", required = true) String fileCode,
-                                                 @ApiParam(required = true, name = "trashStatus", value = "回收站(0恢复,1放入回收站)") @RequestParam(name = "trashStatus", required = true) String trashStatus) {
-        boolean result = true;
-        try {
-            Type typeObj = new TypeToken<List<String>>() {
-            }.getType();
-            List<String> recordCodeList = JSONObject.parseObject(fileCode, typeObj);//JSONObject转换map
-            result = tableViewService.upArchives(tableCode, recordCodeList, trashStatus, 1);
-        } catch (Exception e) {
-            result = false;
-        }
-        if (result) {//不能真正删除档案，只做状态码的改变放入回收站即可
+    public ResponseResult upOriginaFilesArchives(@ApiParam(required = false, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                                 @ApiParam(required = true, name = "fileCode", value = "原文主键") @RequestParam(name = "fileCode", required = true) String fileCode) {
+        boolean result=originaFilesService.delOrigianFileByFileCode(tableCode,fileCode);
+        if (result) {
             return new ResponseResult(ResponseResult.OK, "成功", result, true);
         } else {
             return new ResponseResult(ResponseResult.OK, "失败", result, false);
@@ -115,27 +105,37 @@ public class OriginaFilesController {
     }
 
 
-
-
     @ApiOperation(value = "获取pdf查看路径", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getPDFUrlByFileCode", method = RequestMethod.POST)
-    public ResponseResult getPDFUrlByFileCode(@ApiParam(required = true, name = "fileCode", value = "原文编号") @RequestParam(name = "fileCode", required = true) String fileCode ) {
-        Map<String,String> url=originaFilesService.getPDFUrlByFileCode(fileCode);
-        File file=new File(url.get("PDFPATH"));//PDFPATH,ORIGINAPATH
-        if(file.exists()){
-            String urlPDf=file.getPath().substring(file.getPath().indexOf("\\")+1,file.getPath().length());
-            return new ResponseResult(ResponseResult.OK, "返回PDFUrl成功",urlPDf, true);
-        }else {
-            String originaUrl=url.get("ORIGINAPATH");//原文路径
-            file=new File(originaUrl);
-            if(file.exists()){
-                String sufix=file.getPath().substring(file.getPath().lastIndexOf("\\")+1,file.getPath().length());
-                if("pdf".equalsIgnoreCase(sufix)){
-                    String urlPDf=file.getPath().substring(file.getPath().indexOf("\\")+1,file.getPath().length());
-                    return new ResponseResult(ResponseResult.OK, "返回PDFUrl成功",urlPDf, true);
+    public ResponseResult getPDFUrlByFileCode(@ApiParam(required = true, name = "fileCode", value = "原文编号") @RequestParam(name = "fileCode", required = true) String fileCode) {
+        Map<String, String> url = originaFilesService.getPDFUrlByFileCode(fileCode);
+        if(url!=null){
+            File file = new File(url.get("PDFPATH"));//PDFPATH,ORIGINAPATH
+            if (file.exists()) {
+                String urlPDf = file.getPath().substring(file.getPath().indexOf("\\") + 1, file.getPath().length());
+                return new ResponseResult(ResponseResult.OK, "返回PDFUrl成功", urlPDf, true);
+            } else {
+                String originaUrl = url.get("ORIGINAPATH");//原文路径
+                file = new File(originaUrl);
+                if (file.exists()) {
+                    if (StringUtil.getFileType(originaUrl)) {
+                        //原文支持在线查看，但pdf文件丢失就重新转换并返回路径
+                        boolean bool = StringUtil.getFileSuffix(originaUrl, url.get("PDFPATH"));
+                        if (bool) {
+                            return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", url.get("PDFPATH").substring(url.get("PDFPATH").indexOf(":")+1,url.get("PDFPATH").length()), true);
+                        } else {
+                            return new ResponseResult(ResponseResult.OK, "pdf文件丢失,转换失败,请重新上传", false);
+                        }
+                    }else{
+                        return new ResponseResult(ResponseResult.OK, "暂不支持该【"+originaUrl.substring(originaUrl.lastIndexOf(".")+1,originaUrl.length())+"】文件在线浏览", false);
+                    }
+
+                }else{
+                    return new ResponseResult(ResponseResult.OK, "上传原文不存在,请重新上传", false);
                 }
             }
-            return new ResponseResult(ResponseResult.OK, "pdf文件不存在,请重新上传", false);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "上传原文不存在,请重新上传", false);
         }
     }
 
@@ -160,16 +160,16 @@ public class OriginaFilesController {
         }
         if (responseResult.isSuccess()) {
             Map<String, Object> parmsAllMap = (Map<String, Object>) responseResult.getData();//获取count和 originFilePath源文件路径 pdf路径
-            int count= (int) parmsAllMap.get("count");
-            Map<String, String> parmsMap= (Map<String, String>) parmsAllMap.get("parmsMap");
+            int count = (int) parmsAllMap.get("count");
+            Map<String, String> parmsMap = (Map<String, String>) parmsAllMap.get("parmsMap");
             //获取文件存放位置
-            originaFilesService.addUpLoadFiles(parmsMap, tableCode, recordCode,count);
+            originaFilesService.addUpLoadFiles(parmsMap, tableCode, recordCode, count);
             responseResult = new ResponseResult(ResponseResult.OK, "上传成功", "", true);
         } else {
             responseResult = new ResponseResult(ResponseResult.OK, "上传失败", "", false);
         }
         return responseResult;
-}
+    }
 
 
     /**
@@ -194,20 +194,28 @@ public class OriginaFilesController {
                     String newPath = newFile.getPath() + File.separator + StringUtil.getUuid() + "-" + files[i].getOriginalFilename();//文件地址
                     parmsMap.put("originFilePath", newPath);//源文件存放路径
                     // 使用UUID确保上传文件不重复
-                    File newFileS=new File(newPath);//原文
+                    File newFileS = new File(newPath);//原文
                     out = new BufferedOutputStream(new FileOutputStream(newFileS));
                     out.write(files[i].getBytes());
                     out.flush();
                     count++;
                     boolean suffix = StringUtil.getFileSuffix(newFileS.getPath(), StringUtil.getPdfPath(newPath));//原文后缀 是否能转换pdf
                     if (suffix) {
-                        logger.info("原文转换:" + suffix + "成功--原文路径:" + newPath + "---pdf路径:" + StringUtil.getPdfPath(newPath));
-                        parmsMap.put("pdfPath", StringUtil.getPdfPath(newPath));
-                        parmsMap.put("type", "0");//0 pdf文件,1没有文件
-                    }else{
+                        String suffixPDF=newPath.substring(newPath.lastIndexOf("."),newPath.length());
+                        if(".pdf".equalsIgnoreCase(suffixPDF)){
+                            logger.info("原文转换:" + suffix + "成功--原文路径:" + newPath + "---pdf路径:" + newPath);
+                            parmsMap.put("pdfPath", newPath);
+                            parmsMap.put("type", "0");//0 pdf文件,1没有文件
+                        }else{
+                            logger.info("原文转换:" + suffix + "成功--原文路径:" + newPath + "---pdf路径:" + StringUtil.getPdfPath(newPath));
+                            parmsMap.put("pdfPath", StringUtil.getPdfPath(newPath));
+                            parmsMap.put("type", "0");//0 pdf文件,1没有文件
+                        }
+
+                    } else {
                         parmsMap.put("type", "1");//0 pdf文件,1没有文件
                     }
-                    parmsMap.put("fileSize", newFileS.length()/1024+"");//文件大小
+                    parmsMap.put("fileSize", newFileS.length() / 1024 + "");//文件大小
                 } catch (Exception e) {
                     e.printStackTrace();
                     return new ResponseResult(ResponseResult.OK, e.getMessage(), "", false);

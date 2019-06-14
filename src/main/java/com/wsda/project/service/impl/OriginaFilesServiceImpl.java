@@ -75,7 +75,7 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
         boolean bool=true;
         String tableName=tableViewMapper.getTableNameByTableCode(tableCode);//实体表名
         int oldCount=tableViewMapper.getYuanWenCountByRecordCode(tableName,recordCode);//查询当前条目的原文数量
-        bool=tableViewMapper.upArchivesYuanWenCountByRecordCode(tableName,recordCode,String.valueOf(oldCount+count));//修改档案的原文数量
+        tableViewMapper.upArchivesYuanWenCountByRecordCode(tableName,recordCode,String.valueOf(oldCount+count));//修改档案的原文数量
         OriginalFiles originalFiles=null;
         if(parmsMap.get("type")!=null){
             if("0".equals(parmsMap.get("type"))){//pdf文件
@@ -160,5 +160,30 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
     public Map<String,String> getPDFUrlByFileCode(String fileCode) {
         return originaFilesMapper.getPDFUrlByFileCode(fileCode);
     }
+
+
+    //删除原文条目
+    @Override
+    public boolean delOrigianFileByFileCode(String tableCode,String fileCode) {
+        OriginalFiles originalFiles=originaFilesMapper.getOrigianFileInfoByFileCode(fileCode);//获取删除的原文条目
+        if(originalFiles!=null){
+            if(originalFiles.getPDFPATH()!=null){//删除pdf
+                DeleteFileUtil.deleteFile(originalFiles.getPDFPATH());
+            }
+            if(originalFiles.getORIGINAPATH()!=null){//删除原文
+                DeleteFileUtil.deleteFile(originalFiles.getORIGINAPATH());
+            }
+        }
+
+        int result=originaFilesMapper.delOrigianFileByFileCode(fileCode);//删除原文条目
+        if(result>0){
+            String name=tableViewMapper.getTableNameByTableCode(tableCode);//获取档案表
+            int oldCount=tableViewMapper.getYuanWenCountByRecordCode(name,originalFiles.getRECORDCODE());//查询当前档案条目的原文数量
+            return tableViewMapper.upArchivesYuanWenCountByRecordCode(name,originalFiles.getRECORDCODE(),oldCount+"");//修改原文数量
+        }else {
+            return false;
+        }
+    }
+
 
 }

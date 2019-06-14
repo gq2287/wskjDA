@@ -538,11 +538,37 @@ public class StringUtil {
         } else if (".xls".equalsIgnoreCase(suffix) || ".xlsx".equalsIgnoreCase(suffix)) {
             return uploadFileToPdf(originaFilePath, pdfPath, 5);
         } else if (".pdf".equalsIgnoreCase(suffix)) {
-            return copyFileUsingFileStreams(originaFilePath,pdfPath);
+            return true;
         } else {
             return false;
         }
     }
+
+
+    /**
+     * 判断原文是否支持在线预览
+     * @param originaFilePath
+     * @return
+     */
+    public static boolean getFileType(String originaFilePath) {
+        String suffix = originaFilePath.substring(originaFilePath.lastIndexOf("."), originaFilePath.length());
+        if (".txt".equalsIgnoreCase(suffix) || ".xml".equalsIgnoreCase(suffix)) {
+            return true;
+        } else if (".tif".equalsIgnoreCase(suffix)) {
+            return true;
+        } else if (".png".equalsIgnoreCase(suffix) || ".jpg".equalsIgnoreCase(suffix) || ".jpeg".equalsIgnoreCase(suffix)) {
+            return true;
+        } else if (".doc".equalsIgnoreCase(suffix) || ".docx".equalsIgnoreCase(suffix)) {
+            return true;
+        } else if (".xls".equalsIgnoreCase(suffix) || ".xlsx".equalsIgnoreCase(suffix)) {
+            return true;
+        } else if (".pdf".equalsIgnoreCase(suffix)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * 复制文件到指定位置（操作文档
@@ -624,12 +650,8 @@ public class StringUtil {
             originaFilePath = originaFilePath.substring(originaFilePath.indexOf("\\") + 1, originaFilePath.length());
             originaFilePath = originaFilePath.substring(originaFilePath.indexOf("\\") + 1, originaFilePath.length());//截取到D:\\archive\\
             String filePath = pdfPath + File.separator + originaFilePath.substring(0, originaFilePath.lastIndexOf("\\"));
-            File file = new File(filePath);
-            if (!file.exists() || !file.isDirectory()) {
-                file.mkdirs();//创建文件夹
-            }
             originaFilePath = originaFilePath.substring(originaFilePath.lastIndexOf("\\")+1,originaFilePath.lastIndexOf(".") );
-            pdfPath = file.getPath() + File.separator + originaFilePath + ".pdf";
+            pdfPath = filePath + File.separator + originaFilePath + ".pdf";
         } catch (ConfigurationException e) {
             e.printStackTrace();
         } finally {
@@ -638,9 +660,16 @@ public class StringUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        String originaFilePath = "D:\\archive\\aciv_zxwsda_ws\\ 2019\\ 201906\\ 20190612\\ 2019061210\\ 201906121020\\69f7edb73e8e402cbfc0d8386d18dc6e-default.jpg";
-         originaFilePath=originaFilePath.substring(originaFilePath.indexOf(".")+1,originaFilePath.length());
+//        String newPath = "D:\\archive\\aciv_zxwsda_ws\\ 2019\\ 201906\\ 20190612\\ 2019061210\\ 201906121020\\69f7edb73e8e402cbfc0d8386d18dc6e-default.jpg";
+        String newPath = "D:\\archive\\aciv_zxwsda_ws\\ 2019\\ 201906\\ 20190612\\ 2019061210\\ 201906121020\\69f7edb73e8e402cbfc0d8386d18dc6e-default.pdf";
 
-        System.out.println(originaFilePath);
+
+
+        String suffixPDF=newPath.substring(newPath.lastIndexOf("."),newPath.length());
+        if(".pdf".equalsIgnoreCase(suffixPDF)){
+            System.out.println(suffixPDF);
+        }else{
+            System.out.println(suffixPDF);
+        }
     }
 }

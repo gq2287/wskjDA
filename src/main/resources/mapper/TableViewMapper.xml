@@ -104,7 +104,6 @@
           SELECT NAME,TYPE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode}
     </select>
 
-
     <!--获取档案的原文总数-->
     <select id="getYuanWenCountByRecordCode" resultType="java.lang.Integer">
           SELECT YUAN_WEN_SHU_LIANG FROM ${tableName} WHERE RECORDCODE=#{recordCode}
@@ -116,4 +115,5 @@
         YUAN_WEN_SHU_LIANG=#{count}
         WHERE  RECORDCODE=#{recordCode}
     </update>
+
 </mapper>

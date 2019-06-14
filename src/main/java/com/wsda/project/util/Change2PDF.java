@@ -4,21 +4,11 @@ import com.aspose.cells.Worksheet;
 import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
 import com.itextpdf.text.*;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.RandomAccessFileOrArray;
+import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.codec.TiffImage;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.ParseException;
-import java.util.Random;
 
 /**
  * 转换pdf
@@ -34,40 +24,50 @@ public class Change2PDF {
      * @param filePath
      * @param pdfPath
      */
-    public static boolean txt2PDF(String filePath, String pdfPath){
-        boolean bool=true;
+    public static boolean txt2PDF(String filePath, String pdfPath) {
+        boolean bool = true;
+        File file = new File(filePath);
+        FileInputStream in = null;
+        //创建Document对象.
         Document document = new Document();
-        OutputStream os = null;
         try {
-            os = new FileOutputStream(pdfPath);
-            PdfWriter.getInstance(document, os);
-            document.open();
-//        方法一：使用Windows系统字体(TrueType)
-            BaseFont baseFont = BaseFont.createFont("C:\\Windows\\Fonts\\simhei.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            in = new FileInputStream(file);
+            //创建输出目标 字体
+            BaseFont baseFont = BaseFont.createFont("C:\\Windows\\Fonts\\simhei.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
             Font font = new Font(baseFont);
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(filePath), "GBK");
-            BufferedReader bufferedReader = new BufferedReader(isr);
-            String str = "";
-            while ((str = bufferedReader.readLine()) != null) {
-                document.add(new Paragraph(str, font));
+            File pdffile = new File(pdfPath.substring(0, pdfPath.lastIndexOf("\\")));//防止路径不存在报错
+            if (!pdffile.exists()) {
+                pdffile.mkdirs();//创建存放路径
             }
-        } catch (Exception e) {
+            FileOutputStream pdfout = new FileOutputStream(pdfPath);
+            PdfWriter.getInstance(document, pdfout);
+            //打开Document.
+            document.open();
+            byte[] bytes = new byte[in.available()];
+            in.read(bytes);
+            document.add(new Paragraph(new String(bytes), font));
+            document.close();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-            bool=false;
-        }finally {
-            if(document!=null){
-                document.close();
-            }
-            if(os!=null){
+            bool = false;
+        } catch (DocumentException e) {
+            e.printStackTrace();
+            bool = false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            bool = false;
+        } finally {
+            if (in != null) {
                 try {
-                    os.close();
+                    in.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    bool=false;
+                    bool = false;
                 }
             }
             return bool;
         }
+
     }
 
     /**
@@ -77,6 +77,10 @@ public class Change2PDF {
      * @param pdfPath
      */
     public static boolean tif2PDF(String filePath, String pdfPath) {
+        File pdffile = new File(pdfPath.substring(0, pdfPath.lastIndexOf("\\")));//防止路径不存在报错
+        if (!pdffile.exists()) {
+            pdffile.mkdirs();//创建存放路径
+        }
         boolean bool = true;
         Document document = new Document(PageSize.A4);
         int pages = 0, comps = 0;
@@ -89,7 +93,7 @@ public class Change2PDF {
                 ra = new RandomAccessFileOrArray(filePath);
                 comps = TiffImage.getNumberOfPages(ra);
             } catch (Throwable e) {
-                System.out.println("Exception in " + filePath + " "+ e.getMessage());
+                System.out.println("Exception in " + filePath + " " + e.getMessage());
                 bool = false;
                 return bool;
             }
@@ -131,7 +135,11 @@ public class Change2PDF {
      * @param pdfPath
      * @throws IOException
      */
-    public static boolean Image2PDF(String filePath, String pdfPath)  {
+    public static boolean Image2PDF(String filePath, String pdfPath) {
+        File pdffile = new File(pdfPath.substring(0, pdfPath.lastIndexOf("\\")));//防止路径不存在报错
+        if (!pdffile.exists()) {
+            pdffile.mkdirs();//创建存放路径
+        }
         boolean bool = true;
         File file = new File(filePath);
         Document document = null;
@@ -139,7 +147,7 @@ public class Change2PDF {
         if (file.exists()) {
             try {
                 fos = new FileOutputStream(pdfPath);//pdf路径
-                document=new Document();
+                document = new Document();
                 PdfWriter.getInstance(document, fos);
                 document.setPageSize(PageSize.A4);
                 document.open();
@@ -158,21 +166,21 @@ public class Change2PDF {
             } catch (IOException ioe) {
                 System.out.println(ioe.getMessage());
                 bool = false;
-            }finally {
-                if(document!=null){
+            } finally {
+                if (document != null) {
                     document.close();
                 }
-                if(fos!=null){
+                if (fos != null) {
                     try {
                         fos.close();
                     } catch (IOException e) {
                         e.printStackTrace();
-                        bool=false;
+                        bool = false;
                     }
                 }
                 return bool;
             }
-        }else{
+        } else {
             return false;
         }
     }
@@ -210,6 +218,10 @@ public class Change2PDF {
                 bool = false;
                 return bool;
             }
+            File pdffile = new File(pdfPath.substring(0, pdfPath.lastIndexOf("\\")));//防止路径不存在报错
+            if (!pdffile.exists()) {
+                pdffile.mkdirs();//创建存放路径
+            }
             File file = new File(pdfPath);
             os = new FileOutputStream(file);
             com.aspose.words.Document doc = new com.aspose.words.Document(filePath);
@@ -239,6 +251,10 @@ public class Change2PDF {
      * @return
      */
     public static boolean excel2PDF(String excelPath, String pdfPath) {
+        File pdffile = new File(pdfPath.substring(0, pdfPath.lastIndexOf("\\")));//防止路径不存在报错
+        if (!pdffile.exists()) {
+            pdffile.mkdirs();//创建存放路径
+        }
         boolean bool = true;
         OutputStream outputStream = null;
         if (!getLicense()) {
@@ -300,113 +316,57 @@ public class Change2PDF {
 
 
     /**
-     * 水印图
-     *
-     * @param originalImagePath  需打水印的原图片路径
-     * @param watermarkImagePath 水印后的图片路径
-     * @param alpha              透明度
-     * @param x                  距x轴的距离
-     * @param y                  距y轴的距离
-     * @return
+     * 添加水印
+     * @param bos
+     * @param input
+     * @param waterMarkName
+     * @param permission
+     * @throws DocumentException
+     * @throws IOException
      */
-    public static byte[] imageWatermarkProcess(String originalImagePath, String watermarkImagePath, float alpha, int x, int y) {
-        try {
-            // 原图
-            java.awt.Image original = Toolkit.getDefaultToolkit().getImage(originalImagePath);
-            original = new ImageIcon(original).getImage();
-            int width = original.getWidth(null);
-            int height = original.getHeight(null);
-            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            Graphics2D graphics2d = bufferedImage.createGraphics();
-            graphics2d.drawImage(original, 0, 0, width, height, null);
-            // 水印图
-            java.awt.Image watermark = Toolkit.getDefaultToolkit().getImage(watermarkImagePath);
-            watermark = new ImageIcon(watermark).getImage();
-            int watermarkWidth = watermark.getWidth(null);
-            int watermarkHeight = watermark.getHeight(null);
-            graphics2d.setComposite(AlphaComposite.getInstance(10, alpha));
-            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            int widthDiff = width - watermarkWidth;
-            int heightDiff = height - watermarkHeight;
-            // 若水印图尺寸大于原图，等比例缩小1/4
-            if (widthDiff <= 0 || heightDiff <= 0) {
-                watermarkWidth /= 4;
-                watermarkHeight /= 4;
-                widthDiff = width - watermarkWidth;
-                heightDiff = height - watermarkHeight;
-            }
-            // 保证水印图全部出现在原图中
-            if (x < 0)
-                x = widthDiff / 2;
-            else if (x > widthDiff) {
-                x = widthDiff;
-            }
-            if (y < 0)
-                y = heightDiff / 2;
-            else if (y > heightDiff) {
-                y = heightDiff;
-            }
-            graphics2d.drawImage(watermark, x, y, watermarkWidth, watermarkHeight, null);
-            graphics2d.dispose();
-            String fileType = originalImagePath.substring(originalImagePath.lastIndexOf(".") + 1);
-            ByteArrayOutputStream baops = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, fileType, baops);
-            return baops.toByteArray();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    public static void setWatermark(BufferedOutputStream bos, String input,String waterMarkName, int permission) throws DocumentException,IOException {
 
-    /**
-     * 调用添加水印的方法
-     *
-     * @param pdfPath  添加水印的文件路径
-     * @param logoPath 水印logo
-     * @return
-     */
-    public static String mergeWaterMark(String pdfPath, String logoPath) {
-        if (null == pdfPath || -1 != pdfPath.indexOf("-merge-") || null == logoPath) {
-            return "ERROR";
-        }
-        String watermarkPath = pdfPath.substring(0, pdfPath.lastIndexOf('/') + 1);
-        // 添加随机4位的数字目的是为了避免切换其他logo合成水印后，页面图片依然显示第一次logo水印合成图片（缓存的原因）
-        String watermarkImagePath = pdfPath.substring(0, pdfPath.lastIndexOf(".")) + "-merge-" + new Random().nextInt(9999) + ".jpg";
-        FileOutputStream fos = null;
-        BufferedOutputStream bos = null;
-        File imgDir = new File(watermarkPath);
-        if (!imgDir.exists()) {
-            imgDir.mkdirs();
-        }
-        File fileImg = new File(watermarkImagePath);
-        try {
-            fos = new FileOutputStream(fileImg);
-            bos = new BufferedOutputStream(fos);
-            bos.write(imageWatermarkProcess(pdfPath, logoPath, 1.0F, 10, 10));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "ERROR";
-        } finally {
-            try {
-                if (null != bos) {
-                    bos.close();
-                }
-                if (null != fos) {
-                    fos.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return watermarkImagePath;
-    }
+        PdfReader reader = new PdfReader(input);
+        PdfStamper stamper = new PdfStamper(reader, bos);
+        int total = reader.getNumberOfPages() + 1;
+        PdfContentByte content;
+        BaseFont base = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.EMBEDDED);
+        PdfGState gs = new PdfGState();
+        for (int i = 1; i < total; i++) {
+            content = stamper.getOverContent(i);// 在内容上方加水印
+            //content = stamper.getUnderContent(i);//在内容下方加水印
+            gs.setFillOpacity(0.2f);
+            // content.setGState(gs);
+            content.beginText();
+//            content.setColorFill(Color.LIGHT_GRAY);
+            content.setFontAndSize(base, 50);
+            content.setTextMatrix(70, 200);
+            content.showTextAligned(Element.ALIGN_CENTER, "公司内部文件，请注意保密！", 300, 350, 55);
+            Image image = Image.getInstance("D:/itext2.png");
+            /*img.setAlignment(Image.LEFT | Image.TEXTWRAP);
+            img.setBorder(Image.BOX);
+            img.setBorderWidth(10);
+            img.setBorderColor(BaseColor.WHITE);
+            img.scaleToFit(1000, 72);//大小
+            img.setRotationDegrees(-30);//旋转 */
+            image.setAbsolutePosition(200, 206); // set the first background image of the absolute
+            image.scaleToFit(200, 200);
+            content.addImage(image);
+//            content.setColorFill(Color.BLACK);
+            content.setFontAndSize(base, 8);
+            content.showTextAligned(Element.ALIGN_CENTER, "下载时间："
+                    + waterMarkName + "", 300, 10, 0);
+            content.endText();
 
+        }
+        stamper.close();
+    }
 
     public static void main(String[] args) throws ParseException {
         String fileText = "E:\\Desktop\\wapgame\\ACIV_ZXTSZTDA_LY.xls";
-        String filePdf = "E:\\Desktop\\wapgame\\proxool.pdf";
+        String filePdf = "E:\\Desktop\\wapgame\\sss\\proxool.pdf";
         try {
-            Change2PDF.excel2PDF(fileText, filePdf);
+            Change2PDF.txt2PDF(fileText, filePdf);
         } catch (Exception e) {
             e.printStackTrace();
         }

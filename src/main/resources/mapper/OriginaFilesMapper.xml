@@ -116,4 +116,14 @@
     <select id="getPDFUrlByFileCode" resultType="java.util.HashMap">
         SELECT PDFPATH,ORIGINAPATH FROM ORIGINALFILES  where FILECODE=#{fileCode}
     </select>
+
+    <!--获取指定原文条目-->
+    <select id="getOrigianFileInfoByFileCode" resultType="com.wsda.project.model.OriginalFiles">
+        SELECT * FROM ORIGINALFILES  where FILECODE=#{fileCode}
+    </select>
+
+    <!--删除原文条目-->
+    <delete id="delOrigianFileByFileCode" parameterType="java.lang.String">
+        delete  ORIGINALFILES where FILECODE=#{fileCode}
+    </delete>
 </mapper>

@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  */
 @Configuration
 public class DataSourceConfig {
-    private Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
+    private static Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
     @Resource
     private DataSourceConfig dbConfig;
     @Bean(name = "dataSource")

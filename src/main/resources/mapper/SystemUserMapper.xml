@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsda.project.dao.SystemUserMapper">
+    <!--获取登录用户-->
+    <select id="getUserInfo" resultType="com.wsda.project.model.SystemUser">
+        SELECT
+        U.userName,
+        U.userCode,
+        U.password,
+        U.employeeCode,
+        U.sex,
+        (SELECT NAME FROM SYSTEMDEPARTMENT T WHERE T.DEPARTMENTCODE=U.DEPARTMENTCODE)AS departement,
+        U.superiorUserCode,
+        U.assitantUserCode,
+        U.isLeader,
+        U.email,
+        U.activeState,
+        U.officePhone,
+        U.mobile,
+        U.mobile,
+        U.remark
+        FROM
+        SYSTEMUSER U where userCode=#{userCode}
+    </select>
+    <!--活动状态-->
+    <update id="upSystemUserStateByUserCode" parameterType="java.util.Map">
+        UPDATE SYSTEMUSER SET
+        ACTIVESTATE=#{activeState}
+        WHERE  userCode=#{userCode}
+    </update>
+</mapper>
