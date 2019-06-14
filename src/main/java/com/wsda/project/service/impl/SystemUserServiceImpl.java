@@ -35,7 +35,7 @@ public class SystemUserServiceImpl implements SystemUserService {
                 password = password + "wsda";//注册和添加都要    wsda是公钥
                 password = Md5Utils.MD5Encode(password, "utf-8", false);
                 if (password.equals(user.getPassword())) {
-                    String ip = HttpUtils.getIpAddress(request);
+                    String ip = HttpUtils.getRealIp(request);
                     if ("0".equals(user.getActiveState())) {
                         boolean bool = userMapper.upSystemUserStateByUserCode(userCode, 1 + "");
                         if (bool) {

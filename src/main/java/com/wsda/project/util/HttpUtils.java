@@ -43,13 +43,16 @@ public class HttpUtils {
     }
 
     /**
-     * 获取请求客户端的真实ip地址
-     *
-     * @param request 请求对象
-     * @return ip地址
+     * 获取真实IP
+     * @param request 请求体
+     * @return 真实IP
      */
-    public static String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
+    public static String getRealIp(HttpServletRequest request) {
+        // 这个一般是Nginx反向代理设置的参数
+        String ip = request.getHeader("X-Real-IP");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Forwarded-For");
+        }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
@@ -57,26 +60,14 @@ public class HttpUtils {
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
+        // 处理多IP的情况（只取第一个IP）
+        if (ip != null && ip.contains(",")) {
+            String[] ipArray = ip.split(",");
+            ip = ipArray[0];
+        }
         return ip;
-    }
-
-    /**
-     * 获取请求客户端的真实ip地址
-     *
-     * @param
-     * @return ip地址
-     */
-    public static String getIpAddress() {
-        // 获取请求主机IP地址,如果通过运营进来，则透过防火墙获取真实IP地址
-        return getIpAddress(getHttpServletRequest());
     }
 
 
