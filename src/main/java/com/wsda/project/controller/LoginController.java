@@ -1,6 +1,7 @@
 package com.wsda.project.controller;
 
 import com.wsda.project.model.ResponseResult;
+import com.wsda.project.model.SystemUser;
 import com.wsda.project.service.impl.SystemUserServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,14 +36,19 @@ public class LoginController {
     }
     @ApiOperation(value = "退出登录", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/loginOut", method = RequestMethod.POST)
-    public ResponseResult loginOut(String userCode, HttpServletRequest request) {
+    public ResponseResult loginOut(HttpServletRequest request) {
         HttpSession session=request.getSession();
-        boolean bool=systemUserService.getLoginOut(userCode);
-        if(bool){
-            session.invalidate();//销毁session
-            return new ResponseResult(ResponseResult.OK,"退出成功",true);
+        SystemUser user= (SystemUser) session.getAttribute("user");
+        if(user!=null){
+            boolean bool=systemUserService.getLoginOut(user.getUserCode());
+            if(bool){
+                session.invalidate();//销毁session
+                return new ResponseResult(ResponseResult.OK,"退出成功",true);
+            }else{
+                return new ResponseResult(ResponseResult.OK,"退出失败",false);
+            }
         }else{
-            return new ResponseResult(ResponseResult.OK,"退出失败",false);
+            return new ResponseResult(ResponseResult.OK,"退出成功",true);
         }
     }
 }

@@ -36,17 +36,17 @@ public class SystemUserServiceImpl implements SystemUserService {
                 password = Md5Utils.MD5Encode(password, "utf-8", false);
                 if (password.equals(user.getPassword())) {
                     String ip = HttpUtils.getRealIp(request);
-                    if ("0".equals(user.getActiveState())) {
-                        boolean bool = userMapper.upSystemUserStateByUserCode(userCode, 1 + "");
+                    if ("0".equals(user.getActiveState())&&"0".equals(user.getUrl())) {
+                        user.setUrl(ip);
+                        boolean bool = userMapper.upSystemUserStateAndIpByUserCode(userCode, 1 + "",ip);
                         if (bool) {
                             System.out.println("登录状态修改成功");
                         }
                         user = userMapper.getUserInfo(userCode);
-                        user.setUrl(ip);
                         session.setAttribute("user",user);//把用户放入session
                         responseResult = new ResponseResult(ResponseResult.OK, "登录成功", user, true);
                     } else {
-                        responseResult = new ResponseResult(ResponseResult.OK, "该用户已在【" + ip + "】地址登录", false);
+                        responseResult = new ResponseResult(ResponseResult.OK, "该用户已在【" + user.getUrl() + "】地址登录", false);
                     }
                 } else {
                     responseResult = new ResponseResult(ResponseResult.OK, "密码错误,请检查(字母注意大小写)", false);
@@ -68,7 +68,7 @@ public class SystemUserServiceImpl implements SystemUserService {
      */
     @Override
     public boolean getLoginOut(String userCode) {
-        boolean bool = userMapper.upSystemUserStateByUserCode(userCode, 0 + "");
+        boolean bool = userMapper.upSystemUserStateAndIpByUserCode(userCode, 0 + "",0+"");
         return bool;
     }
 

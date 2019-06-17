@@ -19,14 +19,15 @@
         U.officePhone,
         U.mobile,
         U.mobile,
+        U.IP AS url,
         U.remark
         FROM
         SYSTEMUSER U where userCode=#{userCode}
     </select>
     <!--活动状态-->
-    <update id="upSystemUserStateByUserCode" parameterType="java.util.Map">
+    <update id="upSystemUserStateAndIpByUserCode" parameterType="java.util.Map">
         UPDATE SYSTEMUSER SET
-        ACTIVESTATE=#{activeState}
+        ACTIVESTATE=#{activeState},IP=#{ip}
         WHERE  userCode=#{userCode}
     </update>
 </mapper>

@@ -5,6 +5,6 @@ import org.apache.ibatis.annotations.Param;
 
 public interface SystemUserMapper {
     SystemUser getUserInfo(@Param("userCode") String userCode);
-    boolean upSystemUserStateByUserCode(@Param("userCode") String userCode,@Param("activeState") String activeState);
+    boolean upSystemUserStateAndIpByUserCode(@Param("userCode") String userCode,@Param("activeState") String activeState,@Param("ip") String ip);
 
 }
