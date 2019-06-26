@@ -6,8 +6,8 @@ import java.security.MessageDigest;
  * 
  * MD5加密工具(是基于hash算法实现,不可逆)
  * 
- * @author xuyi3
- * @2016年7月13日 @下午3:10:54
+ * @author gq
+ * @2019年6月11日 @下午3:10:54
  * @Md5Utils
  * @功能说明:<br>
  * @春风十里不如你

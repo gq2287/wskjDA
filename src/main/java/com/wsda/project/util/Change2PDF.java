@@ -8,7 +8,6 @@ import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.codec.TiffImage;
 
 import java.io.*;
-import java.text.ParseException;
 
 /**
  * 转换pdf
@@ -315,60 +314,62 @@ public class Change2PDF {
     }
 
 
+    public static void main(String[] args) throws IOException, DocumentException {
+//        String filePath="E:\\Desktop\\GQ_GuoQ\\Change2PDF.java";
+        String pdfPath = "E:\\Desktop\\GQ_GuoQ\\Change2PDF.pdf";
+        File file = new File(pdfPath);
+        System.out.println(addtextWatermark(file,"交通厅档案注意保密"));
+
+    }
+
     /**
-     * 添加水印
-     * @param bos
-     * @param input
-     * @param waterMarkName
-     * @param permission
-     * @throws DocumentException
+     * pdf文件添加水印
+     *
+     * @param file      pdf文件
+     * @param waterText 添加文字水印
+     * @return
      * @throws IOException
+     * @throws DocumentException
      */
-    public static void setWatermark(BufferedOutputStream bos, String input,String waterMarkName, int permission) throws DocumentException,IOException {
-
-        PdfReader reader = new PdfReader(input);
-        PdfStamper stamper = new PdfStamper(reader, bos);
+    public static String addtextWatermark(File file, String waterText) throws IOException, DocumentException {
+        //获取pdfWatermark的存放路径
+        String fileSavePath=file.getPath().substring(0, file.getPath().lastIndexOf("\\")+1);
+        fileSavePath=fileSavePath+StringUtil.getUuid()+".pdf";
+        //待加水印的文件
+        PdfReader reader = new PdfReader(file.getPath());
+        // 加完水印的文件
+        PdfStamper stamper = new PdfStamper(reader,new FileOutputStream(fileSavePath));
         int total = reader.getNumberOfPages() + 1;
+        //获取文档
+        Document document = new Document(reader.getPageSize(1));
+        // 获取页面宽度
+        float widths = document.getPageSize().getWidth();
+        // 获取页面高度
+        float heights = document.getPageSize().getHeight();
+//        document.close();
         PdfContentByte content;
-        BaseFont base = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.EMBEDDED);
-        PdfGState gs = new PdfGState();
+        // 设置字体
+        BaseFont baseFont = BaseFont.createFont("C:\\Windows\\Fonts\\simhei.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        // 循环对每页插入水印
         for (int i = 1; i < total; i++) {
-            content = stamper.getOverContent(i);// 在内容上方加水印
-            //content = stamper.getUnderContent(i);//在内容下方加水印
-            gs.setFillOpacity(0.2f);
-            // content.setGState(gs);
+            content = stamper.getUnderContent(i);
+            // 开始
             content.beginText();
-//            content.setColorFill(Color.LIGHT_GRAY);
-            content.setFontAndSize(base, 50);
-            content.setTextMatrix(70, 200);
-            content.showTextAligned(Element.ALIGN_CENTER, "公司内部文件，请注意保密！", 300, 350, 55);
-            Image image = Image.getInstance("D:/itext2.png");
-            /*img.setAlignment(Image.LEFT | Image.TEXTWRAP);
-            img.setBorder(Image.BOX);
-            img.setBorderWidth(10);
-            img.setBorderColor(BaseColor.WHITE);
-            img.scaleToFit(1000, 72);//大小
-            img.setRotationDegrees(-30);//旋转 */
-            image.setAbsolutePosition(200, 206); // set the first background image of the absolute
-            image.scaleToFit(200, 200);
-            content.addImage(image);
-//            content.setColorFill(Color.BLACK);
-            content.setFontAndSize(base, 8);
-            content.showTextAligned(Element.ALIGN_CENTER, "下载时间："
-                    + waterMarkName + "", 300, 10, 0);
+            // 设置颜色
+            content.setColorFill(BaseColor.GRAY);
+            // 设置字体及字号
+            content.setFontAndSize(baseFont, 30);
+            //透明度
+            PdfGState gs = new PdfGState();
+            gs.setFillOpacity(0.5f);// 设置透明度为0.8
+            content.setGState(gs);
+            // 开始写入水印 设置起始位置 旋转
+            content.showTextAligned(Element.ALIGN_CENTER, waterText, widths / 2, heights / 2, 65);
             content.endText();
-
         }
-        stamper.close();
+        stamper.setFormFlattening(true);// 如果为false那么生成的PDF文件还能编辑，一定要设为true
+        stamper.close();//一定要在循环外关闭,不然只有第一页有水印
+        return fileSavePath;
     }
 
-    public static void main(String[] args) throws ParseException {
-        String fileText = "E:\\Desktop\\wapgame\\ACIV_ZXTSZTDA_LY.xls";
-        String filePdf = "E:\\Desktop\\wapgame\\sss\\proxool.pdf";
-        try {
-            Change2PDF.txt2PDF(fileText, filePdf);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
