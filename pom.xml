@@ -165,15 +165,7 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.3</version>
         </dependency>
-
-        <!--加密等工具包-->
-        <dependency>
-            <groupId>com-Jarvis-base</groupId>
-            <artifactId>com-Jarvis</artifactId>
-            <systemPath>${project.basedir}/lib/com-Jarvis-base.jar</systemPath>
-        </dependency>
     </dependencies>
-
     <build>
         <!-- 应与application.properties(或application.yml)中context-path保持一致 -->
         <finalName>wsda</finalName>
@@ -197,5 +189,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

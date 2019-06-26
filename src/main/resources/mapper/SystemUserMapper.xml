@@ -18,8 +18,8 @@
         U.activeState,
         U.officePhone,
         U.mobile,
-        U.mobile,
         U.IP AS url,
+        U.themeColor,
         U.remark
         FROM
         SYSTEMUSER U where userCode=#{userCode}
@@ -28,6 +28,12 @@
     <update id="upSystemUserStateAndIpByUserCode" parameterType="java.util.Map">
         UPDATE SYSTEMUSER SET
         ACTIVESTATE=#{activeState},IP=#{ip}
+        WHERE  userCode=#{userCode}
+    </update>
+    <!--修改主题色-->
+    <update id="upThemeColorByUserCode" parameterType="java.util.Map">
+        UPDATE SYSTEMUSER SET
+        THEMECOLOR=#{themeColor}
         WHERE  userCode=#{userCode}
     </update>
 </mapper>

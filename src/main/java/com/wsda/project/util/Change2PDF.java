@@ -8,6 +8,7 @@ import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.codec.TiffImage;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * 转换pdf
@@ -333,8 +334,8 @@ public class Change2PDF {
      */
     public static String addtextWatermark(File file, String waterText) throws IOException, DocumentException {
         //获取pdfWatermark的存放路径
-        String fileSavePath=file.getPath().substring(0, file.getPath().lastIndexOf("\\")+1);
-        fileSavePath=fileSavePath+StringUtil.getUuid()+".pdf";
+        String fileSavePath=file.getPath().substring(0, file.getPath().lastIndexOf("."));
+        fileSavePath=fileSavePath+"Watermark"+".pdf";//水印保存位置
         //待加水印的文件
         PdfReader reader = new PdfReader(file.getPath());
         // 加完水印的文件
@@ -358,7 +359,7 @@ public class Change2PDF {
             // 设置颜色
             content.setColorFill(BaseColor.GRAY);
             // 设置字体及字号
-            content.setFontAndSize(baseFont, 30);
+            content.setFontAndSize(baseFont, 35);
             //透明度
             PdfGState gs = new PdfGState();
             gs.setFillOpacity(0.5f);// 设置透明度为0.8
@@ -367,9 +368,20 @@ public class Change2PDF {
             content.showTextAligned(Element.ALIGN_CENTER, waterText, widths / 2, heights / 2, 65);
             content.endText();
         }
-        stamper.setFormFlattening(true);// 如果为false那么生成的PDF文件还能编辑，一定要设为true
+        stamper.setFormFlattening(false);// 如果为false那么生成的PDF文件还能编辑，一定要设为true
         stamper.close();//一定要在循环外关闭,不然只有第一页有水印
+
         return fileSavePath;
     }
 
+    /**
+     * 生成归档章图片
+     * @param txtStrList 第一行显示文字
+     * @param row 行
+     * @param column 列
+     * @return
+     */
+    public static String getArchives(List<String> txtStrList,int row,int column){
+        return  "";//返回归档章路径
+    }
 }

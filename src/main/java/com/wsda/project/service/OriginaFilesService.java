@@ -15,4 +15,9 @@ public interface OriginaFilesService {
     Map<String,String> getPDFUrlByFileCode(String fileCode);
     //    删除
     boolean delOrigianFileByFileCode(String tableCode,String fileCode);
+
+    // 修改水印文字
+    boolean upWatermarkTxt(String storeId,String watermarkTxt);
+
+    boolean upWatermarkPath(String fileCode,String watermarkPath);
 }

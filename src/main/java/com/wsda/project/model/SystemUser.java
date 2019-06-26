@@ -19,11 +19,11 @@ public class SystemUser {
     private String officePhone;//工作电话
     private String mobile;//移动电话
     private String remark;//填写密码
-
+    private String themeColor;//主题颜色
     public SystemUser() {
     }
 
-    public SystemUser(String userName, String userCode, String password, String url, String employeeCode, String departement, String sex, String superiorUserCode, String assitantUserCode, String isLeader, String email, String activeState, String officePhone, String mobile, String remark) {
+    public SystemUser(String userName, String userCode, String password, String url, String employeeCode, String departement, String sex, String superiorUserCode, String assitantUserCode, String isLeader, String email, String activeState, String officePhone, String mobile, String remark, String themeColor) {
         this.userName = userName;
         this.userCode = userCode;
         this.password = password;
@@ -39,6 +39,7 @@ public class SystemUser {
         this.officePhone = officePhone;
         this.mobile = mobile;
         this.remark = remark;
+        this.themeColor = themeColor;
     }
 
     public String getUserName() {
@@ -159,5 +160,13 @@ public class SystemUser {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getThemeColor() {
+        return themeColor;
+    }
+
+    public void setThemeColor(String themeColor) {
+        this.themeColor = themeColor;
     }
 }

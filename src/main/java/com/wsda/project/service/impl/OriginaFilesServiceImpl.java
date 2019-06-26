@@ -104,6 +104,13 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
                     String pdfPath=parmsMap.get("pdfPath");
                     originalFiles.setPDFPATH(pdfPath);//pdf路径
                 }
+//                添加水印start
+                if(parmsMap.get("watermarkPath")!=null){
+                    String watermarkPath=parmsMap.get("watermarkPath");
+                    originalFiles.setWATERMARKPATH(watermarkPath);//水印pdf路径
+                }
+//                添加水印end
+
                 originalFiles.setUPLOADTIME("TO_DATE('"+StringUtil.getDate(3)+"','YYYY-MM-DD')");//上传时间
                 originalFiles.setTRASHSTATUS("0");//未删除的文件 0未删除，1删除
             }else{//没有pdf文件
@@ -173,6 +180,9 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
             if(originalFiles.getORIGINAPATH()!=null){//删除原文
                 DeleteFileUtil.deleteFile(originalFiles.getORIGINAPATH());
             }
+            if(originalFiles.getWATERMARKPATH()!=null){//删除水印
+                DeleteFileUtil.deleteFile(originalFiles.getWATERMARKPATH());
+            }
         }
 
         int result=originaFilesMapper.delOrigianFileByFileCode(fileCode);//删除原文条目
@@ -185,5 +195,15 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
         }
     }
 
+//    修改水印文字
+    @Override
+    public boolean upWatermarkTxt(String storeId,String watermarkTxt) {
+        return originaFilesMapper.upOriginalmanagesettingBywatermarkTxt(storeId,watermarkTxt);
+    }
+    //添加水印pdf路径
+    @Override
+    public boolean upWatermarkPath(String fileCode, String watermarkPath) {
+        return originaFilesMapper.upWatermarkPath(fileCode,watermarkPath);
+    }
 
 }

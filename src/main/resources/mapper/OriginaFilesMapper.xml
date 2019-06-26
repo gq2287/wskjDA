@@ -9,14 +9,26 @@
         <if test="type != null and type != ''">
             AND  TRASHSTATUS=#{type}
         </if>
-
     </select>
 
-    <!--获取原文存放地址-->
+    <!--获取原文存放地址及水印文字-->
     <select id="getUpLoadFilePath" resultType="java.util.HashMap">
-        SELECT STORETYPE,FILELOC,TIMESTYLEPOS FROM ORIGINALMANAGESETTING
+        SELECT STOREID,STORETYPE,FILELOC,TIMESTYLEPOS,WATERMARKTXT FROM ORIGINALMANAGESETTING
     </select>
 
+    <!--修改水印文字-->
+    <update id="upOriginalmanagesettingBywatermarkTxt" parameterType="java.util.Map">
+        UPDATE ORIGINALMANAGESETTING SET
+        <choose>
+            <when test="watermarkTxt != null and watermarkTxt !=''">
+                WATERMARKTXT=#{watermarkTxt}
+            </when>
+            <otherwise>
+                WATERMARKTXT=''
+            </otherwise>
+        </choose>
+        WHERE  STOREID=#{storeId}
+    </update>
 
     <!--添加录入原文纪录表数据-->
     <insert id="addUpLoadFileOriginaFiles" parameterType="com.wsda.project.model.OriginalFiles">
@@ -60,6 +72,9 @@
         </if>
         <if test="ORIGINAPATH != null and ORIGINAPATH != ''">
             ORIGINAPATH,
+        </if>
+        <if test="WATERMARKPATH != null and WATERMARKPATH != ''">
+            WATERMARKPATH,
         </if>
         <if test="TRASHSTATUS != null and TRASHSTATUS != ''">
             TRASHSTATUS
@@ -105,16 +120,18 @@
         <if test="ORIGINAPATH != null and ORIGINAPATH != ''">
             #{ORIGINAPATH},
         </if>
+        <if test="WATERMARKPATH != null and WATERMARKPATH != ''">
+            #{WATERMARKPATH},
+        </if>
         <if test="TRASHSTATUS != null and TRASHSTATUS != ''">
             #{TRASHSTATUS}
         </if>
         )
     </insert>
 
-
     <!--获取pdf存放地址-->
     <select id="getPDFUrlByFileCode" resultType="java.util.HashMap">
-        SELECT PDFPATH,ORIGINAPATH FROM ORIGINALFILES  where FILECODE=#{fileCode}
+        SELECT PDFPATH,ORIGINAPATH,WATERMARKPATH FROM ORIGINALFILES  where FILECODE=#{fileCode}
     </select>
 
     <!--获取指定原文条目-->
@@ -126,4 +143,18 @@
     <delete id="delOrigianFileByFileCode" parameterType="java.lang.String">
         delete  ORIGINALFILES where FILECODE=#{fileCode}
     </delete>
+
+    <!--修改水印pdf地址-->
+    <update id="upWatermarkPath" parameterType="java.util.Map">
+        UPDATE ORIGINALFILES SET
+        <choose>
+            <when test="watermarkPath != null and watermarkPath !=''">
+                WATERMARKPATH=#{watermarkPath}
+            </when>
+            <otherwise>
+                WATERMARKTXT=''
+            </otherwise>
+        </choose>
+        WHERE  FILECODE=#{fileCode}
+    </update>
 </mapper>

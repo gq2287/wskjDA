@@ -46,19 +46,12 @@ public class OriginalFiles {
     private String YUAN_WEN_SHU_LIANG;//原文数量
     private String PDFPATH;//pdf路径
     private String ORIGINAPATH;//原文存放路径
-
-    public String getORIGINAPATH() {
-        return ORIGINAPATH;
-    }
-
-    public void setORIGINAPATH(String ORIGINAPATH) {
-        this.ORIGINAPATH = ORIGINAPATH;
-    }
+    private String WATERMARKPATH;//水印pdf存放路径
 
     public OriginalFiles() {
     }
 
-    public OriginalFiles(String FILECODE, String RECORDCODE, String FILENAME, String PAGENO, String FILETYPE, String FILELENGTH, String USERCODE, String DEPARTMENTCODE, String UPLOADTIME, String STATUS, String FONDSNO, String FILLINGYEAR, String UPLOADUNIT, String READWRITECHECK, String CHECKUNIT, String DOCUMENTCODE, String BINGDUJIANYAN, String ZAITIJIANYAN, String WANZHENGXINGJIANYA, String YOUXIAOJIANYAN, String JISHUJIANYAN, String JIANRONGXINGJIANYAN, String USESOFT, String MAINTITLE, String BEIZHU, String CD_MARK, String AUTOPDF, String OSPOSITION, String FILELOC, String FTPIP, String FTPPORT, String FTPUSERNAME, String FTPPASSWORD, String OSTYPE, String TRASHSTATUS, String ARCHIVECATALOGNO, String RETENTION, String ORIGINALFILEPATH, String FILE_NAME_ZH_CN, String YUAN_WEN_SHU_LIANG, String PDFPATH, String ORIGINAPATH) {
+    public OriginalFiles(String FILECODE, String RECORDCODE, String FILENAME, String PAGENO, String FILETYPE, String FILELENGTH, String USERCODE, String DEPARTMENTCODE, String UPLOADTIME, String STATUS, String FONDSNO, String FILLINGYEAR, String UPLOADUNIT, String READWRITECHECK, String CHECKUNIT, String DOCUMENTCODE, String BINGDUJIANYAN, String ZAITIJIANYAN, String WANZHENGXINGJIANYA, String YOUXIAOJIANYAN, String JISHUJIANYAN, String JIANRONGXINGJIANYAN, String USESOFT, String MAINTITLE, String BEIZHU, String CD_MARK, String AUTOPDF, String OSPOSITION, String FILELOC, String FTPIP, String FTPPORT, String FTPUSERNAME, String FTPPASSWORD, String OSTYPE, String TRASHSTATUS, String ARCHIVECATALOGNO, String RETENTION, String ORIGINALFILEPATH, String FILE_NAME_ZH_CN, String YUAN_WEN_SHU_LIANG, String PDFPATH, String ORIGINAPATH, String WATERMARKPATH) {
         this.FILECODE = FILECODE;
         this.RECORDCODE = RECORDCODE;
         this.FILENAME = FILENAME;
@@ -101,14 +94,7 @@ public class OriginalFiles {
         this.YUAN_WEN_SHU_LIANG = YUAN_WEN_SHU_LIANG;
         this.PDFPATH = PDFPATH;
         this.ORIGINAPATH = ORIGINAPATH;
-    }
-
-    public String getPDFPATH() {
-        return PDFPATH;
-    }
-
-    public void setPDFPATH(String PDFPATH) {
-        this.PDFPATH = PDFPATH;
+        this.WATERMARKPATH = WATERMARKPATH;
     }
 
     public String getFILECODE() {
@@ -429,5 +415,29 @@ public class OriginalFiles {
 
     public void setYUAN_WEN_SHU_LIANG(String YUAN_WEN_SHU_LIANG) {
         this.YUAN_WEN_SHU_LIANG = YUAN_WEN_SHU_LIANG;
+    }
+
+    public String getPDFPATH() {
+        return PDFPATH;
+    }
+
+    public void setPDFPATH(String PDFPATH) {
+        this.PDFPATH = PDFPATH;
+    }
+
+    public String getORIGINAPATH() {
+        return ORIGINAPATH;
+    }
+
+    public void setORIGINAPATH(String ORIGINAPATH) {
+        this.ORIGINAPATH = ORIGINAPATH;
+    }
+
+    public String getWATERMARKPATH() {
+        return WATERMARKPATH;
+    }
+
+    public void setWATERMARKPATH(String WATERMARKPATH) {
+        this.WATERMARKPATH = WATERMARKPATH;
     }
 }

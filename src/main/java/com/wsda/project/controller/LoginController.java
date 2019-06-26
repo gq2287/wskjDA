@@ -25,30 +25,50 @@ public class LoginController {
     private Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Resource
     private SystemUserServiceImpl systemUserService;
+
     @ApiOperation(value = "用户登录", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/loginCheck", method = RequestMethod.POST)
     public ResponseResult loginCheck(String userCode, String passWord, HttpServletRequest request) {
-        if(userCode!=null&&!"".equals(userCode)&&passWord!=null&&!"".equals(passWord)){
-            return systemUserService.getLoginIsOk(userCode,passWord, request);
-        }else{
-            return new ResponseResult(ResponseResult.OK,"账号或密码不能为空",false);
+        if (userCode != null && !"".equals(userCode) && passWord != null && !"".equals(passWord)) {
+            return systemUserService.getLoginIsOk(userCode, passWord, request);
+        } else {
+            return new ResponseResult(ResponseResult.OK, "账号或密码不能为空", false);
         }
     }
+
     @ApiOperation(value = "退出登录", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/loginOut", method = RequestMethod.POST)
-    public ResponseResult loginOut(HttpServletRequest request) {
+    public ResponseResult loginOut(String userCode, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        SystemUser user = (SystemUser) session.getAttribute("user");
+        if (user != null && user.getUserCode().equals(userCode)) {
+            session.removeAttribute("user");//销毁用户信息
+            boolean bool = systemUserService.getLoginOut(user.getUserCode());
+            if (bool) {
+                session.invalidate();//销毁session
+                return new ResponseResult(ResponseResult.OK, "退出成功", true);
+            } else {
+                return new ResponseResult(ResponseResult.OK, "退出失败", false);
+            }
+        } else {
+            return new ResponseResult(ResponseResult.OK, "退出成功", true);
+        }
+    }
+
+    @ApiOperation(value = "修改主题色", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/upThemeColor", method = RequestMethod.POST)
+    public ResponseResult upThemeColor(String themeColor,HttpServletRequest request) {
         HttpSession session=request.getSession();
         SystemUser user= (SystemUser) session.getAttribute("user");
-        if(user!=null){
-            boolean bool=systemUserService.getLoginOut(user.getUserCode());
-            if(bool){
-                session.invalidate();//销毁session
-                return new ResponseResult(ResponseResult.OK,"退出成功",true);
-            }else{
-                return new ResponseResult(ResponseResult.OK,"退出失败",false);
+        if (user.getUserCode() != null && themeColor !=null) {
+            boolean bool = systemUserService.upThemeColorByUserCode(user.getUserCode(),themeColor);
+            if (bool) {
+                return new ResponseResult(ResponseResult.OK, "修改成功", true);
+            } else {
+                return new ResponseResult(ResponseResult.OK, "修改失败,参数异常", false);
             }
-        }else{
-            return new ResponseResult(ResponseResult.OK,"退出成功",true);
+        } else {
+            return new ResponseResult(ResponseResult.OK, "修改失败,参数为空", false);
         }
     }
 }

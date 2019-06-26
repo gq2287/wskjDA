@@ -20,4 +20,9 @@ public interface OriginaFilesMapper {
     OriginalFiles getOrigianFileInfoByFileCode(@Param("fileCode")String fileCode);
     //    删除
     Integer delOrigianFileByFileCode(@Param("fileCode")String fileCode);
+//    修改水印图片
+    boolean upOriginalmanagesettingBywatermarkTxt(@Param("storeId")String storeId,@Param("watermarkTxt")String watermarkTxt);
+
+//    添加水印路径
+    boolean upWatermarkPath(@Param("fileCode")String fileCode,@Param("watermarkPath")String watermarkPath);
 }
