@@ -4,6 +4,7 @@ package com.wsda.project.model;
  * 系统用户
  */
 public class SystemUser {
+    private String token;
     private String userName;//登录用户名称
     private String userCode;//登录用户编码
     private String password;//登录密码
@@ -23,7 +24,20 @@ public class SystemUser {
     public SystemUser() {
     }
 
-    public SystemUser(String userName, String userCode, String password, String url, String employeeCode, String departement, String sex, String superiorUserCode, String assitantUserCode, String isLeader, String email, String activeState, String officePhone, String mobile, String remark, String themeColor) {
+    public SystemUser(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public SystemUser(String token, String userName, String userCode, String password, String url, String employeeCode, String departement, String sex, String superiorUserCode, String assitantUserCode, String isLeader, String email, String activeState, String officePhone, String mobile, String remark, String themeColor) {
+        this.token = token;
         this.userName = userName;
         this.userCode = userCode;
         this.password = password;

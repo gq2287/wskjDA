@@ -322,7 +322,12 @@ public class TableViewServiceImpl implements TableViewService {
                     }else if("NUMBER".equals(typeName)){
                         valuesList.add(value);
                     }else if("DATE".equals(typeName)){
-                        valuesList.add("TO_DATE('"+value+"','YYYY-MM-DD')");
+                        if("createDate".equalsIgnoreCase(startColumn)){
+                            valuesList.add("TO_DATE('"+value+"','YYYYMMDD')");
+                        }else {
+                            valuesList.add("TO_DATE('"+value+"','YYYY-MM-DD')");
+                        }
+
                     }
                 }
             }
@@ -417,7 +422,12 @@ public class TableViewServiceImpl implements TableViewService {
                             if(columnList.get(i).get(column).toString().equalsIgnoreCase(str)){//判断是否相等
                                 String value=null;
                                 if("4".equals(String.valueOf(columnList.get(i).get("TYPE")))){
-                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    SimpleDateFormat formatter = null;
+                                    if("createDate".equalsIgnoreCase(str)){
+                                        formatter=new SimpleDateFormat("yyyyMMdd");
+                                    }else {
+                                        formatter=new SimpleDateFormat("yyyy-MM-dd");
+                                    }
                                     value=formatter.format(archives.get(str));
                                 }else{
                                     Object val=archives.get(str);
@@ -463,7 +473,12 @@ public class TableViewServiceImpl implements TableViewService {
                     }else if("NUMBER".equals(typeName)){
                         parmsMap.put(startColumn,params.get(key));
                     }else if("DATE".equals(typeName)){
-                        String date="TO_DATE('"+params.get(key)+"', 'YYYY-MM-DD')";
+                        String date=null;
+                        if("createDate".equalsIgnoreCase(startColumn)){
+                            date="TO_DATE('"+params.get(key)+"', 'YYYYMMDD')";
+                        }else {
+                            date="TO_DATE('"+params.get(key)+"', 'YYYY-MM-DD')";
+                        }
                         parmsMap.put(startColumn,date);
                     }
                 }
@@ -581,7 +596,12 @@ public class TableViewServiceImpl implements TableViewService {
                                         formatter = new SimpleDateFormat("yyyy-MM-dd");
                                         listPageInfo.getList().get(j).put(infoE, formatter.format(newDate));
                                     }else{
-                                        SimpleDateFormat SFDate = new SimpleDateFormat("yyyy-MM-dd");
+                                        SimpleDateFormat SFDate =null;
+                                        if("createDate".equalsIgnoreCase(infoE)){
+                                            SFDate=new SimpleDateFormat("yyyyMMdd");
+                                        }else{
+                                            SFDate=new SimpleDateFormat("yyyy-MM-dd");
+                                        }
                                         String date=SFDate.format(SFDate.parse(dateStr));
                                         listPageInfo.getList().get(j).put(infoE, date);
                                     }

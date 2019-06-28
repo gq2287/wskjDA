@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsda.project.dao.SystemUserCollectionMapper">
+    <!--获取用户收藏档案-->
+    <select id="getAllCollectionByuserCode" resultType="com.wsda.project.model.SystemUserCollection">
+        SELECT
+        S.ID,
+        S.USERCODE,
+        S.ARCHIVESCODE,
+        S.TABLECODE,
+        S.CREATETIME,
+        C.ID,
+        S.REMARK
+        FROM SYSTEMUSERCOLLECTION S
+        INNER JOIN CREATECOLLECTIONFILES C on C.USERCOLLECTIONID=S.ID
+        WHERE C.ID=#{cId} AND S.USERCODE=#{userCode}
+    </select>
+
+    <!--添加收藏-->
+    <insert id="addCollection" parameterType="com.wsda.project.model.SystemUserCollection">
+        INSERT INTO SYSTEMUSERCOLLECTION
+        (
+        ID,
+        USERCODE,
+        ARCHIVESCODE,
+        TABLECODE,
+        CREATETIME,
+        COLLECTIONFILESID,
+        <if test="remark != null and remark != ''">
+            ,REMARK
+        </if>
+        )
+        VALUES(
+        <if test="id != null and id != ''">
+            #{id},
+        </if>
+        <if test="userCode != null and userCode != ''">
+            #{userCode},
+        </if>
+        <if test="archivesCode != null and archivesCode != ''">
+            #{archivesCode},
+        </if>
+        <if test="tableCode != null and tableCode != ''">
+            #{tableCode},
+        </if>
+        <if test="createTime != null and createTime != ''">
+            #{createTime},
+        </if>
+        <if test="collectionFilesId != null and collectionFilesId != ''">
+            #{collectionFilesId}
+        </if>
+        <if test="remark != null and remark != ''">
+            ,#{remark}
+        </if>
+        )
+    </insert>
+
+    <!--删除收藏-->
+    <delete id="delCollection" parameterType="java.lang.String">
+        delete  SYSTEMUSERCOLLECTION where ID=#{id}
+    </delete>
+
+
+    <!--查询收藏夹-->
+    <select id="getCreateCollectionFiles" resultType="com.wsda.project.model.CreateCollectionFiles">
+        SELECT * FROM CREATECOLLECTIONFILES where USERCODE=#{userCode}
+    </select>
+    <!--添加收藏夹-->
+    <insert id="addCreateCollectionFiles" parameterType="com.wsda.project.model.CreateCollectionFiles">
+        INSERT INTO CREATECOLLECTIONFILES
+        (
+        ID,
+        USERCODE,
+        COLLECTIONNAME,
+        CREATETIME)
+        VALUES(
+        <if test="id != null and id != ''">
+            #{id},
+        </if>
+        <if test="userCode != null and userCode != ''">
+            #{userCode},
+        </if>
+        <if test="collectionName != null and collectionName != ''">
+            #{collectionName},
+        </if>
+        <if test="createTime != null and createTime != ''">
+            #{createTime}
+        </if>
+        )
+    </insert>
+
+    <!--删除收藏-->
+    <delete id="delCreateCollectionFiles" parameterType="java.lang.String">
+        delete  CREATECOLLECTIONFILES where ID =#{id}
+    </delete>
+</mapper>

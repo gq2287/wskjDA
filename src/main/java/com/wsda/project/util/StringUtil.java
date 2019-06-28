@@ -123,6 +123,18 @@ public class StringUtil {
         String date = df.format(new Date());
         return date;
     }
+    /**
+     * .
+     * 获取给定格式日期时间
+     *
+     * @param type (yyyyMMdd)
+     * @return 返回当前时间字符串
+     */
+    public static String getDateByType(String type,String strDate) {
+        SimpleDateFormat df = new SimpleDateFormat(type);//设置日期格式
+        String date = df.format(strDate);
+        return date;
+    }
 
     /**
      * .

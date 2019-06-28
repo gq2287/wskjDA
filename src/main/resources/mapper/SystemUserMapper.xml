@@ -20,6 +20,7 @@
         U.mobile,
         U.IP AS url,
         U.themeColor,
+        U.token,
         U.remark
         FROM
         SYSTEMUSER U where userCode=#{userCode}
@@ -27,7 +28,11 @@
     <!--活动状态-->
     <update id="upSystemUserStateAndIpByUserCode" parameterType="java.util.Map">
         UPDATE SYSTEMUSER SET
-        ACTIVESTATE=#{activeState},IP=#{ip}
+        ACTIVESTATE=#{activeState},
+        IP=#{ip}
+        <if test="token != null and token != ''">
+            ,TOKEN=#{token}
+        </if>
         WHERE  userCode=#{userCode}
     </update>
     <!--修改主题色-->
@@ -36,4 +41,12 @@
         THEMECOLOR=#{themeColor}
         WHERE  userCode=#{userCode}
     </update>
+
+    <!--获取登录用户getToken-->
+    <select id="getToken" resultType="java.lang.String">
+        SELECT
+          TOKEN
+        FROM
+        SYSTEMUSER U where userCode=#{userCode}
+    </select>
 </mapper>

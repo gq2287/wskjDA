@@ -353,7 +353,7 @@ public class Change2PDF {
         BaseFont baseFont = BaseFont.createFont("C:\\Windows\\Fonts\\simhei.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         // 循环对每页插入水印
         for (int i = 1; i < total; i++) {
-            content = stamper.getUnderContent(i);
+            content = stamper.getOverContent(i);
             // 开始
             content.beginText();
             // 设置颜色
@@ -365,7 +365,7 @@ public class Change2PDF {
             gs.setFillOpacity(0.5f);// 设置透明度为0.8
             content.setGState(gs);
             // 开始写入水印 设置起始位置 旋转
-            content.showTextAligned(Element.ALIGN_CENTER, waterText, widths / 2, heights / 2, 65);
+            content.showTextAligned(Element.ALIGN_CENTER, waterText, widths / 2, heights / 2, 50);
             content.endText();
         }
         stamper.setFormFlattening(false);// 如果为false那么生成的PDF文件还能编辑，一定要设为true

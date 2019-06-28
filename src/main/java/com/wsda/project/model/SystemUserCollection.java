@@ -1,26 +1,36 @@
 package com.wsda.project.model;
 
 /**
- * 用户收藏
+ * 用户收藏档案
  */
-public class systemUserCollection {
+public class SystemUserCollection {
     private String id;//编号
     private String userCode;//用户编号
     private String archivesCode;//档案编号
     private String tableCode;//实体表编号
     private String createTime;//收藏时间
     private String remark;//备注
+    private String collectionFilesId;//收藏夹编号
 
-    public systemUserCollection() {
+    public SystemUserCollection() {
     }
 
-    public systemUserCollection(String id, String userCode, String archivesCode, String tableCode, String createTime, String remark) {
+    public SystemUserCollection(String id, String userCode, String archivesCode, String tableCode, String createTime, String remark, String collectionFilesId) {
         this.id = id;
         this.userCode = userCode;
         this.archivesCode = archivesCode;
         this.tableCode = tableCode;
         this.createTime = createTime;
         this.remark = remark;
+        this.collectionFilesId = collectionFilesId;
+    }
+
+    public String getCollectionFilesId() {
+        return collectionFilesId;
+    }
+
+    public void setCollectionFilesId(String collectionFilesId) {
+        this.collectionFilesId = collectionFilesId;
     }
 
     public String getId() {
