@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.annotation.Resource;
@@ -54,6 +55,11 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
                 if (tokenUser != null && token.equals(tokenUser)) {
                     return true;
                 }
+                for (int i = 0; i < cookie.length; i++) {
+                    Cookie cook = cookie[i];
+                    cook.setMaxAge(0);
+                }
+                session.invalidate();
                 response.setStatus(401);
                 return false;
             } else {
@@ -72,11 +78,11 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
-//    @Override
-//    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-//        //controller方法处理完毕后，调用此方法
-//        System.out.println("在后端控制器执行后调用 ");
-//    }
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+        //controller方法处理完毕后，调用此方法
+        System.out.println("在后端控制器执行后调用 ");
+    }
 //
 //    @Override
 //    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -46,6 +47,12 @@ public class LoginController {
         HttpSession session = request.getSession();
         session.removeAttribute("user");//销毁用户信息
         session.invalidate();//销毁session
+        Cookie[] cookie  =  request.getCookies();
+        if(cookie!=null){
+            for (int i = 0; i <cookie.length ; i++) {
+                cookie[i].setMaxAge(0);//会话级cookie失效
+            }
+        }
         if (userCode!=null) {
             boolean bool = systemUserService.getLoginOut(userCode);
             if (bool) {
