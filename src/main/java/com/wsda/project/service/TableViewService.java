@@ -2,13 +2,14 @@ package com.wsda.project.service;
 
 import com.wsda.project.model.Tree;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 public interface TableViewService {
 
-    Map<String,Object> getTableView(String tableCode, int page, int size, List<Map<String,String>> conditions, List<Map<String,String>> sorts,String type);
+    Map<String,Object> getTableView(String tableCode, int page, int size, List<Map<String,String>> conditions, List<Map<String,String>> sorts, String type, HttpServletRequest request);
     Tree getTreeMenu();
     List<Map<String,Object>> getInputCard(String tableCode);
 

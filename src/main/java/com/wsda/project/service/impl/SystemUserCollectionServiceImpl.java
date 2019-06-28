@@ -14,8 +14,8 @@ public class SystemUserCollectionServiceImpl implements SystemUserCollectionServ
     @Resource
     private SystemUserCollectionMapper systemUserCollectionMapper;
     @Override
-    public List<SystemUserCollection> getAllCollectionByUserCode(String cid,SystemUser systemUser) {
-        return systemUserCollectionMapper.getAllCollectionByUserCode(cid,systemUser.getUserCode());
+    public List<SystemUserCollection> getAllCollectionByUserCode(String cid,SystemUser systemUser,String recordCode) {
+        return systemUserCollectionMapper.getAllCollectionByUserCode(cid,systemUser.getUserCode(),recordCode);
     }
 
     @Override
@@ -23,9 +23,15 @@ public class SystemUserCollectionServiceImpl implements SystemUserCollectionServ
         return systemUserCollectionMapper.addCollection(systemUserCollection);
     }
 
+    /**
+     * 删除收藏档案
+     * @param id 档案主键唯一编号
+     * @param cid 收藏夹编号
+     * @return
+     */
     @Override
-    public boolean delCollectionByUserCode(String id) {
-        return systemUserCollectionMapper.delCollection(id);
+    public boolean delCollectionByUserCode(String id,String cid) {
+        return systemUserCollectionMapper.delCollection(id,cid);
     }
 
 

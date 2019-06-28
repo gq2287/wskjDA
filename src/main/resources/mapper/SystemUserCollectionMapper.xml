@@ -3,20 +3,28 @@
 
 <mapper namespace="com.wsda.project.dao.SystemUserCollectionMapper">
     <!--获取用户收藏档案-->
-    <select id="getAllCollectionByuserCode" resultType="com.wsda.project.model.SystemUserCollection">
+    <select id="getAllCollectionByUserCode" resultType="com.wsda.project.model.SystemUserCollection">
         SELECT
-        S.ID,
-        S.USERCODE,
-        S.ARCHIVESCODE,
-        S.TABLECODE,
-        S.CREATETIME,
-        C.ID,
-        S.REMARK
+        S.ID as id,
+        S.USERCODE as userCode,
+        S.ARCHIVESCODE as archivesCode,
+        S.TABLECODE as tableCode,
+        S.CREATETIME as createTime,
+        COLLECTIONFILESID as collectionFilesId,
+        S.REMARK as remark
         FROM SYSTEMUSERCOLLECTION S
-        INNER JOIN CREATECOLLECTIONFILES C on C.USERCOLLECTIONID=S.ID
-        WHERE C.ID=#{cId} AND S.USERCODE=#{userCode}
+        WHERE 1=1
+        <if test="cId != null and cId != ''">
+            AND COLLECTIONFILESID=#{cId}
+        </if>
+        <if test="userCode != null and userCode != ''">
+            AND S.USERCODE=#{userCode}
+        </if>
+        <if test="recordCode != null and recordCode != ''">
+            AND ARCHIVESCODE=#{recordCode}
+        </if>
+         ORDER BY S.CREATETIME
     </select>
-
     <!--添加收藏-->
     <insert id="addCollection" parameterType="com.wsda.project.model.SystemUserCollection">
         INSERT INTO SYSTEMUSERCOLLECTION
@@ -26,7 +34,7 @@
         ARCHIVESCODE,
         TABLECODE,
         CREATETIME,
-        COLLECTIONFILESID,
+        COLLECTIONFILESID
         <if test="remark != null and remark != ''">
             ,REMARK
         </if>
@@ -45,7 +53,7 @@
             #{tableCode},
         </if>
         <if test="createTime != null and createTime != ''">
-            #{createTime},
+            ${createTime},
         </if>
         <if test="collectionFilesId != null and collectionFilesId != ''">
             #{collectionFilesId}
@@ -55,16 +63,22 @@
         </if>
         )
     </insert>
-
     <!--删除收藏-->
     <delete id="delCollection" parameterType="java.lang.String">
-        delete  SYSTEMUSERCOLLECTION where ID=#{id}
+        delete SYSTEMUSERCOLLECTION where 1=1
+        <if test="id != null and id != ''">
+            AND ID=#{id}
+        </if>
+        <if test="cid != null and cid != ''">
+            AND COLLECTIONFILESID=#{cid}
+        </if>
+
     </delete>
 
 
     <!--查询收藏夹-->
     <select id="getCreateCollectionFiles" resultType="com.wsda.project.model.CreateCollectionFiles">
-        SELECT * FROM CREATECOLLECTIONFILES where USERCODE=#{userCode}
+        SELECT * FROM CREATECOLLECTIONFILES where USERCODE=#{userCode} order by CREATETIME
     </select>
     <!--添加收藏夹-->
     <insert id="addCreateCollectionFiles" parameterType="com.wsda.project.model.CreateCollectionFiles">
@@ -89,7 +103,6 @@
         </if>
         )
     </insert>
-
     <!--删除收藏-->
     <delete id="delCreateCollectionFiles" parameterType="java.lang.String">
         delete  CREATECOLLECTIONFILES where ID =#{id}

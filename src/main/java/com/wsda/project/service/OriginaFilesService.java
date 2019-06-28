@@ -1,9 +1,10 @@
 package com.wsda.project.service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface OriginaFilesService {
-    Map<String,Object> getFilesByRecordCode(String tableCode,String recordCode, int pageNum,int PageSize,String type);
+    Map<String,Object> getFilesByRecordCode(String tableCode, String recordCode, int pageNum, int PageSize, String type);
 
     //文件上传
     boolean addUpLoadFiles(Map<String,String> parmsMap,String tableCode,String recordCode,int count);

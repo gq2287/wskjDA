@@ -7,11 +7,11 @@ import com.wsda.project.model.SystemUserCollection;
 import java.util.List;
 
 public interface SystemUserCollectionService {
-    List<SystemUserCollection> getAllCollectionByUserCode(String cid, SystemUser systemUser);
+    List<SystemUserCollection> getAllCollectionByUserCode(String cid, SystemUser systemUser,String recordCode);
 
     boolean addCollection(SystemUserCollection systemUserCollection);
 
-    boolean delCollectionByUserCode(String id);
+    boolean delCollectionByUserCode(String id,String cid);
 
 
     List<CreateCollectionFiles> getCreateCollectionFiles(String userCode);

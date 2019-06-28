@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class TableViewTreeController {
                                        @ApiParam(required = true, name = "pageSize", value = "每页条目数") @RequestParam(name = "pageSize", required = true) int pageSize,
                                        @ApiParam(required = false, name = "conditions", value = "查询条件") @RequestParam(name = "conditions", required = false) String conditions,
                                        @ApiParam(required = false, name = "sorts", value = "排序条件") @RequestParam(name = "sorts", required = false) String sorts,
-                                       @ApiParam(required = true, name = "type", value = "回收站标志（0不是回收站,1是回收站）") @RequestParam(name = "type", required = true) String type) {
+                                       @ApiParam(required = true, name = "type", value = "回收站标志（0不是回收站,1是回收站）") @RequestParam(name = "type", required = true) String type, HttpServletRequest request) {
         System.err.println(conditions+"\n********\n"+sorts+"********\n");
         List<Map<String, String>> conditionsMap = new ArrayList<>();
         List<Map<String, String>> sortsMap = new ArrayList<>();
@@ -49,7 +50,7 @@ public class TableViewTreeController {
             sortsMap = JSONObject.parseObject(sorts, typeObj);//JSONObject转换map
         }
         if (tableCode != null) {
-            Map<String, Object> parms = tableViewService.getTableView(tableCode, pageNum, pageSize, conditionsMap, sortsMap,type);
+            Map<String, Object> parms = tableViewService.getTableView(tableCode, pageNum, pageSize, conditionsMap, sortsMap,type,request);
             if (parms != null) {
                 return new ResponseResult(ResponseResult.OK, "查询成功 ", parms, true);
             } else {

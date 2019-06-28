@@ -11,7 +11,7 @@ public interface TableViewMapper {
     //获取最大的序号
     Integer getSerialMax(@Param("tableCode") String tableCode);
     //查询实体表展示内容
-    List<Map<String,String>> getTableInfo(@Param("tableName")String tableName,@Param("columnMap")Map<String,String> columnMap,@Param("whereSql")String whereSql,@Param("sortSql")String sortSql,@Param("type")String type);
+    List<Map<String,String>> getTableInfo(@Param("tableName")String tableName,@Param("columnMap")Map<String,String> columnMap,@Param("whereSql")String whereSql,@Param("sortSql")String sortSql,@Param("type")String type,@Param("uscId") String uscId);
     //获取实体表名
     String getTableNameByTableCode(@Param("tableCode") String tableCode);
     //获取录入界面

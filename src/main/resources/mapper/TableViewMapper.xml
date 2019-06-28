@@ -32,19 +32,20 @@
         select
         <foreach collection="columnMap.keys" item="key" open=" " separator=","  close=" " >
             ${key}
-        </foreach>
-        from ${tableName}
-        where 1=1 AND
+        </foreach>,USC.ID AS COLLECTIONID
+        from ${tableName} TEMP
+        LEFT  JOIN  SYSTEMUSERCOLLECTION USC on USC.ARCHIVESCODE=TEMP.RECORDCODE
+        where 1=1  AND
         <if test="type != null and type != ''">
             TRASHSTATUS=#{type}
         </if>
         <if test="whereSql != null and whereSql != ''">
             ${whereSql}
         </if>
+        OR USC.USERCODE=#{uscId}
         <if test="sortSql != null and sortSql != ''">
              ${sortSql}
         </if>
-
     </select>
 
     <!--获取选中实体表名-->

@@ -7,6 +7,7 @@ import com.wsda.project.dao.SystemCataLogMapper;
 import com.wsda.project.dao.TableViewMapper;
 import com.wsda.project.model.Dictionary;
 import com.wsda.project.model.GroupMode;
+import com.wsda.project.model.SystemUser;
 import com.wsda.project.model.Tree;
 import com.wsda.project.service.TableViewService;
 import com.wsda.project.util.StringUtil;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -44,7 +47,9 @@ public class TableViewServiceImpl implements TableViewService {
      * @return
      */
     @Override
-    public Map<String,Object> getTableView(String tableCode, int pageNum, int PageSize, List<Map<String,String>>conditions, List<Map<String,String>> sorts,String type) {
+    public Map<String,Object> getTableView(String tableCode, int pageNum, int PageSize, List<Map<String,String>>conditions, List<Map<String,String>> sorts, String type, HttpServletRequest request) {
+        HttpSession session=request.getSession();
+        SystemUser systemUser= (SystemUser) session.getAttribute("user");//获取当前登录用户
         Map<String,Object> mapObj=new HashMap<>();//返回结果集
         List<Map<String, String>> arrayList = new ArrayList<>();
         try {
@@ -126,7 +131,7 @@ public class TableViewServiceImpl implements TableViewService {
             if(tableName!=null){
                 columnMap.put("RECORDCODE","RECORDCODE");
                 PageHelper.startPage(pageNum, PageSize);//分页
-                PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql),type));//存放入分页的pageInfo中
+                PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql),type,systemUser.getUserCode()));//存放入分页的pageInfo中
                 mapObj.put("tableColums",arrayList);//展示列
                 setDepartementName(listPageInfo);//转换查询列的部门编号为部门名称
                 toDataByTime(arrayList,listPageInfo);//转换日期格式
