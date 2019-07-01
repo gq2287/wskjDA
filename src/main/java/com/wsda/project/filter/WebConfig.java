@@ -1,8 +1,12 @@
 package com.wsda.project.filter;
 
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import javax.servlet.MultipartConfigElement;
 
 /**
  * 跨域
@@ -23,7 +27,19 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .exposedHeaders("access-control-allow-headers", "access-control-allow-methods", "access-control-allow" +
                         "-origin", "access-control-max-age", "X-Frame-Options","Authorization","token")
                 .allowCredentials(false).maxAge(3600);
+    }
 
-
+    /**
+     * 文件上传配置
+     * @return
+     */
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        //文件最大
+        factory.setMaxFileSize("512000KB"); //KB,MB  单个文件500MB
+        // 设置总上传数据总大小 1000MB
+        factory.setMaxRequestSize("1024000KB");
+        return factory.createMultipartConfig();
     }
 }

@@ -131,7 +131,7 @@
 
     <!--获取pdf存放地址-->
     <select id="getPDFUrlByFileCode" resultType="java.util.HashMap">
-        SELECT PDFPATH,ORIGINAPATH,WATERMARKPATH FROM ORIGINALFILES  where FILECODE=#{fileCode}
+        SELECT FILENAME,PDFPATH,ORIGINAPATH,WATERMARKPATH FROM ORIGINALFILES  where FILECODE=#{fileCode}
     </select>
 
     <!--获取指定原文条目-->

@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -110,26 +111,26 @@ public class OriginaFilesController {
     @ApiOperation(value = "获取pdf查看路径", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getPDFUrlByFileCode", method = RequestMethod.POST)
     public ResponseResult getPDFUrlByFileCode(@ApiParam(required = true, name = "fileCode", value = "原文编号") @RequestParam(name = "fileCode", required = true) String fileCode, HttpServletRequest request) {
-        Map<String, String> stringMap = originaFilesService.getUpLoadFilePath();
+        Map<String, String> stringMap = originaFilesService.getUpLoadFilePath();//获取保存路径
         String watermarkTxt = stringMap.get("WATERMARKTXT");
-        Map<String, String> url = originaFilesService.getPDFUrlByFileCode(fileCode);
+        Map<String, String> url = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
         if (url != null) {
             File file = new File(url.get("PDFPATH"));//PDFPATH,ORIGINAPATH
-            if (file.exists()) {//如国有pdf
-                if(watermarkTxt!=null&&!"".equals(watermarkTxt)){
+            if (file.exists()) {//如果有pdf
+                if (watermarkTxt != null && !"".equals(watermarkTxt)) {
                     //start 开始添加水印
                     String watermarkPath = null;
                     try {
-                        watermarkPath = Change2PDF.addtextWatermark(new File(StringUtil.getPdfPath(url.get("PDFPATH"))), watermarkTxt);
+                        watermarkPath = Change2PDF.addtextWatermark(file, watermarkTxt);
                         originaFilesService.upWatermarkPath(fileCode, watermarkPath);
                         watermarkPath = watermarkPath.substring(watermarkPath.indexOf(":") + 1, watermarkPath.length());
+                        return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", watermarkPath, true);
                     } catch (IOException e) {
                         logger.error("水印添加异常：" + e);
                     } catch (DocumentException e) {
                         logger.error("水印添加异常：" + e);
                     }
                     //end添加结束
-                    return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", watermarkPath, true);
                 }
                 String urlPDf = file.getPath().substring(file.getPath().indexOf("\\") + 1, file.getPath().length());
                 return new ResponseResult(ResponseResult.OK, "返回PDFUrl成功", urlPDf, true);
@@ -141,7 +142,7 @@ public class OriginaFilesController {
                         //原文支持在线查看，但pdf文件丢失就重新转换并返回路径
                         boolean bool = StringUtil.getFileSuffix(originaUrl, url.get("PDFPATH"));
                         if (bool) {
-                            if(watermarkTxt!=null&&!"".equals(watermarkTxt)){
+                            if (watermarkTxt != null && !"".equals(watermarkTxt)) {
 //                            start 开始添加水印
                                 String watermarkPath = null;
                                 try {
@@ -180,6 +181,14 @@ public class OriginaFilesController {
                                       @ApiParam(required = true, name = "recordCode", value = "原文主键") @RequestParam(name = "recordCode", required = true) String recordCode,
                                       @ApiParam(required = true, name = "file", value = "多文件上传") @RequestParam("file") MultipartFile[] files) {
         ResponseResult responseResult = null;
+        if(files!=null&&files.length>0){
+            for (int i = 0; i <files.length; i++) {
+                boolean fileMaxBool=StringUtil.checkFileSize((long) files[i].getSize(),100,"M");
+                if(!fileMaxBool){
+                    return new ResponseResult(ResponseResult.OK, "上传文件大于限制的100MB,无法上传", false);
+                }
+            }
+        }
         Map<String, String> OriginaPathMap = originaFilesService.getUpLoadFilePath();//查询原文存放的地址
         String upPath = OriginaPathMap.get("STORETYPE");//存放的是 LOCAL 还是FTP
         if ("LOCAL".equals(upPath)) {//上传本地
@@ -198,8 +207,6 @@ public class OriginaFilesController {
             //获取文件存放位置
             originaFilesService.addUpLoadFiles(parmsMap, tableCode, recordCode, count);
             responseResult = new ResponseResult(ResponseResult.OK, "上传成功", true);
-        } else {
-            responseResult = new ResponseResult(ResponseResult.OK, "上传失败", false);
         }
         return responseResult;
     }
@@ -276,7 +283,7 @@ public class OriginaFilesController {
     @RequestMapping(value = "/upWatermarkTxt", method = RequestMethod.POST)
     public ResponseResult upWatermarkTxt(@RequestParam(name = "watermarkTxt", required = true) String watermarkTxt) {
         Map<String, String> OriginaPathMap = originaFilesService.getUpLoadFilePath();//查询原文存放的地址
-        String storeId=OriginaPathMap.get("STOREID");
+        String storeId = OriginaPathMap.get("STOREID");
         boolean bool = originaFilesService.upWatermarkTxt(storeId, watermarkTxt);
         if (bool) {
             return new ResponseResult(ResponseResult.OK, "修改水印文字成功", bool);
@@ -289,12 +296,30 @@ public class OriginaFilesController {
     @ApiOperation(value = "获取水印文字", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getWatermarkTxt", method = RequestMethod.POST)
     public ResponseResult getWatermarkTxt() {
-        Map<String,String> WatermarkTxtPath = originaFilesService.getUpLoadFilePath();
-        if (WatermarkTxtPath!=null) {
-            return new ResponseResult(ResponseResult.OK, "获取水印文字成功", WatermarkTxtPath.get("WATERMARKTXT"),true);
+        Map<String, String> WatermarkTxtPath = originaFilesService.getUpLoadFilePath();
+        if (WatermarkTxtPath != null) {
+            return new ResponseResult(ResponseResult.OK, "获取水印文字成功", WatermarkTxtPath.get("WATERMARKTXT"), true);
         } else {
             return new ResponseResult(ResponseResult.OK, "获取水印文字失败", false);
         }
+    }
+
+
+    @ApiOperation(value = "下载文件", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/download", method = RequestMethod.POST)
+    public ResponseResult download(@RequestParam(name = "fileCode", required = true) String fileCode, HttpServletRequest request, HttpServletResponse response) {
+        ResponseResult responseResult=null;
+        Map<String, String> originaFile = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
+        if (originaFile != null&&originaFile.get("ORIGINAPATH")!=null) {
+            File file=new File(String.valueOf(originaFile.get("ORIGINAPATH")));
+            if(file.exists()){
+                String urlPDf = file.getPath().substring(file.getPath().indexOf("\\") + 1, file.getPath().length());
+                responseResult=new ResponseResult(ResponseResult.OK, "原文下载成功", urlPDf,true);
+                return  responseResult;
+            }
+        }
+        responseResult= new ResponseResult(ResponseResult.OK, "原文下载失败,当前原文不存在", false);
+        return responseResult;
     }
 
 }

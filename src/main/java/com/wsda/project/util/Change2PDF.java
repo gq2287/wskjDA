@@ -359,7 +359,7 @@ public class Change2PDF {
             // 设置颜色
             content.setColorFill(BaseColor.GRAY);
             // 设置字体及字号
-            content.setFontAndSize(baseFont, 35);
+            content.setFontAndSize(baseFont, 55);
             //透明度
             PdfGState gs = new PdfGState();
             gs.setFillOpacity(0.5f);// 设置透明度为0.8
