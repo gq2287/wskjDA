@@ -8,7 +8,6 @@ import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.codec.TiffImage;
 
 import java.io.*;
-import java.util.List;
 
 /**
  * 转换pdf
@@ -314,15 +313,6 @@ public class Change2PDF {
         return p;
     }
 
-
-    public static void main(String[] args) throws IOException, DocumentException {
-//        String filePath="E:\\Desktop\\GQ_GuoQ\\Change2PDF.java";
-        String pdfPath = "E:\\Desktop\\GQ_GuoQ\\Change2PDF.pdf";
-        File file = new File(pdfPath);
-        System.out.println(addtextWatermark(file,"交通厅档案注意保密"));
-
-    }
-
     /**
      * pdf文件添加水印
      *
@@ -370,18 +360,16 @@ public class Change2PDF {
         }
         stamper.setFormFlattening(false);// 如果为false那么生成的PDF文件还能编辑，一定要设为true
         stamper.close();//一定要在循环外关闭,不然只有第一页有水印
-
+        reader.close();//关闭读取否则文件删除不了
         return fileSavePath;
     }
 
-    /**
-     * 生成归档章图片
-     * @param txtStrList 第一行显示文字
-     * @param row 行
-     * @param column 列
-     * @return
-     */
-    public static String getArchives(List<String> txtStrList,int row,int column){
-        return  "";//返回归档章路径
+
+    public static void main(String[] args) throws IOException, DocumentException {
+//        String filePath="E:\\Desktop\\GQ_GuoQ\\Change2PDF.java";
+        String pdfPath = "E:\\Desktop\\GQ_GuoQ\\Change2PDF.pdf";
+        File file = new File(pdfPath);
+        System.out.println(addtextWatermark(file,"交通厅档案注意保密"));
+
     }
 }

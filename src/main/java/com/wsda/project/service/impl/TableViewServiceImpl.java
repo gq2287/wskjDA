@@ -131,7 +131,12 @@ public class TableViewServiceImpl implements TableViewService {
             if(tableName!=null){
                 columnMap.put("RECORDCODE","RECORDCODE");
                 PageHelper.startPage(pageNum, PageSize);//分页
-                PageInfo<Map<String,String>> listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql),type,systemUser.getUserCode()));//存放入分页的pageInfo中
+                PageInfo<Map<String,String>> listPageInfo;
+                if(systemUser!=null){
+                    listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql),type,systemUser.getUserCode()));//存放入分页的pageInfo中
+                }else{
+                    listPageInfo=new PageInfo<>(tableViewMapper.getTableInfo(tableName,columnMap,String.valueOf(whereSql),String.valueOf(sortSql),type,null));//存放入分页的pageInfo中
+                }
                 mapObj.put("tableColums",arrayList);//展示列
                 setDepartementName(listPageInfo);//转换查询列的部门编号为部门名称
                 toDataByTime(arrayList,listPageInfo);//转换日期格式

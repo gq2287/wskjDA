@@ -27,14 +27,19 @@
         WHERE COLUMNCODE IN( SELECT COLUMNCODE FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode} )
     </select>
 
-    <!--获取实体表数据-->
+    <!--获取实体表数据   SYSTEMUSERCOLLECTION用户收藏表 uscId用户编号-->
     <select id="getTableInfo" resultType="java.util.Map" parameterType="java.lang.String">
         select
         <foreach collection="columnMap.keys" item="key" open=" " separator=","  close=" " >
             ${key}
-        </foreach>,USC.ID AS COLLECTIONID
+        </foreach>
+        <if test="uscId != null and uscId != ''">
+            ,USC.ID AS COLLECTIONID
+        </if>
         from ${tableName} TEMP
-        LEFT  JOIN  SYSTEMUSERCOLLECTION USC on USC.ARCHIVESCODE=TEMP.RECORDCODE
+        <if test="uscId != null and uscId != ''">
+            LEFT  JOIN  SYSTEMUSERCOLLECTION USC on USC.ARCHIVESCODE=TEMP.RECORDCODE
+        </if>
         where 1=1  AND
         <if test="type != null and type != ''">
             TRASHSTATUS=#{type}
@@ -42,7 +47,9 @@
         <if test="whereSql != null and whereSql != ''">
             ${whereSql}
         </if>
-        OR USC.USERCODE=#{uscId}
+        <if test="uscId != null and uscId != ''">
+            OR USC.USERCODE=#{uscId}
+        </if>
         <if test="sortSql != null and sortSql != ''">
              ${sortSql}
         </if>

@@ -83,12 +83,12 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
         //controller方法处理完毕后，调用此方法
         System.out.println("在后端控制器执行后调用 ");
     }
-//
-//    @Override
-//    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-//        //页面渲染完毕后调用此方法
-//        System.out.println("整个请求执行完成后调用 ");
-//    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        //页面渲染完毕后调用此方法
+        System.out.println("整个请求执行完成后调用 ");
+    }
 
     /**
      * 展示请求参数

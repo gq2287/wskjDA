@@ -186,10 +186,10 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
         }
 
         int result=originaFilesMapper.delOrigianFileByFileCode(fileCode);//删除原文条目
-        if(result>0){
+        if(result>=0){
             String name=tableViewMapper.getTableNameByTableCode(tableCode);//获取档案表
             int oldCount=tableViewMapper.getYuanWenCountByRecordCode(name,originalFiles.getRECORDCODE());//查询当前档案条目的原文数量
-            return tableViewMapper.upArchivesYuanWenCountByRecordCode(name,originalFiles.getRECORDCODE(),oldCount+"");//修改原文数量
+            return tableViewMapper.upArchivesYuanWenCountByRecordCode(name,originalFiles.getRECORDCODE(),(oldCount-1)+"");//修改原文数量
         }else {
             return false;
         }
