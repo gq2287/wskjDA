@@ -136,12 +136,17 @@ public class CollectionController {
     @RequestMapping(value = "/getThisIsCollection", method = RequestMethod.POST)
     public ResponseResult getThisIsCollection(@ApiParam(required = true, name = "archivesCode", value = "档案编号") @RequestParam(name = "archivesCode", required = true) String archivesCode,HttpServletRequest request) {
         SystemUser systemUser=(SystemUser)request.getSession().getAttribute("user");
-        List<SystemUserCollection> userCollection= systemUserCollectionService.getAllCollectionByUserCode(null,systemUser,archivesCode);
-
-        if (userCollection!=null&&userCollection.size()>0) {
-            return new ResponseResult(ResponseResult.OK, "已收藏", true,true);
-        } else {
-            return new ResponseResult(ResponseResult.OK, "未收藏",false, true);
+        if(systemUser!=null){
+            List<SystemUserCollection> userCollection= systemUserCollectionService.getAllCollectionByUserCode(null,systemUser,archivesCode);
+            if (userCollection!=null&&userCollection.size()>0) {
+                return new ResponseResult(ResponseResult.OK, "已收藏", true,true);
+            } else {
+                return new ResponseResult(ResponseResult.OK, "未收藏",false, true);
+            }
+        }else{
+            return new ResponseResult(ResponseResult.OK, "当前用户未登录",false);
         }
+
+
     }
 }

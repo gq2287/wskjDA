@@ -21,7 +21,7 @@
 
 
     <!--删除归档章-->
-    <delete id="delArchivesSeal" parameterType="java.lang.String">
+    <delete id="delArchivesSeal" parameterType="java.lang.Integer">
         delete  ARCHIVESSEAL where ID=#{id}
     </delete>
 
@@ -36,7 +36,7 @@
         #{id},
         #{tableCode},
         #{columnContent},
-        ${serial},#{state})
+        ${serial},'T')
     </insert>
 
 </mapper>

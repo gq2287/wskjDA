@@ -18,17 +18,29 @@ public class ArchivesSealServiceImpl implements ArchivesSealService {
 
     @Override
     public boolean delArchivesSeal(String id) {
-        return archivesSealMapper.delArchivesSeal(id);
+        int result=archivesSealMapper.delArchivesSeal(id);
+        if(result>=0){
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean addArchivesSeal(ArchivesSeal archivesSeal) {
-        int max=archivesSealMapper.getSerialMax();//序号;
-        if(max>0){
+        ArchivesSeal ar=archivesSealMapper.getArchivesSealByTableCode(archivesSeal.getTableCode());//一个表只有一个章
+        if(ar!=null){
+            delArchivesSeal(ar.getId());
+        }
+        Integer max=archivesSealMapper.getSerialMax();//序号;
+        if(max!=null&&max>0){
             archivesSeal.setSerial(max);//序号
         }else{
             archivesSeal.setSerial(0);//序号
         }
-        return archivesSealMapper.addArchivesSeal(archivesSeal);
+        int result=archivesSealMapper.addArchivesSeal(archivesSeal);
+        if(result>0){
+            return true;
+        }
+        return false;
     }
 }

@@ -8,9 +8,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -36,9 +36,7 @@ public class ArchivesSealController {
 
     @ApiOperation(value = "当前表添加归档章", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/addArchivesSeal", method = RequestMethod.POST)
-    public ResponseResult addArchivesSeal(@RequestParam("archivesSeal") ArchivesSeal archivesSeal) {
-//        Type type = new TypeToken<ArchivesSeal>() {}.getType();
-//        ArchivesSeal archivesSeal= JSONObject.parseObject(archives,type);
+    public ResponseResult addArchivesSeal(@RequestBody ArchivesSeal archivesSeal) {
         archivesSeal.setId(StringUtil.getUuid());
         if(archivesSeal!=null){
             boolean bool=archivesSealService.addArchivesSeal(archivesSeal);

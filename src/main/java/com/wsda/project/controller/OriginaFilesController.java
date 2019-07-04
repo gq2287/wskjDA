@@ -5,6 +5,7 @@ import com.google.common.reflect.TypeToken;
 import com.itextpdf.text.DocumentException;
 import com.wsda.project.dao.TableViewMapper;
 import com.wsda.project.model.ResponseResult;
+import com.wsda.project.service.impl.ArchivesSealServiceImpl;
 import com.wsda.project.service.impl.OriginaFilesServiceImpl;
 import com.wsda.project.service.impl.TableViewServiceImpl;
 import com.wsda.project.util.Change2PDF;
@@ -41,6 +42,9 @@ public class OriginaFilesController {
     private TableViewServiceImpl tableViewService;
     @Resource
     private TableViewMapper tableViewMapper;
+
+    @Resource
+    private ArchivesSealServiceImpl archivesSealService;
 
     @ApiOperation(value = "获取档案下原文信息", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getOriginaFileSByRecordCode", method = RequestMethod.POST)

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface ArchivesSealMapper {
     ArchivesSeal getArchivesSealByTableCode(@Param("tableCode") String tableCode);
-    boolean delArchivesSeal(@Param("id")String id);
-    boolean addArchivesSeal(ArchivesSeal archivesSeal);
+    Integer delArchivesSeal(@Param("id")String id);
+    Integer addArchivesSeal(ArchivesSeal archivesSeal);
     Integer getSerialMax();
 }
