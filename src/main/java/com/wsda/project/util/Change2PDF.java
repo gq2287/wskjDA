@@ -378,7 +378,7 @@ public class Change2PDF {
         ImageIcon imageIcon = new ImageIcon(waterImage);
         int iconWidth = imageIcon.getIconWidth();//图片宽
         int iconHeight = imageIcon.getIconHeight();//图片高
-        
+
         //获取pdfWatermark的存放路径
         String fileSavePath = file.getPath().substring(0, file.getPath().lastIndexOf("."));
         fileSavePath = fileSavePath + "Image" + ".pdf";//水印保存位置
@@ -406,10 +406,10 @@ public class Change2PDF {
         String pdfPath = "E:\\Desktop\\GQ_GuoQ\\Change2PDF.pdf";
         File file = new File(pdfPath);
         String path= addtextWatermark(file,"交通厅档案注意保密");
-        String imagepath = Graphics2DRectangleImage.initChartData("E:\\Desktop\\GQ_GuoQ\\1.png");//生成图片水印
+        boolean imagepath = Graphics2DRectangleImage.initChartData("E:\\Desktop\\GQ_GuoQ\\1.png");//生成图片水印
         file = new File(path);
-        imagepath=Change2PDF.addimageWatermark(file,imagepath);
-        System.out.println(imagepath);
+      String  imagepath1=Change2PDF.addimageWatermark(file,"E:\\Desktop\\GQ_GuoQ\\1.png");
+        System.out.println(imagepath1);
 
     }
 }

@@ -8,7 +8,7 @@
         id,
         tableCode,
         columnContent,
-        serial,state
+        serial,state,path
     FROM ARCHIVESSEAL WHERE TABLECODE=#{tableCode}
     </select>
 
@@ -21,7 +21,7 @@
 
 
     <!--删除归档章-->
-    <delete id="delArchivesSeal" parameterType="java.lang.Integer">
+    <delete id="delArchivesSeal" parameterType="java.lang.String">
         delete  ARCHIVESSEAL where ID=#{id}
     </delete>
 
@@ -31,12 +31,12 @@
         ID,
         TABLECODE,
         COLUMNCONTENT,
-        SERIAL,STATE)
+        SERIAL,STATE,PATH)
         VALUES(
         #{id},
         #{tableCode},
         #{columnContent},
-        ${serial},'T')
+        ${serial},'T',#{path})
     </insert>
 
 </mapper>

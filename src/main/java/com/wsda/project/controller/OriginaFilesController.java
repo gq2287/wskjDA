@@ -3,12 +3,15 @@ package com.wsda.project.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.reflect.TypeToken;
 import com.itextpdf.text.DocumentException;
+import com.wsda.project.dao.DepartementMapper;
 import com.wsda.project.dao.TableViewMapper;
+import com.wsda.project.model.ArchivesSeal;
 import com.wsda.project.model.ResponseResult;
 import com.wsda.project.service.impl.ArchivesSealServiceImpl;
 import com.wsda.project.service.impl.OriginaFilesServiceImpl;
 import com.wsda.project.service.impl.TableViewServiceImpl;
 import com.wsda.project.util.Change2PDF;
+import com.wsda.project.util.Graphics2DRectangleImage;
 import com.wsda.project.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,8 +32,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @Api("原文Controller")
@@ -42,6 +45,9 @@ public class OriginaFilesController {
     private TableViewServiceImpl tableViewService;
     @Resource
     private TableViewMapper tableViewMapper;
+
+    @Resource
+    private DepartementMapper departementMapper;
 
     @Resource
     private ArchivesSealServiceImpl archivesSealService;
@@ -113,8 +119,46 @@ public class OriginaFilesController {
 
 
     @ApiOperation(value = "获取pdf查看路径", notes = "返回信息 0成功，400失败 ")
-    @RequestMapping(value = "/getPDFUrlByFileCode", method = RequestMethod.POST)
-    public ResponseResult getPDFUrlByFileCode(@ApiParam(required = true, name = "fileCode", value = "原文编号") @RequestParam(name = "fileCode", required = true) String fileCode, HttpServletRequest request) {
+    @RequestMapping(value = "/getPDFUrlByParameter", method = RequestMethod.POST)
+    public ResponseResult getPDFUrlByParameter(@ApiParam(required = true, name = "fileCode", value = "原文编号") @RequestParam(name = "fileCode", required = true) String fileCode,
+                                               @ApiParam(required = true, name = "tableCode", value = "表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                               @ApiParam(required = true, name = "recordCode", value = "当前档案条目编号") @RequestParam(name = "recordCode", required = true) String recordCode,
+                                               HttpServletRequest request) {
+//        start 归档章
+        ArchivesSeal archivesSeal = archivesSealService.getArchivesSeal(tableCode);//获取归档章
+        List<Object> cols = null;//获取归档章对应字段
+        if (archivesSeal != null) {
+            List<String> templList = Arrays.asList(archivesSeal.getColumnContent().split(","));
+            Map<String, String> parms = new HashMap<>();
+            String tableName = tableViewMapper.getTableNameByTableCode(archivesSeal.getTableCode());//获取实体表名称
+            String sql = archivesSeal.getColumnContent();
+            parms.put("tableName", tableName);
+            parms.put("sql", sql);
+            parms.put("recordCode", recordCode);
+            Map<String, String> lll = tableViewMapper.getArchivesByIsArchiveFlag(parms);//获去归档的档案 归档信息
+            if (lll != null) {
+                cols = new ArrayList<>();
+                for (int i = 0; i < templList.size(); i++) {
+                    String temp = templList.get(i).toUpperCase();
+                    if (lll.containsKey(temp)) {
+                        if ("departmentCode".equalsIgnoreCase(temp)) {
+                            String departmentName = departementMapper.getDepartementNameByDepartementCode(lll.get(temp));
+                            cols.add(i, departmentName);
+                        } else if ("createDate".equalsIgnoreCase(temp)) {
+                            SimpleDateFormat SFDate = new SimpleDateFormat("yyyyMMdd");
+                            String resultTime= SFDate.format((Object) lll.get(temp));
+                            cols.add(i, resultTime);
+                        } else {
+                            cols.add(i, lll.get(temp));
+                        }
+                    } else {
+                        cols.add(i, "");
+                    }
+                }
+            }
+        }
+//end
+
         Map<String, String> stringMap = originaFilesService.getUpLoadFilePath();//获取保存路径
         String watermarkTxt = stringMap.get("WATERMARKTXT");
         Map<String, String> url = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
@@ -127,6 +171,16 @@ public class OriginaFilesController {
                     try {
                         watermarkPath = Change2PDF.addtextWatermark(file, watermarkTxt);
                         originaFilesService.upWatermarkPath(fileCode, watermarkPath);
+                        if (cols != null) {
+                            boolean bool = Graphics2DRectangleImage.graphicsGeneration(cols, cols.size() / 2, archivesSeal.getPath());
+                            if (bool) {
+                                File fileW = new File(watermarkPath);
+                                if (fileW.exists()) {
+                                    watermarkPath = Change2PDF.addimageWatermark(fileW, archivesSeal.getPath());
+                                }
+                            }
+                        }
+
                         watermarkPath = watermarkPath.substring(watermarkPath.indexOf(":") + 1, watermarkPath.length());
                         return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", watermarkPath, true);
                     } catch (IOException e) {
@@ -151,6 +205,15 @@ public class OriginaFilesController {
                                 String watermarkPath = null;
                                 try {
                                     watermarkPath = Change2PDF.addtextWatermark(new File(StringUtil.getPdfPath(url.get("PDFPATH"))), watermarkTxt);
+                                    if (cols != null) {
+                                        bool = Graphics2DRectangleImage.graphicsGeneration(cols, cols.size() / 2, archivesSeal.getPath());
+                                        if (bool) {
+                                            File fileW = new File(watermarkPath);
+                                            if (fileW.exists()) {
+                                                watermarkPath = Change2PDF.addimageWatermark(fileW, archivesSeal.getPath());
+                                            }
+                                        }
+                                    }
                                     originaFilesService.upWatermarkPath(fileCode, watermarkPath);
                                     watermarkPath = watermarkPath.substring(watermarkPath.indexOf(":") + 1, watermarkPath.length());
                                 } catch (IOException e) {
@@ -185,10 +248,10 @@ public class OriginaFilesController {
                                       @ApiParam(required = true, name = "recordCode", value = "原文主键") @RequestParam(name = "recordCode", required = true) String recordCode,
                                       @ApiParam(required = true, name = "file", value = "多文件上传") @RequestParam("file") MultipartFile[] files) {
         ResponseResult responseResult = null;
-        if(files!=null&&files.length>0){
-            for (int i = 0; i <files.length; i++) {
-                boolean fileMaxBool=StringUtil.checkFileSize((long) files[i].getSize(),100,"M");
-                if(!fileMaxBool){
+        if (files != null && files.length > 0) {
+            for (int i = 0; i < files.length; i++) {
+                boolean fileMaxBool = StringUtil.checkFileSize((long) files[i].getSize(), 100, "M");
+                if (!fileMaxBool) {
                     return new ResponseResult(ResponseResult.OK, "上传文件大于限制的100MB,无法上传", false);
                 }
             }
@@ -312,17 +375,17 @@ public class OriginaFilesController {
     @ApiOperation(value = "下载文件", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/download", method = RequestMethod.POST)
     public ResponseResult download(@RequestParam(name = "fileCode", required = true) String fileCode, HttpServletRequest request, HttpServletResponse response) {
-        ResponseResult responseResult=null;
+        ResponseResult responseResult = null;
         Map<String, String> originaFile = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
-        if (originaFile != null&&originaFile.get("ORIGINAPATH")!=null) {
-            File file=new File(String.valueOf(originaFile.get("ORIGINAPATH")));
-            if(file.exists()){
+        if (originaFile != null && originaFile.get("ORIGINAPATH") != null) {
+            File file = new File(String.valueOf(originaFile.get("ORIGINAPATH")));
+            if (file.exists()) {
                 String urlPDf = file.getPath().substring(file.getPath().indexOf("\\") + 1, file.getPath().length());
-                responseResult=new ResponseResult(ResponseResult.OK, "原文下载成功", urlPDf,true);
-                return  responseResult;
+                responseResult = new ResponseResult(ResponseResult.OK, "原文下载成功", urlPDf, true);
+                return responseResult;
             }
         }
-        responseResult= new ResponseResult(ResponseResult.OK, "原文下载失败,当前原文不存在", false);
+        responseResult = new ResponseResult(ResponseResult.OK, "原文下载失败,当前原文不存在", false);
         return responseResult;
     }
 

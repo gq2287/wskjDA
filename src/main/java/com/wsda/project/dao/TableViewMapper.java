@@ -35,4 +35,7 @@ public interface TableViewMapper {
     Integer getYuanWenCountByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode);
 //    修改原文数量
     Boolean upArchivesYuanWenCountByRecordCode(@Param("tableName")String tableName,@Param("recordCode") String recordCode,@Param("count") String count);
+
+    //查询当前档案信息
+    Map<String,String> getArchivesByIsArchiveFlag(Map<String,String> parms);
 }

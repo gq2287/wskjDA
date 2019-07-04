@@ -124,4 +124,11 @@
         WHERE  RECORDCODE=#{recordCode}
     </update>
 
+
+
+    <!--查询档案归档档案-->
+    <select id="getArchivesByIsArchiveFlag" resultType="java.util.Map">
+          SELECT ${sql} FROM ${tableName}
+           WHERE RECORDCODE=#{recordCode} and ARCHIVEFLAG='已归档'
+    </select>
 </mapper>
