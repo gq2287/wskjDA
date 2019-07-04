@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsda.project.dao.ArchivesSealMapper">
+    <!--获取归档章-->
+    <select id="getArchivesSealByTableCode" resultType="com.wsda.project.model.ArchivesSeal">
+    SELECT
+        id,
+        tableCode,
+        columnContent,
+        serial,state
+    FROM ARCHIVESSEAL WHERE TABLECODE=#{tableCode}
+    </select>
+
+    <!--获取归档章序号-->
+    <select id="getSerialMax" resultType="java.lang.Integer">
+    SELECT
+        Max(serial) as
+    FROM ARCHIVESSEAL
+    </select>
+
+
+    <!--删除归档章-->
+    <delete id="delArchivesSeal" parameterType="java.lang.String">
+        delete  ARCHIVESSEAL where ID=#{id}
+    </delete>
+
+    <!--添加表数据-->
+    <insert id="addArchivesSeal" parameterType="com.wsda.project.model.ArchivesSeal">
+        INSERT INTO ARCHIVESSEAL(
+        ID,
+        TABLECODE,
+        COLUMNCONTENT,
+        SERIAL,STATE)
+        VALUES(
+        #{id},
+        #{tableCode},
+        #{columnContent},
+        ${serial},#{state})
+    </insert>
+
+</mapper>

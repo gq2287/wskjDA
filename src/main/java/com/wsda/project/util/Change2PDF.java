@@ -378,7 +378,7 @@ public class Change2PDF {
         ImageIcon imageIcon = new ImageIcon(waterImage);
         int iconWidth = imageIcon.getIconWidth();//图片宽
         int iconHeight = imageIcon.getIconHeight();//图片高
-
+        
         //获取pdfWatermark的存放路径
         String fileSavePath = file.getPath().substring(0, file.getPath().lastIndexOf("."));
         fileSavePath = fileSavePath + "Image" + ".pdf";//水印保存位置
