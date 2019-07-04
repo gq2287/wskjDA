@@ -7,6 +7,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.codec.TiffImage;
 
+import javax.swing.*;
 import java.io.*;
 
 /**
@@ -324,12 +325,12 @@ public class Change2PDF {
      */
     public static String addtextWatermark(File file, String waterText) throws IOException, DocumentException {
         //获取pdfWatermark的存放路径
-        String fileSavePath=file.getPath().substring(0, file.getPath().lastIndexOf("."));
-        fileSavePath=fileSavePath+"Watermark"+".pdf";//水印保存位置
+        String fileSavePath = file.getPath().substring(0, file.getPath().lastIndexOf("."));
+        fileSavePath = fileSavePath + "Watermark" + ".pdf";//水印保存位置
         //待加水印的文件
         PdfReader reader = new PdfReader(file.getPath());
         // 加完水印的文件
-        PdfStamper stamper = new PdfStamper(reader,new FileOutputStream(fileSavePath));
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(fileSavePath));
         int total = reader.getNumberOfPages() + 1;
         //获取文档
         Document document = new Document(reader.getPageSize(1));
@@ -364,12 +365,51 @@ public class Change2PDF {
         return fileSavePath;
     }
 
+    /**
+     * pdf文件添加水印
+     *
+     * @param file      pdf文件
+     * @param waterImage 添加图片水印
+     * @return
+     * @throws IOException
+     * @throws DocumentException
+     */
+    public static String addimageWatermark(File file, String waterImage) throws IOException, DocumentException {
+        ImageIcon imageIcon = new ImageIcon(waterImage);
+        int iconWidth = imageIcon.getIconWidth();//图片宽
+        int iconHeight = imageIcon.getIconHeight();//图片高
 
-    public static void main(String[] args) throws IOException, DocumentException {
-//        String filePath="E:\\Desktop\\GQ_GuoQ\\Change2PDF.java";
+        //获取pdfWatermark的存放路径
+        String fileSavePath = file.getPath().substring(0, file.getPath().lastIndexOf("."));
+        fileSavePath = fileSavePath + "Image" + ".pdf";//水印保存位置
+        PdfReader reader = new PdfReader(file.getPath());//待添加水印位置
+        PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(fileSavePath));//水印文件保存位置
+
+        //获取文档
+        Document document = new Document(reader.getPageSize(1));
+        // 获取页面宽度
+        float widths = document.getPageSize().getWidth();
+        // 获取页面高度
+        float heights = document.getPageSize().getHeight();
+
+        PdfContentByte content;
+        Image img = Image.getInstance(waterImage);
+        img.setAbsolutePosition(widths-iconWidth-10, heights-iconHeight-10);//减去图片宽高和10边框线确保图片完整显示 并保留有边距
+        content = stamp.getOverContent(1);// 在第一页内容上方加水印
+        content.addImage(img);
+        stamp.close();
+        reader.close();
+        return fileSavePath;
+    }
+
+    public static void main(String[] args) throws Exception {
         String pdfPath = "E:\\Desktop\\GQ_GuoQ\\Change2PDF.pdf";
         File file = new File(pdfPath);
-        System.out.println(addtextWatermark(file,"交通厅档案注意保密"));
+        String path= addtextWatermark(file,"交通厅档案注意保密");
+        String imagepath = Graphics2DRectangleImage.initChartData("E:\\Desktop\\GQ_GuoQ\\1.png");//生成图片水印
+        file = new File(path);
+        imagepath=Change2PDF.addimageWatermark(file,imagepath);
+        System.out.println(imagepath);
 
     }
 }

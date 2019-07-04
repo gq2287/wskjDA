@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * 生成圆形印章
  */
-public class UtilsGraphics2D {
+public class Graphics2DCircularImage {
     
     private static final int WIDTH = 500;//图片宽度
     private static final int HEIGHT = 500;//图片高度
