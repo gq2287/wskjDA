@@ -80,67 +80,67 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
         if(parmsMap.get("type")!=null){
             if("0".equals(parmsMap.get("type"))){//pdf文件
                 originalFiles =new OriginalFiles();
-                originalFiles.setFILECODE(StringUtil.getUuid());//唯一编号
-                originalFiles.setRECORDCODE(recordCode);//档案表条目编号
+                originalFiles.setFileCode(StringUtil.getUuid());//唯一编号
+                originalFiles.setRecordCode(recordCode);//档案表条目编号
                 if(parmsMap.get("originFileName")!=null){
                     String originFileName=parmsMap.get("originFileName");//原文名称
-                    originalFiles.setFILENAME(originFileName);//文件原文名称
-                    originalFiles.setMAINTITLE(originFileName);//文件题名
+                    originalFiles.setFileName(originFileName);//文件原文名称
+                    originalFiles.setMainTitle(originFileName);//文件题名
                 }
                 if(parmsMap.get("originFileName")!=null){
                     String originFileName=parmsMap.get("originFileName");
                     originFileName=originFileName.substring(originFileName.lastIndexOf(".")+1,originFileName.length());//原文后缀
-                    originalFiles.setFILETYPE(originFileName);//文件原文名称
+                    originalFiles.setFileType(originFileName);//文件原文名称
                 }
                 if(parmsMap.get("fileSize")!=null){
                     String fileSize=parmsMap.get("fileSize");
-                    originalFiles.setFILELENGTH(fileSize);//文件长度
+                    originalFiles.setFileLength(fileSize);//文件长度
                 }
                 if(parmsMap.get("fileSize")!=null){
                     String fileSize=parmsMap.get("fileSize");
-                    originalFiles.setFILELENGTH(fileSize);//文件长度
+                    originalFiles.setFileLength(fileSize);//文件长度
                 }
                 if(parmsMap.get("pdfPath")!=null){
                     String pdfPath=parmsMap.get("pdfPath");
-                    originalFiles.setPDFPATH(pdfPath);//pdf路径
+                    originalFiles.setPdfPath(pdfPath);//pdf路径
                 }
 //                添加水印start
                 if(parmsMap.get("watermarkPath")!=null){
                     String watermarkPath=parmsMap.get("watermarkPath");
-                    originalFiles.setWATERMARKPATH(watermarkPath);//水印pdf路径
+                    originalFiles.setWatermarkPath(watermarkPath);//水印pdf路径
                 }
 //                添加水印end
 
-                originalFiles.setUPLOADTIME("TO_DATE('"+StringUtil.getDate(3)+"','YYYY-MM-DD')");//上传时间
-                originalFiles.setTRASHSTATUS("0");//未删除的文件 0未删除，1删除
+                originalFiles.setUploadTime("TO_DATE('"+StringUtil.getDate(3)+"','YYYY-MM-DD')");//上传时间
+                originalFiles.setTrashStatus("0");//未删除的文件 0未删除，1删除
             }else{//没有pdf文件
                 originalFiles =new OriginalFiles();
-                originalFiles.setFILECODE(StringUtil.getUuid());//唯一编号
-                originalFiles.setRECORDCODE(recordCode);//档案表条目编号
+                originalFiles.setFileCode(StringUtil.getUuid());//唯一编号
+                originalFiles.setRecordCode(recordCode);//档案表条目编号
                 if(parmsMap.get("originFileName")!=null){
                     String originFileName=parmsMap.get("originFileName");//原文名称
-                    originalFiles.setFILENAME(originFileName);//文件原文名称
-                    originalFiles.setMAINTITLE(originFileName);//文件题名
+                    originalFiles.setFileName(originFileName);//文件原文名称
+                    originalFiles.setMainTitle(originFileName);//文件题名
                 }
                 if(parmsMap.get("originFileName")!=null){
                     String originFileName=parmsMap.get("originFileName");
                     originFileName=originFileName.substring(originFileName.lastIndexOf(".")+1,originFileName.length());//原文后缀
-                    originalFiles.setFILETYPE(originFileName);//文件原文后缀
+                    originalFiles.setFileType(originFileName);//文件原文后缀
                 }
                 if(parmsMap.get("fileSize")!=null){
                     String fileSize=parmsMap.get("fileSize");
-                    originalFiles.setFILELENGTH(fileSize);//文件长度
+                    originalFiles.setFileLength(fileSize);//文件长度
                 }
                 if(parmsMap.get("fileSize")!=null){
                     String fileSize=parmsMap.get("fileSize");
-                    originalFiles.setFILELENGTH(fileSize);//文件长度
+                    originalFiles.setFileLength(fileSize);//文件长度
                 }
-                originalFiles.setUPLOADTIME("TO_DATE('"+StringUtil.getDate(3)+"','YYYY-MM-DD')");//上传时间
-                originalFiles.setTRASHSTATUS("0");//未删除的文件 0未删除，1删除
+                originalFiles.setUploadTime("TO_DATE('"+StringUtil.getDate(3)+"','YYYY-MM-DD')");//上传时间
+                originalFiles.setTrashStatus("0");//未删除的文件 0未删除，1删除
             }
             if(parmsMap.get("originFilePath")!=null){
                 String originFilePath=parmsMap.get("originFilePath");
-                originalFiles.setORIGINAPATH(originFilePath);//原文存放路径
+                originalFiles.setOriginalFilePath(originFilePath);//原文存放路径
             }
             bool =originaFilesMapper.addUpLoadFileOriginaFiles(originalFiles);
         }else {
@@ -164,7 +164,7 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
     }
 
     @Override
-    public Map<String,String> getPDFUrlByFileCode(String fileCode) {
+    public OriginalFiles getPDFUrlByFileCode(String fileCode) {
         return originaFilesMapper.getPDFUrlByFileCode(fileCode);
     }
 
@@ -174,22 +174,22 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
     public boolean delOrigianFileByFileCode(String tableCode,String fileCode) {
         OriginalFiles originalFiles=originaFilesMapper.getOrigianFileInfoByFileCode(fileCode);//获取删除的原文条目
         if(originalFiles!=null){
-            if(originalFiles.getPDFPATH()!=null){//删除pdf
-                DeleteFileUtil.deleteFile(originalFiles.getPDFPATH());
+            if(originalFiles.getPdfPath()!=null){//删除pdf
+                DeleteFileUtil.deleteFile(originalFiles.getPdfPath());
             }
-            if(originalFiles.getORIGINAPATH()!=null){//删除原文
-                DeleteFileUtil.deleteFile(originalFiles.getORIGINAPATH());
+            if(originalFiles.getOriginalFilePath()!=null){//删除原文
+                DeleteFileUtil.deleteFile(originalFiles.getOriginalFilePath());
             }
-            if(originalFiles.getWATERMARKPATH()!=null){//删除水印
-                DeleteFileUtil.deleteFile(originalFiles.getWATERMARKPATH());
+            if(originalFiles.getWatermarkPath()!=null){//删除水印
+                DeleteFileUtil.deleteFile(originalFiles.getWatermarkPath());
             }
         }
 
         int result=originaFilesMapper.delOrigianFileByFileCode(fileCode);//删除原文条目
         if(result>=0){
             String name=tableViewMapper.getTableNameByTableCode(tableCode);//获取档案表
-            int oldCount=tableViewMapper.getYuanWenCountByRecordCode(name,originalFiles.getRECORDCODE());//查询当前档案条目的原文数量
-            return tableViewMapper.upArchivesYuanWenCountByRecordCode(name,originalFiles.getRECORDCODE(),(oldCount-1)+"");//修改原文数量
+            int oldCount=tableViewMapper.getYuanWenCountByRecordCode(name,originalFiles.getRecordCode());//查询当前档案条目的原文数量
+            return tableViewMapper.upArchivesYuanWenCountByRecordCode(name,originalFiles.getRecordCode(),(oldCount-1)+"");//修改原文数量
         }else {
             return false;
         }

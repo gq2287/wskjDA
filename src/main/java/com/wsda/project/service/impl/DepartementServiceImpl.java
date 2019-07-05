@@ -21,8 +21,8 @@ public class DepartementServiceImpl implements DepartementService {
         if(departementList!=null&&departementList.size()>0){
             for (int i = 0; i < departementList.size(); i++) {
                 Tree rootTree=new Tree();//根节点
-                rootTree.setId(departementList.get(i).getDEPARTMENTCODE());
-                rootTree.setText(departementList.get(i).getNAME());
+                rootTree.setId(departementList.get(i).getDepartmentCode());
+                rootTree.setText(departementList.get(i).getName());
                 rootTree.setLi_attr(departementList.get(i));
                 rootTree.setChildren( getListSystemDepartement(departementList.get(i)));//获取旗下子节点
                 treeList.add(rootTree);
@@ -44,13 +44,13 @@ public class DepartementServiceImpl implements DepartementService {
      * @return
      */
     private List<Tree> getListSystemDepartement(Departement departmentCode){
-        List<Departement> departementList=departementMapper.getDepartementByParentCode(departmentCode.getDEPARTMENTCODE());//根据基础的部门编号查询旗下子节点
+        List<Departement> departementList=departementMapper.getDepartementByParentCode(departmentCode.getDepartmentCode());//根据基础的部门编号查询旗下子节点
         List<Tree> treeList=new ArrayList<>(departementList.size());//存放节点树
         if(departementList!=null&&departementList.size()>0){
             for (int i = 0; i < departementList.size(); i++) {
                 Tree childrenTree=new Tree();
-                childrenTree.setId(departementList.get(i).getDEPARTMENTCODE());
-                childrenTree.setText(departementList.get(i).getNAME());
+                childrenTree.setId(departementList.get(i).getDepartmentCode());
+                childrenTree.setText(departementList.get(i).getName());
                 childrenTree.setLi_attr(departementList.get(i));
                 treeList.add(childrenTree);
                 List<Tree> treeListChildren =getListSystemDepartement(departementList.get(i));

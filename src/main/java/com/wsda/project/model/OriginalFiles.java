@@ -4,297 +4,296 @@ package com.wsda.project.model;
  * 原文实体
  */
 public class OriginalFiles {
-    private String FILECODE;//原文编号
-    private String RECORDCODE;//记录编号
-    private String FILENAME;//原文名称
-    private String PAGENO;//页号
-    private String FILETYPE;//文件类型
-    private String FILELENGTH;//文件长度
-    private String USERCODE;//用户编号
-    private String DEPARTMENTCODE;//用户部门编号
-    private String UPLOADTIME;//上传时间
-    private String STATUS;//状态
-    private String FONDSNO;//全宗号
-    private String FILLINGYEAR;//归档年度
-    private String UPLOADUNIT;//上传单位
-    private String READWRITECHECK;//读取检验
-    private String CHECKUNIT;//检验人
-    private String DOCUMENTCODE;//稿本代号
-    private String BINGDUJIANYAN;//病毒检验
-    private String ZAITIJIANYAN;//载体检验
-    private String WANZHENGXINGJIANYA;//完整性检验
-    private String YOUXIAOJIANYAN;//有效检验
-    private String JISHUJIANYAN;//技术检验
-    private String JIANRONGXINGJIANYAN;//兼容性检验
-    private String USESOFT;//所用软件
-    private String MAINTITLE;//标题
-    private String BEIZHU;//备注
+    private String fileCode;//原文编号
+    private String recordCode;//记录编号
+    private String fileName;//原文名称
+    private String pageNo;//页号
+    private String fileType;//文件类型
+    private String fileLength;//文件长度
+    private String userCode;//用户编号
+    private String departmentCode;//用户部门编号
+    private String uploadTime;//上传时间
+    private String status;//状态
+    private String fondsNo;//全宗号
+    private String fillingYear;//归档年度
+    private String uploadUnit;//上传单位
+    private String readWriteCheck;//读取检验
+    private String checkUnit;//检验人
+    private String documentCode;//稿本代号
+    private String bingdujianyan;//病毒检验
+    private String zaiTiJianYan;//载体检验
+    private String wanZhengXingJianYa;//完整性检验
+    private String youxiaojianyan;//有效检验
+    private String jiShuJianYan;//技术检验
+    private String jianRongXingJianYan;//兼容性检验
+    private String usesoft;//所用软件
+    private String mainTitle;//标题
+    private String beiZhu;//备注
     private String CD_MARK;//光盘标记
-    private String AUTOPDF;//自动PDF
-    private String OSPOSITION;//本地主目录
-    private String FILELOC;//FTP 目录
-    private String FTPIP;//FTP 地址
-    private String FTPPORT;//FTP 端口号
-    private String FTPUSERNAME;//FTP 服务器用户名
-    private String FTPPASSWORD;//FTP 密码
-    private String OSTYPE;//存储类型        1本地,2ftp
-    private String TRASHSTATUS;//回收站     0默认,1垃圾站
-    private String ARCHIVECATALOGNO;//存档日志编号
-    private String RETENTION;//保留
-    private String ORIGINALFILEPATH;//原始文件路径
-    private String FILE_NAME_ZH_CN;//文件中文名称
+    private String autoPdf;//自动PDF
+    private String osPosition;//本地主目录
+    private String fileLoc;//FTP 目录
+    private String ftpIp;//FTP 地址
+    private String ftpPort;//FTP 端口号
+    private String ftpuserName;//FTP 服务器用户名
+    private String ftppassWord;//FTP 密码
+    private String osType;//存储类型        1本地,2ftp
+    private String trashStatus;//回收站     0默认,1垃圾站
+    private String archivecataLogNo;//存档日志编号
+    private String retention;//保留
+    private String FILE_NAME_CH_CN;//文件中文名称
     private String YUAN_WEN_SHU_LIANG;//原文数量
-    private String PDFPATH;//pdf路径
-    private String ORIGINAPATH;//原文存放路径
-    private String WATERMARKPATH;//水印pdf存放路径
+    private String pdfPath;//pdf路径
+    //    private String originaPath;//原文存放路径
+    private String originalFilePath;//原始文件路径
+    private String watermarkPath;//水印pdf存放路径
 
     public OriginalFiles() {
     }
 
-    public OriginalFiles(String FILECODE, String RECORDCODE, String FILENAME, String PAGENO, String FILETYPE, String FILELENGTH, String USERCODE, String DEPARTMENTCODE, String UPLOADTIME, String STATUS, String FONDSNO, String FILLINGYEAR, String UPLOADUNIT, String READWRITECHECK, String CHECKUNIT, String DOCUMENTCODE, String BINGDUJIANYAN, String ZAITIJIANYAN, String WANZHENGXINGJIANYA, String YOUXIAOJIANYAN, String JISHUJIANYAN, String JIANRONGXINGJIANYAN, String USESOFT, String MAINTITLE, String BEIZHU, String CD_MARK, String AUTOPDF, String OSPOSITION, String FILELOC, String FTPIP, String FTPPORT, String FTPUSERNAME, String FTPPASSWORD, String OSTYPE, String TRASHSTATUS, String ARCHIVECATALOGNO, String RETENTION, String ORIGINALFILEPATH, String FILE_NAME_ZH_CN, String YUAN_WEN_SHU_LIANG, String PDFPATH, String ORIGINAPATH, String WATERMARKPATH) {
-        this.FILECODE = FILECODE;
-        this.RECORDCODE = RECORDCODE;
-        this.FILENAME = FILENAME;
-        this.PAGENO = PAGENO;
-        this.FILETYPE = FILETYPE;
-        this.FILELENGTH = FILELENGTH;
-        this.USERCODE = USERCODE;
-        this.DEPARTMENTCODE = DEPARTMENTCODE;
-        this.UPLOADTIME = UPLOADTIME;
-        this.STATUS = STATUS;
-        this.FONDSNO = FONDSNO;
-        this.FILLINGYEAR = FILLINGYEAR;
-        this.UPLOADUNIT = UPLOADUNIT;
-        this.READWRITECHECK = READWRITECHECK;
-        this.CHECKUNIT = CHECKUNIT;
-        this.DOCUMENTCODE = DOCUMENTCODE;
-        this.BINGDUJIANYAN = BINGDUJIANYAN;
-        this.ZAITIJIANYAN = ZAITIJIANYAN;
-        this.WANZHENGXINGJIANYA = WANZHENGXINGJIANYA;
-        this.YOUXIAOJIANYAN = YOUXIAOJIANYAN;
-        this.JISHUJIANYAN = JISHUJIANYAN;
-        this.JIANRONGXINGJIANYAN = JIANRONGXINGJIANYAN;
-        this.USESOFT = USESOFT;
-        this.MAINTITLE = MAINTITLE;
-        this.BEIZHU = BEIZHU;
+    public OriginalFiles(String fileCode, String recordCode, String fileName, String pageNo, String fileType, String fileLength, String userCode, String departmentCode, String uploadTime, String status, String fondsNo, String fillingYear, String uploadUnit, String readWriteCheck, String checkUnit, String documentCode, String bingdujianyan, String zaiTiJianYan, String wanZhengXingJianYa, String youxiaojianyan, String jiShuJianYan, String jianRongXingJianYan, String usesoft, String mainTitle, String beiZhu, String CD_MARK, String autoPdf, String osPosition, String fileLoc, String ftpIp, String ftpPort, String ftpuserName, String ftppassWord, String osType, String trashStatus, String archivecataLogNo, String retention, String originalFilePath, String FILE_NAME_CH_CN, String YUAN_WEN_SHU_LIANG, String pdfPath, String watermarkPath) {
+        this.fileCode = fileCode;
+        this.recordCode = recordCode;
+        this.fileName = fileName;
+        this.pageNo = pageNo;
+        this.fileType = fileType;
+        this.fileLength = fileLength;
+        this.userCode = userCode;
+        this.departmentCode = departmentCode;
+        this.uploadTime = uploadTime;
+        this.status = status;
+        this.fondsNo = fondsNo;
+        this.fillingYear = fillingYear;
+        this.uploadUnit = uploadUnit;
+        this.readWriteCheck = readWriteCheck;
+        this.checkUnit = checkUnit;
+        this.documentCode = documentCode;
+        this.bingdujianyan = bingdujianyan;
+        this.zaiTiJianYan = zaiTiJianYan;
+        this.wanZhengXingJianYa = wanZhengXingJianYa;
+        this.youxiaojianyan = youxiaojianyan;
+        this.jiShuJianYan = jiShuJianYan;
+        this.jianRongXingJianYan = jianRongXingJianYan;
+        this.usesoft = usesoft;
+        this.mainTitle = mainTitle;
+        this.beiZhu = beiZhu;
         this.CD_MARK = CD_MARK;
-        this.AUTOPDF = AUTOPDF;
-        this.OSPOSITION = OSPOSITION;
-        this.FILELOC = FILELOC;
-        this.FTPIP = FTPIP;
-        this.FTPPORT = FTPPORT;
-        this.FTPUSERNAME = FTPUSERNAME;
-        this.FTPPASSWORD = FTPPASSWORD;
-        this.OSTYPE = OSTYPE;
-        this.TRASHSTATUS = TRASHSTATUS;
-        this.ARCHIVECATALOGNO = ARCHIVECATALOGNO;
-        this.RETENTION = RETENTION;
-        this.ORIGINALFILEPATH = ORIGINALFILEPATH;
-        this.FILE_NAME_ZH_CN = FILE_NAME_ZH_CN;
+        this.autoPdf = autoPdf;
+        this.osPosition = osPosition;
+        this.fileLoc = fileLoc;
+        this.ftpIp = ftpIp;
+        this.ftpPort = ftpPort;
+        this.ftpuserName = ftpuserName;
+        this.ftppassWord = ftppassWord;
+        this.osType = osType;
+        this.trashStatus = trashStatus;
+        this.archivecataLogNo = archivecataLogNo;
+        this.retention = retention;
+        this.originalFilePath = originalFilePath;
+        this.FILE_NAME_CH_CN = FILE_NAME_CH_CN;
         this.YUAN_WEN_SHU_LIANG = YUAN_WEN_SHU_LIANG;
-        this.PDFPATH = PDFPATH;
-        this.ORIGINAPATH = ORIGINAPATH;
-        this.WATERMARKPATH = WATERMARKPATH;
+        this.pdfPath = pdfPath;
+        this.watermarkPath = watermarkPath;
     }
 
-    public String getFILECODE() {
-        return FILECODE;
+    public String getFileCode() {
+        return fileCode;
     }
 
-    public void setFILECODE(String FILECODE) {
-        this.FILECODE = FILECODE;
+    public void setFileCode(String fileCode) {
+        this.fileCode = fileCode;
     }
 
-    public String getRECORDCODE() {
-        return RECORDCODE;
+    public String getRecordCode() {
+        return recordCode;
     }
 
-    public void setRECORDCODE(String RECORDCODE) {
-        this.RECORDCODE = RECORDCODE;
+    public void setRecordCode(String recordCode) {
+        this.recordCode = recordCode;
     }
 
-    public String getFILENAME() {
-        return FILENAME;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setFILENAME(String FILENAME) {
-        this.FILENAME = FILENAME;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getPAGENO() {
-        return PAGENO;
+    public String getPageNo() {
+        return pageNo;
     }
 
-    public void setPAGENO(String PAGENO) {
-        this.PAGENO = PAGENO;
+    public void setPageNo(String pageNo) {
+        this.pageNo = pageNo;
     }
 
-    public String getFILETYPE() {
-        return FILETYPE;
+    public String getFileType() {
+        return fileType;
     }
 
-    public void setFILETYPE(String FILETYPE) {
-        this.FILETYPE = FILETYPE;
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 
-    public String getFILELENGTH() {
-        return FILELENGTH;
+    public String getFileLength() {
+        return fileLength;
     }
 
-    public void setFILELENGTH(String FILELENGTH) {
-        this.FILELENGTH = FILELENGTH;
+    public void setFileLength(String fileLength) {
+        this.fileLength = fileLength;
     }
 
-    public String getUSERCODE() {
-        return USERCODE;
+    public String getUserCode() {
+        return userCode;
     }
 
-    public void setUSERCODE(String USERCODE) {
-        this.USERCODE = USERCODE;
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 
-    public String getDEPARTMENTCODE() {
-        return DEPARTMENTCODE;
+    public String getDepartmentCode() {
+        return departmentCode;
     }
 
-    public void setDEPARTMENTCODE(String DEPARTMENTCODE) {
-        this.DEPARTMENTCODE = DEPARTMENTCODE;
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
     }
 
-    public String getUPLOADTIME() {
-        return UPLOADTIME;
+    public String getUploadTime() {
+        return uploadTime;
     }
 
-    public void setUPLOADTIME(String UPLOADTIME) {
-        this.UPLOADTIME = UPLOADTIME;
+    public void setUploadTime(String uploadTime) {
+        this.uploadTime = uploadTime;
     }
 
-    public String getSTATUS() {
-        return STATUS;
+    public String getStatus() {
+        return status;
     }
 
-    public void setSTATUS(String STATUS) {
-        this.STATUS = STATUS;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getFONDSNO() {
-        return FONDSNO;
+    public String getFondsNo() {
+        return fondsNo;
     }
 
-    public void setFONDSNO(String FONDSNO) {
-        this.FONDSNO = FONDSNO;
+    public void setFondsNo(String fondsNo) {
+        this.fondsNo = fondsNo;
     }
 
-    public String getFILLINGYEAR() {
-        return FILLINGYEAR;
+    public String getFillingYear() {
+        return fillingYear;
     }
 
-    public void setFILLINGYEAR(String FILLINGYEAR) {
-        this.FILLINGYEAR = FILLINGYEAR;
+    public void setFillingYear(String fillingYear) {
+        this.fillingYear = fillingYear;
     }
 
-    public String getUPLOADUNIT() {
-        return UPLOADUNIT;
+    public String getUploadUnit() {
+        return uploadUnit;
     }
 
-    public void setUPLOADUNIT(String UPLOADUNIT) {
-        this.UPLOADUNIT = UPLOADUNIT;
+    public void setUploadUnit(String uploadUnit) {
+        this.uploadUnit = uploadUnit;
     }
 
-    public String getREADWRITECHECK() {
-        return READWRITECHECK;
+    public String getReadWriteCheck() {
+        return readWriteCheck;
     }
 
-    public void setREADWRITECHECK(String READWRITECHECK) {
-        this.READWRITECHECK = READWRITECHECK;
+    public void setReadWriteCheck(String readWriteCheck) {
+        this.readWriteCheck = readWriteCheck;
     }
 
-    public String getCHECKUNIT() {
-        return CHECKUNIT;
+    public String getCheckUnit() {
+        return checkUnit;
     }
 
-    public void setCHECKUNIT(String CHECKUNIT) {
-        this.CHECKUNIT = CHECKUNIT;
+    public void setCheckUnit(String checkUnit) {
+        this.checkUnit = checkUnit;
     }
 
-    public String getDOCUMENTCODE() {
-        return DOCUMENTCODE;
+    public String getDocumentCode() {
+        return documentCode;
     }
 
-    public void setDOCUMENTCODE(String DOCUMENTCODE) {
-        this.DOCUMENTCODE = DOCUMENTCODE;
+    public void setDocumentCode(String documentCode) {
+        this.documentCode = documentCode;
     }
 
-    public String getBINGDUJIANYAN() {
-        return BINGDUJIANYAN;
+    public String getBingdujianyan() {
+        return bingdujianyan;
     }
 
-    public void setBINGDUJIANYAN(String BINGDUJIANYAN) {
-        this.BINGDUJIANYAN = BINGDUJIANYAN;
+    public void setBingdujianyan(String bingdujianyan) {
+        this.bingdujianyan = bingdujianyan;
     }
 
-    public String getZAITIJIANYAN() {
-        return ZAITIJIANYAN;
+    public String getZaiTiJianYan() {
+        return zaiTiJianYan;
     }
 
-    public void setZAITIJIANYAN(String ZAITIJIANYAN) {
-        this.ZAITIJIANYAN = ZAITIJIANYAN;
+    public void setZaiTiJianYan(String zaiTiJianYan) {
+        this.zaiTiJianYan = zaiTiJianYan;
     }
 
-    public String getWANZHENGXINGJIANYA() {
-        return WANZHENGXINGJIANYA;
+    public String getWanZhengXingJianYa() {
+        return wanZhengXingJianYa;
     }
 
-    public void setWANZHENGXINGJIANYA(String WANZHENGXINGJIANYA) {
-        this.WANZHENGXINGJIANYA = WANZHENGXINGJIANYA;
+    public void setWanZhengXingJianYa(String wanZhengXingJianYa) {
+        this.wanZhengXingJianYa = wanZhengXingJianYa;
     }
 
-    public String getYOUXIAOJIANYAN() {
-        return YOUXIAOJIANYAN;
+    public String getYouxiaojianyan() {
+        return youxiaojianyan;
     }
 
-    public void setYOUXIAOJIANYAN(String YOUXIAOJIANYAN) {
-        this.YOUXIAOJIANYAN = YOUXIAOJIANYAN;
+    public void setYouxiaojianyan(String youxiaojianyan) {
+        this.youxiaojianyan = youxiaojianyan;
     }
 
-    public String getJISHUJIANYAN() {
-        return JISHUJIANYAN;
+    public String getJiShuJianYan() {
+        return jiShuJianYan;
     }
 
-    public void setJISHUJIANYAN(String JISHUJIANYAN) {
-        this.JISHUJIANYAN = JISHUJIANYAN;
+    public void setJiShuJianYan(String jiShuJianYan) {
+        this.jiShuJianYan = jiShuJianYan;
     }
 
-    public String getJIANRONGXINGJIANYAN() {
-        return JIANRONGXINGJIANYAN;
+    public String getJianRongXingJianYan() {
+        return jianRongXingJianYan;
     }
 
-    public void setJIANRONGXINGJIANYAN(String JIANRONGXINGJIANYAN) {
-        this.JIANRONGXINGJIANYAN = JIANRONGXINGJIANYAN;
+    public void setJianRongXingJianYan(String jianRongXingJianYan) {
+        this.jianRongXingJianYan = jianRongXingJianYan;
     }
 
-    public String getUSESOFT() {
-        return USESOFT;
+    public String getUsesoft() {
+        return usesoft;
     }
 
-    public void setUSESOFT(String USESOFT) {
-        this.USESOFT = USESOFT;
+    public void setUsesoft(String usesoft) {
+        this.usesoft = usesoft;
     }
 
-    public String getMAINTITLE() {
-        return MAINTITLE;
+    public String getMainTitle() {
+        return mainTitle;
     }
 
-    public void setMAINTITLE(String MAINTITLE) {
-        this.MAINTITLE = MAINTITLE;
+    public void setMainTitle(String mainTitle) {
+        this.mainTitle = mainTitle;
     }
 
-    public String getBEIZHU() {
-        return BEIZHU;
+    public String getBeiZhu() {
+        return beiZhu;
     }
 
-    public void setBEIZHU(String BEIZHU) {
-        this.BEIZHU = BEIZHU;
+    public void setBeiZhu(String beiZhu) {
+        this.beiZhu = beiZhu;
     }
 
     public String getCD_MARK() {
@@ -305,108 +304,108 @@ public class OriginalFiles {
         this.CD_MARK = CD_MARK;
     }
 
-    public String getAUTOPDF() {
-        return AUTOPDF;
+    public String getAutoPdf() {
+        return autoPdf;
     }
 
-    public void setAUTOPDF(String AUTOPDF) {
-        this.AUTOPDF = AUTOPDF;
+    public void setAutoPdf(String autoPdf) {
+        this.autoPdf = autoPdf;
     }
 
-    public String getOSPOSITION() {
-        return OSPOSITION;
+    public String getOsPosition() {
+        return osPosition;
     }
 
-    public void setOSPOSITION(String OSPOSITION) {
-        this.OSPOSITION = OSPOSITION;
+    public void setOsPosition(String osPosition) {
+        this.osPosition = osPosition;
     }
 
-    public String getFILELOC() {
-        return FILELOC;
+    public String getFileLoc() {
+        return fileLoc;
     }
 
-    public void setFILELOC(String FILELOC) {
-        this.FILELOC = FILELOC;
+    public void setFileLoc(String fileLoc) {
+        this.fileLoc = fileLoc;
     }
 
-    public String getFTPIP() {
-        return FTPIP;
+    public String getFtpIp() {
+        return ftpIp;
     }
 
-    public void setFTPIP(String FTPIP) {
-        this.FTPIP = FTPIP;
+    public void setFtpIp(String ftpIp) {
+        this.ftpIp = ftpIp;
     }
 
-    public String getFTPPORT() {
-        return FTPPORT;
+    public String getFtpPort() {
+        return ftpPort;
     }
 
-    public void setFTPPORT(String FTPPORT) {
-        this.FTPPORT = FTPPORT;
+    public void setFtpPort(String ftpPort) {
+        this.ftpPort = ftpPort;
     }
 
-    public String getFTPUSERNAME() {
-        return FTPUSERNAME;
+    public String getFtpuserName() {
+        return ftpuserName;
     }
 
-    public void setFTPUSERNAME(String FTPUSERNAME) {
-        this.FTPUSERNAME = FTPUSERNAME;
+    public void setFtpuserName(String ftpuserName) {
+        this.ftpuserName = ftpuserName;
     }
 
-    public String getFTPPASSWORD() {
-        return FTPPASSWORD;
+    public String getFtppassWord() {
+        return ftppassWord;
     }
 
-    public void setFTPPASSWORD(String FTPPASSWORD) {
-        this.FTPPASSWORD = FTPPASSWORD;
+    public void setFtppassWord(String ftppassWord) {
+        this.ftppassWord = ftppassWord;
     }
 
-    public String getOSTYPE() {
-        return OSTYPE;
+    public String getOsType() {
+        return osType;
     }
 
-    public void setOSTYPE(String OSTYPE) {
-        this.OSTYPE = OSTYPE;
+    public void setOsType(String osType) {
+        this.osType = osType;
     }
 
-    public String getTRASHSTATUS() {
-        return TRASHSTATUS;
+    public String getTrashStatus() {
+        return trashStatus;
     }
 
-    public void setTRASHSTATUS(String TRASHSTATUS) {
-        this.TRASHSTATUS = TRASHSTATUS;
+    public void setTrashStatus(String trashStatus) {
+        this.trashStatus = trashStatus;
     }
 
-    public String getARCHIVECATALOGNO() {
-        return ARCHIVECATALOGNO;
+    public String getArchivecataLogNo() {
+        return archivecataLogNo;
     }
 
-    public void setARCHIVECATALOGNO(String ARCHIVECATALOGNO) {
-        this.ARCHIVECATALOGNO = ARCHIVECATALOGNO;
+    public void setArchivecataLogNo(String archivecataLogNo) {
+        this.archivecataLogNo = archivecataLogNo;
     }
 
-    public String getRETENTION() {
-        return RETENTION;
+    public String getRetention() {
+        return retention;
     }
 
-    public void setRETENTION(String RETENTION) {
-        this.RETENTION = RETENTION;
+    public void setRetention(String retention) {
+        this.retention = retention;
     }
 
-    public String getORIGINALFILEPATH() {
-        return ORIGINALFILEPATH;
+    public String getOriginalFilePath() {
+        return originalFilePath;
     }
 
-    public void setORIGINALFILEPATH(String ORIGINALFILEPATH) {
-        this.ORIGINALFILEPATH = ORIGINALFILEPATH;
+    public void setOriginalFilePath(String originalFilePath) {
+        this.originalFilePath = originalFilePath;
     }
 
-    public String getFILE_NAME_ZH_CN() {
-        return FILE_NAME_ZH_CN;
+    public String getFILE_NAME_CH_CN() {
+        return FILE_NAME_CH_CN;
     }
 
-    public void setFILE_NAME_ZH_CN(String FILE_NAME_ZH_CN) {
-        this.FILE_NAME_ZH_CN = FILE_NAME_ZH_CN;
+    public void setFILE_NAME_CH_CN(String FILE_NAME_CH_CN) {
+        this.FILE_NAME_CH_CN = FILE_NAME_CH_CN;
     }
 
     public String getYUAN_WEN_SHU_LIANG() {
@@ -417,27 +416,19 @@ public class OriginalFiles {
         this.YUAN_WEN_SHU_LIANG = YUAN_WEN_SHU_LIANG;
     }
 
-    public String getPDFPATH() {
-        return PDFPATH;
+    public String getPdfPath() {
+        return pdfPath;
     }
 
-    public void setPDFPATH(String PDFPATH) {
-        this.PDFPATH = PDFPATH;
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
     }
 
-    public String getORIGINAPATH() {
-        return ORIGINAPATH;
+    public String getWatermarkPath() {
+        return watermarkPath;
     }
 
-    public void setORIGINAPATH(String ORIGINAPATH) {
-        this.ORIGINAPATH = ORIGINAPATH;
-    }
-
-    public String getWATERMARKPATH() {
-        return WATERMARKPATH;
-    }
-
-    public void setWATERMARKPATH(String WATERMARKPATH) {
-        this.WATERMARKPATH = WATERMARKPATH;
+    public void setWatermarkPath(String watermarkPath) {
+        this.watermarkPath = watermarkPath;
     }
 }

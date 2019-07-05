@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.wsda.project.dao.OriginaFilesMapper">
+
     <!--根据recordCode获取档案旗下原文-->
     <select id="getFilesByRecordCode" resultType="java.util.HashMap">
         select * FROM ${tableName}
@@ -30,108 +31,116 @@
         WHERE  STOREID=#{storeId}
     </update>
 
+
+
+
+
+
+
+
+
     <!--添加录入原文纪录表数据-->
     <insert id="addUpLoadFileOriginaFiles" parameterType="com.wsda.project.model.OriginalFiles">
         INSERT INTO ORIGINALFILES
         (
-        <if test="FILECODE != null and FILECODE != ''">
+        <if test="fileCode != null and fileCode != ''">
             FILECODE,
         </if>
-        <if test="RECORDCODE != null and RECORDCODE != ''">
+        <if test="recordCode != null and recordCode != ''">
             RECORDCODE,
         </if>
-        <if test="FILENAME != null and FILENAME != ''">
+        <if test="fileName != null and fileName != ''">
             FILENAME,
         </if>
-        <if test="FILETYPE != null and FILETYPE != ''">
+        <if test="fileType != null and fileType != ''">
             FILETYPE,
         </if>
-        <if test="FILELENGTH != null and FILELENGTH != ''">
+        <if test="fileLength != null and fileLength != ''">
             FILELENGTH,
         </if>
-        <if test="USERCODE != null and USERCODE != ''">
+        <if test="userCode != null and userCode != ''">
             USERCODE,
         </if>
-        <if test="DEPARTMENTCODE != null and DEPARTMENTCODE != ''">
+        <if test="departmentCode != null and departmentCode != ''">
             DEPARTMENTCODE,
         </if>
-        <if test="UPLOADTIME != null and UPLOADTIME != ''">
+        <if test="uploadTime != null and uploadTime != ''">
             UPLOADTIME,
         </if>
-        <if test="FONDSNO != null and FONDSNO != ''">
+        <if test="fondsNo != null and fondsNo != ''">
             FONDSNO,
         </if>
-        <if test="FILLINGYEAR != null and FILLINGYEAR != ''">
+        <if test="fillingYear != null and fillingYear != ''">
             FILLINGYEAR,
         </if>
-        <if test="MAINTITLE != null and MAINTITLE != ''">
+        <if test="mainTitle != null and mainTitle != ''">
             MAINTITLE,
         </if>
-        <if test="PDFPATH != null and PDFPATH != ''">
+        <if test="pdfPath != null and pdfPath != ''">
             PDFPATH,
         </if>
-        <if test="ORIGINAPATH != null and ORIGINAPATH != ''">
-            ORIGINAPATH,
+        <if test="originalFilePath != null and originalFilePath != ''">
+            ORIGINALFILEPATH,
         </if>
-        <if test="WATERMARKPATH != null and WATERMARKPATH != ''">
+        <if test="watermarkPath != null and watermarkPath != ''">
             WATERMARKPATH,
         </if>
-        <if test="TRASHSTATUS != null and TRASHSTATUS != ''">
+        <if test="trashStatus != null and trashStatus != ''">
             TRASHSTATUS
         </if>
         )
         VALUES(
-        <if test="FILECODE != null and FILECODE != ''">
-            #{FILECODE},
+        <if test="fileCode != null and fileCode != ''">
+            #{fileCode},
         </if>
-        <if test="RECORDCODE != null and RECORDCODE != ''">
-            #{RECORDCODE},
+        <if test="recordCode != null and recordCode != ''">
+            #{recordCode},
         </if>
-        <if test="FILENAME != null and FILENAME != ''">
-            #{FILENAME},
+        <if test="fileName != null and fileName != ''">
+            #{fileName},
         </if>
-        <if test="FILETYPE != null and FILETYPE != ''">
-            #{FILETYPE},
+        <if test="fileType != null and fileType != ''">
+            #{fileType},
         </if>
-        <if test="FILELENGTH != null and FILELENGTH != ''">
-            #{FILELENGTH},
+        <if test="fileLength != null and fileLength != ''">
+            #{fileLength},
         </if>
-        <if test="USERCODE != null and USERCODE != ''">
-            #{USERCODE},
+        <if test="userCode != null and userCode != ''">
+            #{userCode},
         </if>
-        <if test="DEPARTMENTCODE != null and DEPARTMENTCODE != ''">
-            #{DEPARTMENTCODE},
+        <if test="departmentCode != null and departmentCode != ''">
+            #{departmentCode},
         </if>
-        <if test="UPLOADTIME != null and UPLOADTIME != ''">
-            ${UPLOADTIME},
+        <if test="uploadTime != null and uploadTime != ''">
+            ${uploadTime},
         </if>
-        <if test="FONDSNO != null and FONDSNO != ''">
-            #{FONDSNO},
+        <if test="fondsNo != null and fondsNo != ''">
+            #{fondsNo},
         </if>
-        <if test="FILLINGYEAR != null and FILLINGYEAR != ''">
-            #{FILLINGYEAR},
+        <if test="fillingYear != null and fillingYear != ''">
+            #{fillingYear},
         </if>
-        <if test="MAINTITLE != null and MAINTITLE != ''">
-            #{MAINTITLE},
+        <if test="mainTitle != null and mainTitle != ''">
+            #{mainTitle},
         </if>
-        <if test="PDFPATH != null and PDFPATH != ''">
-            #{PDFPATH},
+        <if test="pdfPath != null and pdfPath != ''">
+            #{pdfPath},
         </if>
-        <if test="ORIGINAPATH != null and ORIGINAPATH != ''">
-            #{ORIGINAPATH},
+        <if test="originalFilePath != null and originalFilePath != ''">
+            #{originalFilePath},
         </if>
-        <if test="WATERMARKPATH != null and WATERMARKPATH != ''">
-            #{WATERMARKPATH},
+        <if test="watermarkPath != null and watermarkPath != ''">
+            #{watermarkPath},
         </if>
-        <if test="TRASHSTATUS != null and TRASHSTATUS != ''">
-            #{TRASHSTATUS}
+        <if test="trashStatus != null and trashStatus != ''">
+            #{trashStatus}
         </if>
         )
     </insert>
 
     <!--获取pdf存放地址-->
-    <select id="getPDFUrlByFileCode" resultType="java.util.HashMap">
-        SELECT FILENAME,PDFPATH,ORIGINAPATH,WATERMARKPATH FROM ORIGINALFILES  where FILECODE=#{fileCode}
+    <select id="getPDFUrlByFileCode" resultType="com.wsda.project.model.OriginalFiles">
+        SELECT fileName,pdfPath,originalFilePath,watermarkPath FROM ORIGINALFILES  where FILECODE=#{fileCode}
     </select>
 
     <!--获取指定原文条目-->

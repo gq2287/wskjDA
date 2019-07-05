@@ -1,6 +1,7 @@
 package com.wsda.project.service;
 
-import javax.servlet.http.HttpServletRequest;
+import com.wsda.project.model.OriginalFiles;
+
 import java.util.Map;
 
 public interface OriginaFilesService {
@@ -13,7 +14,7 @@ public interface OriginaFilesService {
     Map<String,String> getUpLoadFilePath();
 
     //获取pdf地址
-    Map<String,String> getPDFUrlByFileCode(String fileCode);
+    OriginalFiles getPDFUrlByFileCode(String fileCode);
     //    删除
     boolean delOrigianFileByFileCode(String tableCode,String fileCode);
 

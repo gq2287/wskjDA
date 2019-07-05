@@ -2,6 +2,9 @@ package com.wsda.project.model;
 
 import java.io.Serializable;
 
+/**
+ * 树列表
+ */
 public class ClassNode implements Serializable {
     private String nodeCode;
     private String parentCode;

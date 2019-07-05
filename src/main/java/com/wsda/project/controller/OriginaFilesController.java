@@ -6,6 +6,7 @@ import com.itextpdf.text.DocumentException;
 import com.wsda.project.dao.DepartementMapper;
 import com.wsda.project.dao.TableViewMapper;
 import com.wsda.project.model.ArchivesSeal;
+import com.wsda.project.model.OriginalFiles;
 import com.wsda.project.model.ResponseResult;
 import com.wsda.project.service.impl.ArchivesSealServiceImpl;
 import com.wsda.project.service.impl.OriginaFilesServiceImpl;
@@ -158,12 +159,11 @@ public class OriginaFilesController {
             }
         }
 //end
-
         Map<String, String> stringMap = originaFilesService.getUpLoadFilePath();//获取保存路径
         String watermarkTxt = stringMap.get("WATERMARKTXT");
-        Map<String, String> url = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
-        if (url != null) {
-            File file = new File(url.get("PDFPATH"));//PDFPATH,ORIGINAPATH
+        OriginalFiles originalFiles = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
+        if (originalFiles != null) {
+            File file = new File(originalFiles.getPdfPath());
             if (file.exists()) {//如果有pdf
                 if (watermarkTxt != null && !"".equals(watermarkTxt)) {
                     //start 开始添加水印
@@ -193,18 +193,18 @@ public class OriginaFilesController {
                 String urlPDf = file.getPath().substring(file.getPath().indexOf("\\") + 1, file.getPath().length());
                 return new ResponseResult(ResponseResult.OK, "返回PDFUrl成功", urlPDf, true);
             } else {
-                String originaUrl = url.get("ORIGINAPATH");//原文路径
+                String originaUrl = originalFiles.getOriginalFilePath();//原文路径
                 file = new File(originaUrl);
                 if (file.exists()) {
                     if (StringUtil.getFileType(originaUrl)) {
                         //原文支持在线查看，但pdf文件丢失就重新转换并返回路径
-                        boolean bool = StringUtil.getFileSuffix(originaUrl, url.get("PDFPATH"));
+                        boolean bool = StringUtil.getFileSuffix(originaUrl, originalFiles.getPdfPath());
                         if (bool) {
                             if (watermarkTxt != null && !"".equals(watermarkTxt)) {
 //                            start 开始添加水印
                                 String watermarkPath = null;
                                 try {
-                                    watermarkPath = Change2PDF.addtextWatermark(new File(StringUtil.getPdfPath(url.get("PDFPATH"))), watermarkTxt);
+                                    watermarkPath = Change2PDF.addtextWatermark(new File(StringUtil.getPdfPath(originalFiles.getPdfPath())), watermarkTxt);
                                     if (cols != null) {
                                         bool = Graphics2DRectangleImage.graphicsGeneration(cols, cols.size() / 2, archivesSeal.getPath());
                                         if (bool) {
@@ -224,7 +224,7 @@ public class OriginaFilesController {
 //                            end添加结束
                                 return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", watermarkPath, true);
                             }
-                            String pdfPath = url.get("PDFPATH").substring(url.get("PDFPATH").indexOf(":") + 1, url.get("PDFPATH").length());
+                            String pdfPath =originalFiles.getPdfPath().substring(originalFiles.getPdfPath().indexOf(":") + 1, originalFiles.getPdfPath().length());
                             return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", pdfPath, true);
                         } else {
                             return new ResponseResult(ResponseResult.OK, "pdf文件丢失,转换失败,请重新上传", false);
@@ -376,9 +376,9 @@ public class OriginaFilesController {
     @RequestMapping(value = "/download", method = RequestMethod.POST)
     public ResponseResult download(@RequestParam(name = "fileCode", required = true) String fileCode, HttpServletRequest request, HttpServletResponse response) {
         ResponseResult responseResult = null;
-        Map<String, String> originaFile = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
-        if (originaFile != null && originaFile.get("ORIGINAPATH") != null) {
-            File file = new File(String.valueOf(originaFile.get("ORIGINAPATH")));
+        OriginalFiles originaFile = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
+        if (originaFile != null && originaFile.getOriginalFilePath() != null) {
+            File file = new File(String.valueOf(originaFile.getOriginalFilePath()));
             if (file.exists()) {
                 String urlPDf = file.getPath().substring(file.getPath().indexOf("\\") + 1, file.getPath().length());
                 responseResult = new ResponseResult(ResponseResult.OK, "原文下载成功", urlPDf, true);

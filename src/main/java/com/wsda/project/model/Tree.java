@@ -1,10 +1,10 @@
 package com.wsda.project.model;
 
-import io.swagger.annotations.ApiModel;
-
 import java.io.Serializable;
 
-@ApiModel
+/**
+ * 树菜单
+ */
 public class Tree implements Serializable {
     private String id;//数据库表名
     private String text;//树名

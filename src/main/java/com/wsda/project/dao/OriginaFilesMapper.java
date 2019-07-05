@@ -15,7 +15,7 @@ public interface OriginaFilesMapper {
 //    添加原文纪录
     boolean addUpLoadFileOriginaFiles(OriginalFiles parmsMap);
 
-    Map<String,String> getPDFUrlByFileCode(@Param("fileCode")String fileCode);
+    OriginalFiles getPDFUrlByFileCode(@Param("fileCode")String fileCode);
 //    获取指定条目原文
     OriginalFiles getOrigianFileInfoByFileCode(@Param("fileCode")String fileCode);
     //    删除
