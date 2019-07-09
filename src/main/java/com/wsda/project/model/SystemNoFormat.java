@@ -6,90 +6,100 @@ import java.io.Serializable;
  * 表档号
  */
 public class SystemNoFormat implements Serializable {
-    private String NOFORMATCODE;//档号格式编号
-    private String ENTITYCODE;//实体编号
-    private String COLUMNNAME;//列名
-    private String CHINESENAME;//中文名称
-    private String LENTH;//长度
-    private String NO;//号码 顺序号
-    private String STYLE;//风格
-    private String SEPARATOR;//分隔符号
+    private String noFormatCode;//档号格式编号
+    private String entityCode;//实体编号
+    private String columnName;//列名
+    private String chineseName;//中文名称
+    private String lenth;//长度
+    private String no;//号码 顺序号
+    private String style;//风格
+    private String separator;//分隔符号
+    private String emulationShow;//展示效果
 
     public SystemNoFormat() {
     }
 
-    public SystemNoFormat(String NOFORMATCODE, String ENTITYCODE, String COLUMNNAME, String CHINESENAME, String LENTH, String NO, String STYLE, String SEPARATOR) {
-        this.NOFORMATCODE = NOFORMATCODE;
-        this.ENTITYCODE = ENTITYCODE;
-        this.COLUMNNAME = COLUMNNAME;
-        this.CHINESENAME = CHINESENAME;
-        this.LENTH = LENTH;
-        this.NO = NO;
-        this.STYLE = STYLE;
-        this.SEPARATOR = SEPARATOR;
+    public SystemNoFormat(String noFormatCode, String entityCode, String columnName, String chineseName, String lenth, String no, String style, String separator,String emulationShow) {
+        this.noFormatCode = noFormatCode;
+        this.entityCode = entityCode;
+        this.columnName = columnName;
+        this.chineseName = chineseName;
+        this.lenth = lenth;
+        this.no = no;
+        this.style = style;
+        this.separator = separator;
+        this.emulationShow=emulationShow;
     }
 
-    public String getNOFORMATCODE() {
-        return NOFORMATCODE;
+    public String getEmulationShow() {
+        return emulationShow;
     }
 
-    public void setNOFORMATCODE(String NOFORMATCODE) {
-        this.NOFORMATCODE = NOFORMATCODE;
+    public void setEmulationShow(String emulationShow) {
+        this.emulationShow = emulationShow;
     }
 
-    public String getENTITYCODE() {
-        return ENTITYCODE;
+    public String getNoFormatCode() {
+        return noFormatCode;
     }
 
-    public void setENTITYCODE(String ENTITYCODE) {
-        this.ENTITYCODE = ENTITYCODE;
+    public void setNoFormatCode(String noFormatCode) {
+        this.noFormatCode = noFormatCode;
     }
 
-    public String getCOLUMNNAME() {
-        return COLUMNNAME;
+    public String getEntityCode() {
+        return entityCode;
     }
 
-    public void setCOLUMNNAME(String COLUMNNAME) {
-        this.COLUMNNAME = COLUMNNAME;
+    public void setEntityCode(String entityCode) {
+        this.entityCode = entityCode;
     }
 
-    public String getCHINESENAME() {
-        return CHINESENAME;
+    public String getColumnName() {
+        return columnName;
     }
 
-    public void setCHINESENAME(String CHINESENAME) {
-        this.CHINESENAME = CHINESENAME;
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
-    public String getLENTH() {
-        return LENTH;
+    public String getChineseName() {
+        return chineseName;
     }
 
-    public void setLENTH(String LENTH) {
-        this.LENTH = LENTH;
+    public void setChineseName(String chineseName) {
+        this.chineseName = chineseName;
     }
 
-    public String getNO() {
-        return NO;
+    public String getLenth() {
+        return lenth;
     }
 
-    public void setNO(String NO) {
-        this.NO = NO;
+    public void setLenth(String lenth) {
+        this.lenth = lenth;
     }
 
-    public String getSTYLE() {
-        return STYLE;
+    public String getNo() {
+        return no;
     }
 
-    public void setSTYLE(String STYLE) {
-        this.STYLE = STYLE;
+    public void setNo(String no) {
+        this.no = no;
     }
 
-    public String getSEPARATOR() {
-        return SEPARATOR;
+    public String getStyle() {
+        return style;
     }
 
-    public void setSEPARATOR(String SEPARATOR) {
-        this.SEPARATOR = SEPARATOR;
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
+    public String getSeparator() {
+        return separator;
+    }
+
+    public void setSeparator(String separator) {
+        this.separator = separator;
     }
 }

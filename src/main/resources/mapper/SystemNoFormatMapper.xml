@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsda.project.dao.SystemNoFormatMapper">
+    <!--获取展示列表-->
+    <select id="getSystemNoFormatList" resultType="java.util.Map">
+      SELECT
+      DISTINCT T.ENTITYCODE,C.NAME,T.EMULATIONSHOW
+      FROM SYSTEMNOFORMAT T
+	  INNER JOIN CLASSNODE C ON C.NODECODE=T.ENTITYCODE
+    </select>
+
+    <!--获取指定底层门类档号列表-->
+    <select id="getSystemNoFormatListByEntityCode" resultType="com.wsda.project.model.SystemNoFormat">
+    SELECT
+        *
+    FROM SYSTEMNOFORMAT WHERE ENTITYCODE=#{entityCode}
+    </select>
+
+    <!--添加表数据-->
+    <insert id="addSystemNoFormat" parameterType="com.wsda.project.model.SystemNoFormat">
+        INSERT INTO SYSTEMNOFORMAT(
+        NOFORMATCODE,
+        ENTITYCODE,
+        COLUMNNAME,
+        CHINESENAME,
+        LENTH,
+        NO,
+        STYLE,
+        SEPARATOR,
+        EMULATIONSHOW
+        )
+        VALUES(
+        #{noFormatCode},
+        #{entityCode},
+        #{columnName},
+        #{chineseName},
+        #{lenth},
+        #{no},
+        #{style},
+        #{separator}
+        )
+    </insert>
+
+    <!--删除档号-->
+    <delete id="delSystemNoFormatByNoFormatCode" parameterType="java.lang.String">
+        delete  SYSTEMNOFORMAT where NOFORMATCODE=#{noFormatCode}
+    </delete>
+</mapper>

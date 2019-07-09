@@ -1,0 +1,38 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+  resources:
+    static-locations: classpath:/resources/,classpath:/static/,file:${D:}
+  servlet:
+    multipart:
+      #允许附件上传
+      enabled: true
+      #限定了当上传文件超过一定长度时，就先写到临时文件里。有助于上传文件不占用过多的内存，单位是MB或KB，默认0，既不限定阈值。
+      file-size-threshold: 0
+#mybatis
+mybatis:
+  type-aliases-package: com.wskj.project.model
+  mapper-locations: classpath:mapper/*.xml
+#pagehelper 开启拦截sql
+pagehelper:
+  helperDialect:  oracle
+  reasonable: true
+  support-methods-arguments:  true
+  params: count=countSql
+#  打印sql
+logging:
+  level:
+    root: info
+    com.wsda.project.dao: debug
+    org.springframework.security: warn
+  # 默认日志文件名
+  # file: log
+  # 默认日志路径
+  # path: ./log
+  # logback.xml路径，默认为classpath:logback-spring.xml
+  # config: ./logback-spring.xml

@@ -1,7 +1,6 @@
 package com.wsda.project.filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,8 +14,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Autowired
     private LogInterceptor logInterceptor;
 
-    @Value("${prop.upload-folder}")
-    private String uploadPath;
+//    @Value("${prop.upload-folder}")
+//    private String uploadPath;
     /**
      * 注册自定义的拦截器类
      */
