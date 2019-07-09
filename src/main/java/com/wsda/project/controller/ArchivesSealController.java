@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 @RestController
 @Api("归档章Controller")
 public class ArchivesSealController {
-    private Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private Logger logger = LoggerFactory.getLogger(ArchivesSealController.class);
 
     @Resource
     private ArchivesSealServiceImpl archivesSealService;
