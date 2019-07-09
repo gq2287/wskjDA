@@ -2,6 +2,7 @@ server:
   port: 8080
 spring:
   datasource:
+# 读取外置config文件链接数据库
     type: com.alibaba.druid.pool.DruidDataSource
   thymeleaf:
     prefix: classpath:/templates/
