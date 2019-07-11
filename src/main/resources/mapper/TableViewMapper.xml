@@ -63,6 +63,13 @@
     <select id="getInputCard" resultType="java.util.HashMap">
           SELECT * FROM TABLEINTERFACECARD WHERE TABLECODE=#{tableCode} ORDER BY LOADNO
     </select>
+
+    <!--获取录入界面字段名称-->
+    <select id="getInputCardFieldName" resultType="java.lang.String">
+          SELECT FIELDNAME FROM TABLEINTERFACECARD WHERE TABLECODE=#{tableCode} AND FIELDNAME !='null' ORDER BY LOADNO
+    </select>
+
+
     <!--获取录入界面字段的类型-->
     <select id="getInputTypeByTableCodeAndName" resultType="java.util.HashMap">
           SELECT TYPE,INPUTTYPE,CANNULL FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode} and NAME=#{name}
@@ -125,8 +132,7 @@
     </update>
 
 
-
-    <!--查询档案归档档案-->
+    <!--查询档案归档条目-->
     <select id="getArchivesByIsArchiveFlag" resultType="java.util.Map">
           SELECT ${sql} FROM ${tableName}
            WHERE RECORDCODE=#{recordCode} and ARCHIVEFLAG='已归档'

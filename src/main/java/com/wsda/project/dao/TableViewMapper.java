@@ -38,4 +38,7 @@ public interface TableViewMapper {
 
     //查询当前档案信息
     Map<String,String> getArchivesByIsArchiveFlag(Map<String,String> parms);
+
+//    获取录入字段名称
+    List<String> getInputCardFieldName(@Param("tableCode") String tableCode);
 }

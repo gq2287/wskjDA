@@ -676,14 +676,17 @@ public class StringUtil {
     public static void main(String[] args) throws Exception {
 //        String newPath = "D:\\archive\\aciv_zxwsda_ws\\ 2019\\ 201906\\ 20190612\\ 2019061210\\ 201906121020\\69f7edb73e8e402cbfc0d8386d18dc6e-default.jpg";
         String newPath = "D:\\archive\\aciv_zxwsda_ws\\ 2019\\ 201906\\ 20190612\\ 2019061210\\ 201906121020\\69f7edb73e8e402cbfc0d8386d18dc6e-default.pdf";
-
-
-
-        String suffixPDF=newPath.substring(newPath.lastIndexOf("."),newPath.length());
-        if(".pdf".equalsIgnoreCase(suffixPDF)){
-            System.out.println(suffixPDF);
-        }else{
-            System.out.println(suffixPDF);
+        String sss="AND  ( ARCHIVENO IS NOT NULL OR  archiveFlag LIKE '%未归档%' OR ";
+        String str=sss.replace(" ","");
+         str=str.substring(str.length()-2,str.length());
+        if("OR".equalsIgnoreCase(str)){
+            System.out.println(str);
         }
+//        String suffixPDF=newPath.substring(newPath.lastIndexOf("."),newPath.length());
+//        if(".pdf".equalsIgnoreCase(suffixPDF)){
+//            System.out.println(suffixPDF);
+//        }else{
+//            System.out.println(suffixPDF);
+//        }
     }
 }

@@ -24,4 +24,6 @@ public interface ClassTreeMapper {
     List<Map<String,String>> getTableByNodeCode(@Param("nodeCode") String nodeCode);
 
 
+//    根据档号表实体编号获取表编号
+List<Map<String,String>>  getTableColumnslByEntityCode(@Param("entityCode") String entityCode);
 }

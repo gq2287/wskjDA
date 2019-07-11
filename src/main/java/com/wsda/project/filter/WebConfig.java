@@ -22,11 +22,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
          */
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .allowedMethods("PUT", "DELETE", "GET", "POST")
-                .allowedHeaders("*")
-                .exposedHeaders("access-control-allow-headers", "access-control-allow-methods", "access-control-allow" +
-                        "-origin", "access-control-max-age", "X-Frame-Options","Authorization","token")
-                .allowCredentials(false).maxAge(3600);
+                .allowedMethods("*")
+                .allowedHeaders("*");
     }
 
     /**

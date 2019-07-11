@@ -56,5 +56,15 @@
     </select>
 
 
+    <!--根据档号试题编号 查询实体表编号 查询实体表下的表字段列-->
+    <select id="getTableColumnslByEntityCode" resultType="java.util.Map">
+        SELECT NAME,CHINESENAME FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=(
+        SELECT
+            TABLECODE
+        FROM
+            CLASSNODE
+        WHERE 1 = 1 AND NODECODE=#{entityCode}
+        )
+    </select>
 
 </mapper>

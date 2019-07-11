@@ -14,8 +14,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Autowired
     private LogInterceptor logInterceptor;
 
-//    @Value("${prop.upload-folder}")
-//    private String uploadPath;
     /**
      * 注册自定义的拦截器类
      */
@@ -24,6 +22,5 @@ public class InterceptorConfig implements WebMvcConfigurer {
 //         加入自定义拦截器，这里可以根据实际需要对各个url添加不同的拦截器,"/upLoadFiles"
         registry.addInterceptor(logInterceptor).addPathPatterns("/**").
                 excludePathPatterns("/swagger-resources/**","/loginCheck","/loginOut","/webjars/**", "/v2/**","/swagger-ui.html/**");
-
     }
 }

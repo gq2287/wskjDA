@@ -12,7 +12,7 @@ public interface SystemNoFormatService {
     List<SystemNoFormat> getSystemNoFormatListByEntityCode(String noFormatCode);
 
     //添加档号设置
-    int addSystemNoFormat(SystemNoFormat systemNoFormat);
-    //删除指定的
-    int delSystemNoFormatByNoFormatCode(String noFormatCode);
+    int addSystemNoFormat(List<SystemNoFormat> systemNoFormat);
+    //获取档号设置列表
+    List<Map<String,String>>  getSystemNoFormatColumnsByEntityCode(String entityCode);
 }

@@ -2,19 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.wsda.project.dao.SystemNoFormatMapper">
-    <!--获取展示列表-->
+    <!--获取展示列表   表数据少用DISTINCT去重复 GROUP BY 也是去重-->
     <select id="getSystemNoFormatList" resultType="java.util.Map">
       SELECT
       DISTINCT T.ENTITYCODE,C.NAME,T.EMULATIONSHOW
       FROM SYSTEMNOFORMAT T
-	  INNER JOIN CLASSNODE C ON C.NODECODE=T.ENTITYCODE
+	  INNER JOIN CLASSNODE C ON C.NODECODE=T.ENTITYCODE order by T.ENTITYCODE
     </select>
 
     <!--获取指定底层门类档号列表-->
     <select id="getSystemNoFormatListByEntityCode" resultType="com.wsda.project.model.SystemNoFormat">
     SELECT
         *
-    FROM SYSTEMNOFORMAT WHERE ENTITYCODE=#{entityCode}
+    FROM SYSTEMNOFORMAT WHERE ENTITYCODE=#{entityCode} ORDER BY NO
+    </select>
+
+    <!--获取指定底层门类档号列表-->
+    <select id="getSystemNoFormatListByTableCode" resultType="com.wsda.project.model.SystemNoFormat">
+         SELECT
+        *
+    FROM SYSTEMNOFORMAT WHERE ENTITYCODE=
+        (SELECT NODECODE FROM CLASSNODE WHERE TABLECODE=#{tableCode})
+    ORDER BY NO
+    </select>
+
+
+
+    <!--获取指定实体表档号列表-->
+    <select id="getSystemNoFormatListByNodeCode" resultType="com.wsda.project.model.SystemNoFormat">
+    SELECT
+
+    FROM SYSTEMNOFORMAT WHERE ENTITYCODE=#{nodeCode}
+    ORDER BY NO
     </select>
 
     <!--添加表数据-->
@@ -38,12 +57,14 @@
         #{lenth},
         #{no},
         #{style},
-        #{separator}
+        #{separator},
+        #{emulationShow}
         )
     </insert>
 
     <!--删除档号-->
-    <delete id="delSystemNoFormatByNoFormatCode" parameterType="java.lang.String">
-        delete  SYSTEMNOFORMAT where NOFORMATCODE=#{noFormatCode}
+    <delete id="delSystemNoFormatByEntityCode" parameterType="java.lang.String">
+        delete  SYSTEMNOFORMAT where ENTITYCODE=#{entityCode}
     </delete>
+
 </mapper>

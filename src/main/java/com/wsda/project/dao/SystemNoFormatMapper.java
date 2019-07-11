@@ -18,5 +18,9 @@ public interface SystemNoFormatMapper {
     //添加档号设置
     int addSystemNoFormat(SystemNoFormat systemNoFormat);
     //删除指定的
-    int delSystemNoFormatByNoFormatCode(@Param("noFormatCode") String noFormatCode);
+    int delSystemNoFormatByEntityCode(@Param("entityCode") String entityCode);
+
+    //获取指定底层门类 档号列表
+    List<SystemNoFormat> getSystemNoFormatListByTableCode(@Param("tableCode") String tableCode);
+
 }
