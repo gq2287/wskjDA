@@ -29,8 +29,8 @@ public class Swagger2 {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("表单设计器api文档")
-                .version("1.0")
+                .title("文盛科技档案系统api文档")
+                .version("11.0")
                 .build();
     }
 }

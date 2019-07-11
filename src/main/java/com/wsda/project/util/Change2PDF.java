@@ -19,7 +19,7 @@ public class Change2PDF {
 
 
     /**
-     * 新text转pdf
+     * text转pdf
      *
      * @param filePath
      * @param pdfPath

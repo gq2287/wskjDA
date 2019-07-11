@@ -2,6 +2,9 @@ package com.wsda.project.util;
 
 import java.util.concurrent.*;
 
+/**
+ * 线程管理
+ */
 public class Constans {
     public static final int MAX_THREAD_COUNT = getSystemProcessCount();
     private static final int MAX_IMUMPOOLSIZE = MAX_THREAD_COUNT;
