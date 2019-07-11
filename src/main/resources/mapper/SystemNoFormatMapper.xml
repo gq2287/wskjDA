@@ -26,16 +26,6 @@
     ORDER BY NO
     </select>
 
-
-
-    <!--获取指定实体表档号列表-->
-    <select id="getSystemNoFormatListByNodeCode" resultType="com.wsda.project.model.SystemNoFormat">
-    SELECT
-
-    FROM SYSTEMNOFORMAT WHERE ENTITYCODE=#{nodeCode}
-    ORDER BY NO
-    </select>
-
     <!--添加表数据-->
     <insert id="addSystemNoFormat" parameterType="com.wsda.project.model.SystemNoFormat">
         INSERT INTO SYSTEMNOFORMAT(
