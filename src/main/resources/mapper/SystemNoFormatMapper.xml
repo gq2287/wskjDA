@@ -11,10 +11,20 @@
     </select>
 
     <!--获取指定底层门类档号列表-->
+    <!--SELECT-->
+    <!--*-->
+    <!--FROM SYSTEMNOFORMAT WHERE ENTITYCODE=#{entityCode} ORDER BY NO-->
     <select id="getSystemNoFormatListByEntityCode" resultType="com.wsda.project.model.SystemNoFormat">
-    SELECT
-        *
-    FROM SYSTEMNOFORMAT WHERE ENTITYCODE=#{entityCode} ORDER BY NO
+        SELECT
+            S.*,T.TYPE
+        FROM
+            SYSTEMNOFORMAT S
+            INNER JOIN CLASSNODE C ON C.NODECODE=S.ENTITYCODE
+            INNER JOIN TABLECOLUMNDESCRIPTION T ON T.NAME=S.COLUMNNAME
+        WHERE
+            ENTITYCODE =#{entityCode} AND C.TABLECODE=T.TABLECODE
+        ORDER BY
+            NO
     </select>
 
     <!--获取指定底层门类档号列表-->

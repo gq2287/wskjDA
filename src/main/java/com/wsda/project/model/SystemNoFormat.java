@@ -15,11 +15,12 @@ public class SystemNoFormat implements Serializable {
     private String style;//风格
     private String separator;//分隔符号
     private String emulationShow;//展示效果
+    private String type;//临时添加 供前端判断
 
     public SystemNoFormat() {
     }
 
-    public SystemNoFormat(String noFormatCode, String entityCode, String columnName, String chineseName, String lenth, String no, String style, String separator,String emulationShow) {
+    public SystemNoFormat(String noFormatCode, String entityCode, String columnName, String chineseName, String lenth, String no, String style, String separator, String emulationShow, String type) {
         this.noFormatCode = noFormatCode;
         this.entityCode = entityCode;
         this.columnName = columnName;
@@ -28,7 +29,16 @@ public class SystemNoFormat implements Serializable {
         this.no = no;
         this.style = style;
         this.separator = separator;
-        this.emulationShow=emulationShow;
+        this.emulationShow = emulationShow;
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getEmulationShow() {
