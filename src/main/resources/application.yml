@@ -1,9 +1,9 @@
 server:
   port: 8080
 spring:
-  datasource:
+#  datasource:
 # 读取外置config文件链接数据库
-    type: com.alibaba.druid.pool.DruidDataSource
+#    type: com.alibaba.druid.pool.DruidDataSource
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
@@ -19,6 +19,7 @@ spring:
 mybatis:
   type-aliases-package: com.wskj.project.model
   mapper-locations: classpath:mapper/*.xml
+  config-location: classpath:mybatis-config.xml
 #pagehelper 开启拦截sql
 pagehelper:
   helperDialect:  oracle

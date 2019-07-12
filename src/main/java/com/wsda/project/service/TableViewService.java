@@ -27,4 +27,11 @@ public interface TableViewService {
     //分组
     List<Object> getGroup(String tableCode,List<String> group );
 
+//    待归档
+    boolean updateArchivesFiledByRecordCode(String tableCode,List<Map<String,String>> parms);
+//    已归档
+    boolean updateArchivesByRecordCode(String tableCode,List<Map<String,String>> parms);
+//    不归档
+    boolean updateNoArchivesByRecordCode(String tableCode,List<Map<String,String>> parms);
+
 }

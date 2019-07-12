@@ -10,6 +10,8 @@ import com.wsda.project.model.Dictionary;
 import com.wsda.project.model.*;
 import com.wsda.project.service.TableViewService;
 import com.wsda.project.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import java.util.*;
 
 @Service
 public class TableViewServiceImpl implements TableViewService {
+    private Logger logger = LoggerFactory.getLogger(TableViewServiceImpl.class);
 
     @Resource
     private TableViewMapper tableViewMapper;
@@ -52,7 +55,7 @@ public class TableViewServiceImpl implements TableViewService {
         HttpSession session = request.getSession();
         SystemUser systemUser = (SystemUser) session.getAttribute("user");//获取当前登录用户 权限时会用到
         List<SystemNoFormat> systemNoFormatList = systemNoFormatMapper.getSystemNoFormatListByTableCode(tableCode);//获取档号
-        List<String> inputCardFieldNameList=tableViewMapper.getInputCardFieldName(tableCode);
+        List<String> inputCardFieldNameList = tableViewMapper.getInputCardFieldName(tableCode);
         Map<String, Object> mapObj = new HashMap<>();//返回结果集
         List<Map<String, String>> arrayList = new ArrayList<>();
         try {
@@ -80,7 +83,6 @@ public class TableViewServiceImpl implements TableViewService {
             dataType.put("5", "VARCHAR2");
             //处理查询的条件
             if (conditions != null && conditions.size() > 0) {
-                whereSql.append(" AND ");
                 for (int i = 0; i < conditions.size(); i++) {
                     for (String cod : conditions.get(i).keySet()) {
                         String startColumn = cod.substring(0, cod.lastIndexOf("-"));//获取数据列名
@@ -89,87 +91,101 @@ public class TableViewServiceImpl implements TableViewService {
                         if ("待整理".equals(valueStr)) {
                             //判断未整理
                             if (systemNoFormatList != null) {
-                                //判断是否纯在该字段
-                                for (int j = 0; j <inputCardFieldNameList.size() ; j++) {
-                                    if("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))||"ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))){
-                                        whereSql.append(" "+inputCardFieldNameList.get(j)+" = ");
+                                for (int j = 0; j < inputCardFieldNameList.size(); j++) {
+                                    if ("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j)) || "ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
+                                        whereSql.append(" " + inputCardFieldNameList.get(j) + " != ");
+                                        whereSql.append("'已归档'");//值
+                                        if (j != inputCardFieldNameList.size() - 1) {
+                                            whereSql.append(" AND ");
+                                        }
+                                    }
+                                }
+                                //判断档号项是否完整
+                                whereSql.append("(");
+                                for (int j = 0; j < systemNoFormatList.size(); j++) {
+                                    whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
+                                    whereSql.append(" IS  NULL ");//如果档号项为空
+                                    whereSql.append(" OR ");
+                                }
+                                String strTemp = whereSql.toString().replace(" ", "");
+                                strTemp = strTemp.substring(strTemp.length() - 2, strTemp.length());
+                                if ("OR".equalsIgnoreCase(strTemp)) {//判断最后循环结束多加了OR
+                                    whereSql = whereSql.replace(whereSql.lastIndexOf("OR "), whereSql.length(), "");
+                                }
+                                whereSql.append(")");
+                            }
+                            logger.info("待整理SQL:{}",whereSql);
+                        } else if ("待归档".equals(valueStr)) {
+                            //判断未整理
+                            if (systemNoFormatList != null) {
+                                for (int j = 0; j < inputCardFieldNameList.size(); j++) {
+                                    if ("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j)) || "ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
+                                        whereSql.append(" " + inputCardFieldNameList.get(j) + " = ");
                                         whereSql.append("'未归档'");//值
                                         if (j != inputCardFieldNameList.size() - 1) {
                                             whereSql.append(" AND ");
                                         }
                                     }
                                 }
+                                //判断档号项是否完整
+                                whereSql.append("(");
                                 for (int j = 0; j < systemNoFormatList.size(); j++) {
                                     whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
-                                    whereSql.append(" IS NULL ");
-                                    if (j != systemNoFormatList.size() - 1) {
-                                        whereSql.append(" OR ");
-                                    }
+                                    whereSql.append(" IS NOT NULL ");//如果档号项为空
+                                    whereSql.append(" AND ");
                                 }
-                                String strTemp=whereSql.toString().replace(" ","");
-                                strTemp=strTemp.substring(strTemp.length()-2,strTemp.length());
-                                if("OR".equalsIgnoreCase(strTemp)){//判断最后循环结束多加了OR
-                                    whereSql= whereSql.replace(whereSql.lastIndexOf("OR "),whereSql.length(),"");
+                                String strTemp = whereSql.toString().replace(" ", "");
+                                strTemp = strTemp.substring(strTemp.length() - 3, strTemp.length());
+                                if ("AND".equalsIgnoreCase(strTemp)) {//判断最后循环结束多加了OR
+                                    whereSql = whereSql.replace(whereSql.lastIndexOf("AND "), whereSql.length(), "");
                                 }
-                            } else {
-                                whereSql.append(" 1=1 ");
-                                whereSql.append(" AND ");
+                                whereSql.append(")");
                             }
-                        } else if ("待归档".equals(valueStr)) {
-
-                            //判断是否纯在该字段
-                            for (int j = 0; j <inputCardFieldNameList.size() ; j++) {
-                                if("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))||"ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))){
-                                    whereSql.append(" "+inputCardFieldNameList.get(j)+" = ");
-                                    whereSql.append("'未归档'");//值
-                                    if (j != systemNoFormatList.size() - 1) {
-                                        whereSql.append(" AND ");
-                                    }
-                                }else if("ARCHIVENO".equalsIgnoreCase(inputCardFieldNameList.get(j))||"FOLDERNO".equalsIgnoreCase(inputCardFieldNameList.get(j))||"ARCHIVE_NO".equalsIgnoreCase(inputCardFieldNameList.get(j))||"DANGHAO".equalsIgnoreCase(inputCardFieldNameList.get(j))){
-                                    whereSql.append(" "+inputCardFieldNameList.get(j)+" IS NOT NULL");
-                                    if (j != systemNoFormatList.size() - 1) {
+                            logger.info("待归档SQL:{}",whereSql);
+                        } else if ("不归档".equals(valueStr)) {
+                            for (int j = 0; j < inputCardFieldNameList.size(); j++) {
+                                if ("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j)) || "ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
+                                    whereSql.append(" " + inputCardFieldNameList.get(j) + " = ");
+                                    whereSql.append("'不归档'");//值
+                                    if (j != inputCardFieldNameList.size() - 1) {
                                         whereSql.append(" AND ");
                                     }
                                 }
-
                             }
-                            String strTemp=whereSql.toString().replace(" ","");
-                            strTemp=strTemp.substring(strTemp.length()-3,strTemp.length());
-                            if("AND".equalsIgnoreCase(strTemp)){//判断最后循环结束多加了OR
-                                whereSql= whereSql.replace(whereSql.lastIndexOf("AND "),whereSql.length(),"");
-                            }
+                            logger.info("不归档SQL:{}",whereSql);
                         } else if (dataType.containsKey(endType)) {//包涵当前的类型
-                                if ("1".equals(endType) || "2".equals(endType) || "3".equals(endType)) {
-                                    if("ARCHIVE_FLAG".equalsIgnoreCase(startColumn)||"ARCHIVEFLAG".equalsIgnoreCase(startColumn)){
-                                        whereSql.append(" "+startColumn+" = ");
-                                        whereSql.append("'"+valueStr+"'");//值
-                                        if (i != conditions.size() - 1) {
-                                            whereSql.append(" or ");
-                                        }
-                                    }else{
-                                        whereSql.append(startColumn);//列名
-                                        whereSql.append(" like ");
-                                        whereSql.append("'%" + valueStr + "%'");//值
-                                    }
+                            if ("1".equals(endType) || "2".equals(endType) || "3".equals(endType)) {
+                                if ("ARCHIVE_FLAG".equalsIgnoreCase(startColumn) || "ARCHIVEFLAG".equalsIgnoreCase(startColumn)) {
+                                    whereSql.append(" " + startColumn + " = ");
+                                    whereSql.append("'" + valueStr + "'");//值
                                     if (i != conditions.size() - 1) {
-                                        whereSql.append(" or ");
+                                        whereSql.append(" AND ");
                                     }
-                                } else if ("4".equals(endType)) {
-                                    String valueStart = valueStr.substring(0, valueStr.lastIndexOf("@"));
-                                    String valueEnd = valueStr.substring(valueStr.lastIndexOf("@") + 1, valueStr.length());//获取数据类型
-                                    whereSql.append(" to_date(to_char(" + startColumn + ", 'yyyy-MM-dd'), 'yyyy-mm-dd') BETWEEN to_date('" + valueStart + "', 'yyyy-mm-dd') AND to_date('" + valueEnd + "', 'yyyy-mm-dd') ");//值
-                                    if (i != conditions.size() - 1) {
-                                        whereSql.append(" or ");
-                                    }
-                                } else if ("5".equals(endType)) {
-                                    String valueStart = valueStr.substring(0, valueStr.lastIndexOf("@"));
-                                    String valueEnd = valueStr.substring(valueStr.lastIndexOf("@") + 1, valueStr.length());//获取数据类型
-                                    whereSql.append(" to_date(to_char(" + startColumn + ", 'yyyy-MM-dd'), 'yyyy-mm-dd') BETWEEN TO_DATE('" + valueStart + "', 'yyyy-mm-dd') AND TO_DATE('" + valueEnd + "','yyyy-mm-dd') ");//值
-                                    if (i != conditions.size() - 1) {
-                                        whereSql.append(" or ");
-                                    }
+                                } else {
+                                    whereSql.append(startColumn);//列名
+                                    whereSql.append(" like ");
+                                    whereSql.append("'%" + valueStr + "%'");//值
+                                }
+                                if (i != conditions.size() - 1) {
+                                    whereSql.append(" AND ");
+                                }
+                            } else if ("4".equals(endType)) {
+                                String valueStart = valueStr.substring(0, valueStr.lastIndexOf("@"));
+                                String valueEnd = valueStr.substring(valueStr.lastIndexOf("@") + 1, valueStr.length());//获取数据类型
+                                whereSql.append(" to_date(to_char(" + startColumn + ", 'yyyy-MM-dd'), 'yyyy-mm-dd') BETWEEN to_date('" + valueStart + "', 'yyyy-mm-dd') AND to_date('" + valueEnd + "', 'yyyy-mm-dd') ");//值
+                                if (i != conditions.size() - 1) {
+                                    whereSql.append(" or ");
+                                }
+                            } else if ("5".equals(endType)) {
+                                String valueStart = valueStr.substring(0, valueStr.lastIndexOf("@"));
+                                String valueEnd = valueStr.substring(valueStr.lastIndexOf("@") + 1, valueStr.length());//获取数据类型
+                                whereSql.append(" to_date(to_char(" + startColumn + ", 'yyyy-MM-dd'), 'yyyy-mm-dd') BETWEEN TO_DATE('" + valueStart + "', 'yyyy-mm-dd') AND TO_DATE('" + valueEnd + "','yyyy-mm-dd') ");//值
+                                if (i != conditions.size() - 1) {
+                                    whereSql.append(" or ");
                                 }
                             }
+                            logger.info("已归档SQL:{}",whereSql);
+                        }
                     }
                 }
             }
@@ -186,7 +202,8 @@ public class TableViewServiceImpl implements TableViewService {
                     }
                 }
             }
-            System.err.println(whereSql + "---\n" + sortSql);
+            logger.info("查询档案SQL:{}",whereSql);
+            logger.info("查询档案排序SQL:{}",sortSql);
             //End
 
             //业务
@@ -205,7 +222,7 @@ public class TableViewServiceImpl implements TableViewService {
                 return null;
             }
         } catch (Exception e) {
-            System.err.println("查询视图列失败：" + e.getMessage() + "tableCode");
+            System.err.println("查询视图列失败:" + e.getMessage() + "tableCode");
         }
         return mapObj;
     }
@@ -609,6 +626,62 @@ public class TableViewServiceImpl implements TableViewService {
         return listMap;
     }
 
+    /**
+     * 待归档
+     *
+     * @param tableCode 表编号
+     * @param parms
+     * @return
+     */
+    @Transactional
+    @Override
+    public boolean updateArchivesFiledByRecordCode(String tableCode, List<Map<String, String>> parms) {
+        String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
+        try {
+            int result = tableViewMapper.updateArchivesFiledByRecordCode(tableName, parms);
+            System.err.println("批量放入预归档:" + result);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * 已归档
+     *
+     * @param tableCode 表编号
+     * @param parms
+     * @return
+     */
+    @Override
+    public boolean updateArchivesByRecordCode(String tableCode, List<Map<String, String>> parms) {
+        String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
+        try {
+            int result = tableViewMapper.updateArchivesByRecordCode(tableName, parms);
+            System.err.println("批量放入已归档:" + result);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * 不归档
+     *
+     * @param tableCode 表编号
+     * @param parms
+     * @return
+     */
+    @Override
+    public boolean updateNoArchivesByRecordCode(String tableCode, List<Map<String, String>> parms) {
+        String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
+        try {
+            int result = tableViewMapper.updateArchivesByRecordCode(tableName, parms);
+            System.err.println("批量放入不归档:" + result);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * 获取旗下子节点
@@ -666,7 +739,7 @@ public class TableViewServiceImpl implements TableViewService {
         if (arrayList != null && arrayList.size() > 0 && listPageInfo.getList() != null && listPageInfo.getList().size() > 0) {
             for (int i = 0; i < arrayList.size(); i++) {
                 for (String cloumn : arrayList.get(i).keySet()) {
-                    if ("INPUTTYPE".equals(cloumn) && "D".equals(arrayList.get(i).get(cloumn))) {
+                    if ("INPUTTYPE".equals(cloumn) && "D".equals(arrayList.get(i).get(cloumn)) || "A".equals(arrayList.get(i).get(cloumn))) {
                         String cloumnName = arrayList.get(i).get("NAME");//列英文名
                         for (int j = 0; j < listPageInfo.getList().size(); j++) {
                             for (String infoE : listPageInfo.getList().get(j).keySet()) {
@@ -679,14 +752,20 @@ public class TableViewServiceImpl implements TableViewService {
                                         formatter = new SimpleDateFormat("yyyy-MM-dd");
                                         listPageInfo.getList().get(j).put(infoE, formatter.format(newDate));
                                     } else {
-                                        SimpleDateFormat SFDate = null;
-                                        if ("createDate".equalsIgnoreCase(infoE)) {
-                                            SFDate = new SimpleDateFormat("yyyyMMdd");
-                                        } else {
-                                            SFDate = new SimpleDateFormat("yyyy-MM-dd");
+//                                        SimpleDateFormat SFDate = null;
+                                        if ("createDate".equalsIgnoreCase(infoE)&&dateStr.contains(" 00:00:00.0")) {
+                                            dateStr=dateStr.replace(" 00:00:00.0","");
+                                            dateStr=dateStr.replace("-","");
+//                                            SFDate = new SimpleDateFormat("yyyyMMdd");
+                                        } else if ("createDate".equalsIgnoreCase(infoE)&&dateStr.contains(" 00:00")){
+                                            dateStr=dateStr.replace(" 00:00","");
+//                                            SFDate = new SimpleDateFormat("yyyy-MM-dd");
+                                        }else {
+                                            dateStr=dateStr.replace(" 00:00:00.0","");
+                                            dateStr=dateStr.replace(" 00:00","");
+//                                            SFDate = new SimpleDateFormat("yyyy-MM-dd");
                                         }
-                                        String date = SFDate.format(SFDate.parse(dateStr));
-                                        listPageInfo.getList().get(j).put(infoE, date);
+                                        listPageInfo.getList().get(j).put(infoE, dateStr);
                                     }
                                 }
                             }
@@ -696,5 +775,6 @@ public class TableViewServiceImpl implements TableViewService {
             }
         }
     }
+
 }
 

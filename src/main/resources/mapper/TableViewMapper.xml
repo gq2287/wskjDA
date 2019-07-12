@@ -30,7 +30,7 @@
     <!--获取实体表数据   SYSTEMUSERCOLLECTION用户收藏表 uscId用户编号-->
     <select id="getTableInfo" resultType="java.util.Map" parameterType="java.lang.String">
         select
-        <foreach collection="columnMap.keys" item="key" open=" " separator=","  close=" " >
+        <foreach collection="columnMap.keys" item="key" open=" " separator="," close=" ">
             ${key}
         </foreach>
         <if test="uscId != null and uscId != ''">
@@ -38,20 +38,20 @@
         </if>
         from ${tableName} TEMP
         <if test="uscId != null and uscId != ''">
-            LEFT  JOIN  SYSTEMUSERCOLLECTION USC on USC.ARCHIVESCODE=TEMP.RECORDCODE
+            LEFT JOIN SYSTEMUSERCOLLECTION USC on USC.ARCHIVESCODE=TEMP.RECORDCODE
         </if>
-        where 1=1  AND
+        where 1=1 AND
         <if test="type != null and type != ''">
             TRASHSTATUS=#{type}
         </if>
         <if test="whereSql != null and whereSql != ''">
-            ${whereSql}
+            AND ${whereSql}
         </if>
         <if test="uscId != null and uscId != ''">
             OR USC.USERCODE=#{uscId}
         </if>
         <if test="sortSql != null and sortSql != ''">
-             ${sortSql}
+            ${sortSql}
         </if>
     </select>
 
@@ -75,26 +75,26 @@
           SELECT TYPE,INPUTTYPE,CANNULL FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode} and NAME=#{name}
     </select>
 
-    <!--获取录入实体表数据-->
+    <!--添加录入实体表数据-->
     <insert id="addTableInfo" parameterType="java.util.Map">
-          INSERT INTO ${tableName}
-            <foreach collection="columns" item="item" open="(" separator=","  close=")" >
-                ${item}
-            </foreach>
-          VALUES
-            <foreach collection="values" item="item" open="(" separator=","  close=")" >
-                ${item}
-            </foreach>
+        INSERT INTO ${tableName}
+        <foreach collection="columns" item="item" open="(" separator="," close=")">
+            ${item}
+        </foreach>
+        VALUES
+        <foreach collection="values" item="item" open="(" separator="," close=")">
+            ${item}
+        </foreach>
     </insert>
 
-<!--修改表列数据 0默认，1删除-->
+    <!--修改表列数据 0默认，1删除-->
     <update id="upArchives" parameterType="java.util.Map">
         UPDATE ${tableName} SET
            TRASHSTATUS=#{trashStatus}
         WHERE  ${CODE}=#{recordCode}
     </update>
 
-<!--分组-->
+    <!--分组-->
     <select id="getGroup" resultType="java.lang.String">
           SELECT ${group} FROM ${tableName} GROUP BY ${group}
     </select>
@@ -102,10 +102,10 @@
     <!--修改表列数据-->
     <update id="upArchivesByRecordCode" parameterType="java.util.Map">
         UPDATE ${tableName} SET
-            <foreach collection="columnMap" index="key" item="vlue" open=" " separator=","  close=" " >
-                ${key}=${vlue}
-            </foreach>
-        WHERE  ${CODE}=#{recordCode}
+        <foreach collection="columnMap" index="key" item="vlue" open=" " separator="," close=" ">
+            ${key}=${vlue}
+        </foreach>
+        WHERE ${CODE}=#{recordCode}
     </update>
 
     <!--查询档案条目-->
@@ -136,5 +136,54 @@
     <select id="getArchivesByIsArchiveFlag" resultType="java.util.Map">
           SELECT ${sql} FROM ${tableName}
            WHERE RECORDCODE=#{recordCode} and ARCHIVEFLAG='已归档'
+    </select>
+
+
+    <!--批量放入待归档-->
+    <update id="updateArchivesFiledByRecordCode" parameterType="java.util.List">
+        begin
+        <foreach collection="archivesList" item="item" separator=";" index="index" close="" open="">
+            update ${tableName}
+            <set>
+                <foreach collection="item" index="key" item="vlue" open=" " separator="," close=" ">
+                    <if test="key != null and key != 'recordCode'">
+                        ${key}=#{vlue}
+                    </if>
+                </foreach>
+            </set>
+            where RECORDCODE = #{item.recordCode}
+        </foreach>
+        ;end;
+    </update>
+
+
+    <!--批量放入已归档 必须跟待归档分开写，防止待归档sql判断改变-->
+    <update id="updateArchivesByRecordCode" parameterType="java.util.List">
+        begin
+        <foreach collection="archivesList" item="item" separator=";" index="index" close="" open="">
+            update ${tableName}
+            <set>
+                <foreach collection="item" index="key" item="vlue" open=" " separator="," close=" ">
+                    <if test="key != null and key != 'recordCode'">
+                        ${key}=#{vlue}
+                    </if>
+                </foreach>
+            </set>
+            where RECORDCODE = #{item.recordCode}
+        </foreach>
+        ;end;
+    </update>
+
+
+    <!--判断当前页数是否未填写-->
+    <select id="getYSByRecordCode" resultType="java.lang.String">
+        SELECT RECORDCODE FROM ${tableName}  where 1=1 AND RECORDCODE in
+        <foreach collection="item" index="key" item="vlue" open="(" separator="," close=")">
+            <if test="key != null and key = 'recordCode'">
+                #{vlue}
+            </if>
+        </foreach>
+        AND
+         ${quantity} IS NULL
     </select>
 </mapper>

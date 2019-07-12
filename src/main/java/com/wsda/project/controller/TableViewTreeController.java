@@ -10,10 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -176,6 +173,65 @@ public class TableViewTreeController {
             paramsMap = JSONObject.parseObject(params, typeObj);//JSONObject转换map
         }
         boolean result=tableViewService.upArchivesByRecordCode(tableCode,recordCode,paramsMap,0);
+        if(result){
+            return new ResponseResult(ResponseResult.OK, "成功", result, true);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "失败", result, false);
+        }
+    }
+
+
+    @ResponseBody
+    @ApiOperation(value = "批量放入预归档", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/updateArchivesFiled", method = RequestMethod.POST)
+    public ResponseResult updateArchivesFiled(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                                 @ApiParam(required = true, name = "params", value = "修改列详情") @RequestParam(name = "params", required = true) String params) {
+        List<Map<String, String>> paramsMapList = new ArrayList<>();
+        Type typeObj = new TypeToken< List<Map<String, String>>>() {}.getType();
+        if (params != null) {
+            paramsMapList = JSONObject.parseObject(params, typeObj);//JSONObject转换map
+        }
+
+        boolean result=tableViewService.updateArchivesFiledByRecordCode(tableCode,paramsMapList);
+        if(result){
+            return new ResponseResult(ResponseResult.OK, "成功", result, true);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "失败", result, false);
+        }
+    }
+
+    @ResponseBody
+    @ApiOperation(value = "批量放入已归档", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/updateArchives", method = RequestMethod.POST)
+    public ResponseResult updateArchives(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                              @ApiParam(required = true, name = "params", value = "修改列详情") @RequestParam(name = "params", required = true) String params) {
+        List<Map<String, String>> paramsMapList = new ArrayList<>();
+        Type typeObj = new TypeToken< List<Map<String, String>>>() {}.getType();
+        if (params != null) {
+            paramsMapList = JSONObject.parseObject(params, typeObj);//JSONObject转换map
+        }
+
+        boolean result=tableViewService.updateArchivesByRecordCode(tableCode,paramsMapList);
+        if(result){
+            return new ResponseResult(ResponseResult.OK, "成功", result, true);
+        }else{
+            return new ResponseResult(ResponseResult.OK, "失败", result, false);
+        }
+    }
+
+
+    @ResponseBody
+    @ApiOperation(value = "批量放入不归档", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/updateNoArchives", method = RequestMethod.POST)
+    public ResponseResult updateNoArchives(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                         @ApiParam(required = true, name = "params", value = "修改列详情") @RequestParam(name = "params", required = true) String params) {
+        List<Map<String, String>> paramsMapList = new ArrayList<>();
+        Type typeObj = new TypeToken< List<Map<String, String>>>() {}.getType();
+        if (params != null) {
+            paramsMapList = JSONObject.parseObject(params, typeObj);//JSONObject转换map
+        }
+
+        boolean result=tableViewService.updateNoArchivesByRecordCode(tableCode,paramsMapList);
         if(result){
             return new ResponseResult(ResponseResult.OK, "成功", result, true);
         }else{
