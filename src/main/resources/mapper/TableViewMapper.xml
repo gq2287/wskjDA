@@ -175,15 +175,15 @@
     </update>
 
 
-    <!--判断当前页数是否未填写-->
+    <!--判断当前页数是否未填写 页数数量不为空-->
     <select id="getYSByRecordCode" resultType="java.lang.String">
-        SELECT RECORDCODE FROM ${tableName}  where 1=1 AND RECORDCODE in
-        <foreach collection="item" index="key" item="vlue" open="(" separator="," close=")">
-            <if test="key != null and key = 'recordCode'">
-                #{vlue}
-            </if>
-        </foreach>
-        AND
-         ${quantity} IS NULL
+        SELECT RECORDCODE FROM ${tableName} where 1=1 AND TRASHSTATUS='0' AND (${quantity} IS NULL OR ${quantity}='0')
+        <if test="recordCodeList != null and recordCodeList.size > 0">
+            AND RECORDCODE in
+            <foreach collection="recordCodeList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
+
 </mapper>

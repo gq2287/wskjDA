@@ -33,5 +33,7 @@ public interface TableViewService {
     boolean updateArchivesByRecordCode(String tableCode,List<Map<String,String>> parms);
 //    不归档
     boolean updateNoArchivesByRecordCode(String tableCode,List<Map<String,String>> parms);
+//查询页数为空的
+    List<String> getYSByRecordCode(String tableCode,List<String> parms,String quantity);
 
 }

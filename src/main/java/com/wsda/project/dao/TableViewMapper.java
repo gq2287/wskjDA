@@ -58,4 +58,6 @@ public interface TableViewMapper {
 
     //批量放入已归档
     int updateArchivesByRecordCode(@Param("tableName") String tableName, @Param("archivesList") List<Map<String, String>> archivesList);
+//根据档案主键查询他的页数或者件数不是空并且有值的
+    List<String> getYSByRecordCode(@Param("tableName") String tableName, @Param("recordCodeList") List<String> recordCodeList, @Param("quantity")String quantity);
 }

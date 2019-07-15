@@ -103,9 +103,13 @@ public class TableViewServiceImpl implements TableViewService {
                                 //判断档号项是否完整
                                 whereSql.append("(");
                                 for (int j = 0; j < systemNoFormatList.size(); j++) {
-                                    whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
-                                    whereSql.append(" IS  NULL ");//如果档号项为空
-                                    whereSql.append(" OR ");
+                                    if ("pieceNo".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) || "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "jh".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
+                                        continue;
+                                    }else{
+                                        whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
+                                        whereSql.append(" IS  NULL ");//如果档号项为空
+                                        whereSql.append(" OR ");
+                                    }
                                 }
                                 String strTemp = whereSql.toString().replace(" ", "");
                                 strTemp = strTemp.substring(strTemp.length() - 2, strTemp.length());
@@ -114,10 +118,19 @@ public class TableViewServiceImpl implements TableViewService {
                                 }
                                 whereSql.append(")");
                             }
-                            logger.info("待整理SQL:{}",whereSql);
+                            logger.info("待整理SQL:{}", whereSql);
                         } else if ("待归档".equals(valueStr)) {
                             //判断未整理
                             if (systemNoFormatList != null) {
+                                columnMap = new HashMap<>();//重置查询列为档号+页数+题名
+                                columnMap.put("mainTitle".toLowerCase(),"mainTitle".toLowerCase());
+                                for (int j = 0; j < inputCardFieldNameList.size(); j++) {
+                                    if ("pageNumber".equalsIgnoreCase(inputCardFieldNameList.get(j)) ||
+                                            "quantity".equalsIgnoreCase(inputCardFieldNameList.get(j))||
+                                            "YESHU".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
+                                        columnMap.put(inputCardFieldNameList.get(j).toLowerCase(),inputCardFieldNameList.get(j).toLowerCase());
+                                    }
+                                }
                                 for (int j = 0; j < inputCardFieldNameList.size(); j++) {
                                     if ("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j)) || "ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
                                         whereSql.append(" " + inputCardFieldNameList.get(j) + " = ");
@@ -130,9 +143,15 @@ public class TableViewServiceImpl implements TableViewService {
                                 //判断档号项是否完整
                                 whereSql.append("(");
                                 for (int j = 0; j < systemNoFormatList.size(); j++) {
-                                    whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
-                                    whereSql.append(" IS NOT NULL ");//如果档号项为空
-                                    whereSql.append(" AND ");
+                                    //添加档号为查询列
+                                    columnMap.put(systemNoFormatList.get(j).getColumnName().toLowerCase(),systemNoFormatList.get(j).getColumnName().toLowerCase());
+                                    if ("pieceNo".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) || "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "jh".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
+                                       continue;
+                                    }else{
+                                        whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
+                                        whereSql.append(" IS NOT NULL ");//如果档号项为空
+                                        whereSql.append(" AND ");
+                                    }
                                 }
                                 String strTemp = whereSql.toString().replace(" ", "");
                                 strTemp = strTemp.substring(strTemp.length() - 3, strTemp.length());
@@ -141,7 +160,7 @@ public class TableViewServiceImpl implements TableViewService {
                                 }
                                 whereSql.append(")");
                             }
-                            logger.info("待归档SQL:{}",whereSql);
+                            logger.info("待归档SQL:{}", whereSql);
                         } else if ("不归档".equals(valueStr)) {
                             for (int j = 0; j < inputCardFieldNameList.size(); j++) {
                                 if ("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j)) || "ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
@@ -152,7 +171,14 @@ public class TableViewServiceImpl implements TableViewService {
                                     }
                                 }
                             }
-                            logger.info("不归档SQL:{}",whereSql);
+                            String strTemp = whereSql.toString().replace(" ", "");
+                            strTemp = strTemp.substring(strTemp.length() - 3, strTemp.length());
+                            if ("AND".equalsIgnoreCase(strTemp)) {//判断最后循环结束多加了OR
+                                whereSql = whereSql.replace(whereSql.lastIndexOf("AND "), whereSql.length(), ")");
+                            }else{
+                                whereSql.append(")");
+                            }
+                            logger.info("不归档SQL:{}", whereSql);
                         } else if (dataType.containsKey(endType)) {//包涵当前的类型
                             if ("1".equals(endType) || "2".equals(endType) || "3".equals(endType)) {
                                 if ("ARCHIVE_FLAG".equalsIgnoreCase(startColumn) || "ARCHIVEFLAG".equalsIgnoreCase(startColumn)) {
@@ -184,7 +210,7 @@ public class TableViewServiceImpl implements TableViewService {
                                     whereSql.append(" or ");
                                 }
                             }
-                            logger.info("已归档SQL:{}",whereSql);
+                            logger.info("已归档SQL:{}", whereSql);
                         }
                     }
                 }
@@ -202,8 +228,8 @@ public class TableViewServiceImpl implements TableViewService {
                     }
                 }
             }
-            logger.info("查询档案SQL:{}",whereSql);
-            logger.info("查询档案排序SQL:{}",sortSql);
+            logger.info("查询档案SQL:{}", whereSql);
+            logger.info("查询档案排序SQL:{}", sortSql);
             //End
 
             //业务
@@ -645,6 +671,7 @@ public class TableViewServiceImpl implements TableViewService {
         }
         return true;
     }
+
     /**
      * 已归档
      *
@@ -663,6 +690,7 @@ public class TableViewServiceImpl implements TableViewService {
         }
         return true;
     }
+
     /**
      * 不归档
      *
@@ -680,6 +708,18 @@ public class TableViewServiceImpl implements TableViewService {
             return false;
         }
         return true;
+    }
+
+    /**查询页数为空或为0的
+     * @param tableCode
+     * @param parms
+     * @param quantity
+     * @return
+     */
+    @Override
+    public List<String> getYSByRecordCode(String tableCode, List<String> parms, String quantity) {
+        String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
+        return tableViewMapper.getYSByRecordCode(tableName, parms, quantity);
     }
 
 
@@ -753,16 +793,16 @@ public class TableViewServiceImpl implements TableViewService {
                                         listPageInfo.getList().get(j).put(infoE, formatter.format(newDate));
                                     } else {
 //                                        SimpleDateFormat SFDate = null;
-                                        if ("createDate".equalsIgnoreCase(infoE)&&dateStr.contains(" 00:00:00.0")) {
-                                            dateStr=dateStr.replace(" 00:00:00.0","");
-                                            dateStr=dateStr.replace("-","");
+                                        if ("createDate".equalsIgnoreCase(infoE) && dateStr.contains(" 00:00:00.0")) {
+                                            dateStr = dateStr.replace(" 00:00:00.0", "");
+                                            dateStr = dateStr.replace("-", "");
 //                                            SFDate = new SimpleDateFormat("yyyyMMdd");
-                                        } else if ("createDate".equalsIgnoreCase(infoE)&&dateStr.contains(" 00:00")){
-                                            dateStr=dateStr.replace(" 00:00","");
+                                        } else if ("createDate".equalsIgnoreCase(infoE) && dateStr.contains(" 00:00")) {
+                                            dateStr = dateStr.replace(" 00:00", "");
 //                                            SFDate = new SimpleDateFormat("yyyy-MM-dd");
-                                        }else {
-                                            dateStr=dateStr.replace(" 00:00:00.0","");
-                                            dateStr=dateStr.replace(" 00:00","");
+                                        } else {
+                                            dateStr = dateStr.replace(" 00:00:00.0", "");
+                                            dateStr = dateStr.replace(" 00:00", "");
 //                                            SFDate = new SimpleDateFormat("yyyy-MM-dd");
                                         }
                                         listPageInfo.getList().get(j).put(infoE, dateStr);
