@@ -145,8 +145,15 @@ public class TableViewServiceImpl implements TableViewService {
                                 for (int j = 0; j < systemNoFormatList.size(); j++) {
                                     //添加档号为查询列
                                     columnMap.put(systemNoFormatList.get(j).getColumnName().toLowerCase(),systemNoFormatList.get(j).getColumnName().toLowerCase());
-                                    if ("pieceNo".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) || "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "jh".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
-                                       continue;
+                                    if ("pieceNo".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
+                                            "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())||
+                                            "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())||
+                                            "jh".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
+                                       continue;//判断件号
+                                    }else if("pageNumber".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
+                                            "quantity".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())||
+                                            "YESHU".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())){
+                                        continue;//判断页号
                                     }else{
                                         whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
                                         whereSql.append(" IS NOT NULL ");//如果档号项为空
@@ -665,7 +672,7 @@ public class TableViewServiceImpl implements TableViewService {
         String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
         try {
             int result = tableViewMapper.updateArchivesFiledByRecordCode(tableName, parms);
-            System.err.println("批量放入预归档:" + result);
+            System.err.println("批量放入待归档:" + result);
         } catch (Exception e) {
             return false;
         }

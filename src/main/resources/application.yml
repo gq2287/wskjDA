@@ -18,8 +18,8 @@ spring:
 #mybatis
 mybatis:
   type-aliases-package: com.wskj.project.model
+  config-location: classpath:mybatisConfig/mybatis-config.xml
   mapper-locations: classpath:mapper/*.xml
-  config-location: classpath:mybatis-config.xml
 #pagehelper 开启拦截sql
 pagehelper:
   helperDialect:  oracle
