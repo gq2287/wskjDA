@@ -36,4 +36,5 @@ public interface TableViewService {
 //查询页数为空的
     List<String> getYSByRecordCode(String tableCode,List<String> parms,String quantity);
 
+    int getYSOrJHMaxBysystemNoFormat(String YSMax,String tableCode, Map<String,String> parmsList);
 }

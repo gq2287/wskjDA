@@ -60,4 +60,6 @@ public interface TableViewMapper {
     int updateArchivesByRecordCode(@Param("tableName") String tableName, @Param("archivesList") List<Map<String, String>> archivesList);
 //根据档案主键查询他的页数或者件数不是空并且有值的
     List<String> getYSByRecordCode(@Param("tableName") String tableName, @Param("recordCodeList") List<String> recordCodeList, @Param("quantity")String quantity);
+//查询最大页数或件号 根据档号组成项判断最大件号
+    Integer getYSOrJHMaxBysystemNoFormat(@Param("YSMax") String YSMax, @Param("tableName") String tableName,@Param("systemNoFormatMap") Map<String, String> systemNoFormatMap);
 }

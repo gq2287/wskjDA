@@ -251,10 +251,10 @@ public class TableViewTreeController {
                                             @ApiParam(required = true, name = "recordCodeList", value = "修改列详情") @RequestParam(name = "recordCodeList", required = true) String recordCodeList,
                                             @ApiParam(required = true, name = "ys", value = "页数档号组成的变量名") @RequestParam(name = "ys", required = true) String ys) {
 
-        List<String> paramsMapList = new ArrayList<>();
+        List<String> paramsList = new ArrayList<>();
         Type typeObj = new TypeToken<List<String>>() {}.getType();
-        paramsMapList = JSONObject.parseObject(recordCodeList, typeObj);//JSONObject转换map;
-        List<String> resultList = tableViewService.getYSByRecordCode(tableCode, paramsMapList, ys);
+        paramsList = JSONObject.parseObject(recordCodeList, typeObj);//JSONObject转换map;
+        List<String> resultList = tableViewService.getYSByRecordCode(tableCode, paramsList, ys);
         if (resultList != null) {
             return new ResponseResult(ResponseResult.OK, "成功", resultList, true);
         } else {
@@ -262,6 +262,16 @@ public class TableViewTreeController {
         }
     }
 
-}
 
-//    select count(0) from (select FONDSNO2,RECORDCODE,YUAN_WEN_SHU_LIANG,RESPONSIBLEBY,CREATEDATE,ARCHIVENO,MAINTITLE,FILLINGYEAR from NEW_WS TEMP where 1=1AND TRASHSTATUS=?AND archiveFlag='不归档'AND)tmp_count
+    @ApiOperation(value = "获取最大件号", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/getJHMaxBysystemNoFormat", method = RequestMethod.POST)
+    public ResponseResult getJHMaxBysystemNoFormat(@ApiParam(required = true, name = "tableCode", value = "档案表编号") @RequestParam(name = "tableCode", required = true) String tableCode,
+                                            @ApiParam(required = true, name = "ysParms", value = "件号") @RequestParam(name = "ysParms", required = true) String ysParms,
+                                                   @ApiParam(required = true, name = "parmsList", value = "档号参数") @RequestParam(name = "parmsList", required = true) String parmsList) {
+        Map<String,String> paramsList = new HashMap<>();
+        Type typeObj = new TypeToken<Map<String,String>>() {}.getType();
+        paramsList = JSONObject.parseObject(parmsList, typeObj);//JSONObject转换map;
+        int result = tableViewService.getYSOrJHMaxBysystemNoFormat(ysParms,tableCode,paramsList);
+        return new ResponseResult(ResponseResult.OK, "成功", result, true);
+    }
+}

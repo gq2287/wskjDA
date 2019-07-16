@@ -57,6 +57,7 @@ public class TableViewServiceImpl implements TableViewService {
         List<SystemNoFormat> systemNoFormatList = systemNoFormatMapper.getSystemNoFormatListByTableCode(tableCode);//获取档号
         List<String> inputCardFieldNameList = tableViewMapper.getInputCardFieldName(tableCode);
         Map<String, Object> mapObj = new HashMap<>();//返回结果集
+        String archiveFlagType = null;//当前查询归档类型
         List<Map<String, String>> arrayList = new ArrayList<>();
         try {
             arrayList = tableViewMapper.getTableView(tableCode);//获取展示列
@@ -94,7 +95,7 @@ public class TableViewServiceImpl implements TableViewService {
                                 for (int j = 0; j < inputCardFieldNameList.size(); j++) {
                                     if ("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j)) || "ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
                                         whereSql.append(" " + inputCardFieldNameList.get(j) + " != ");
-                                        whereSql.append("'已归档' AND　"+ inputCardFieldNameList.get(j) + " != '不归档'");//值
+                                        whereSql.append("'已归档' AND　" + inputCardFieldNameList.get(j) + " != '不归档'");//值
                                         if (j != inputCardFieldNameList.size() - 1) {
                                             whereSql.append(" AND ");
                                         }
@@ -103,13 +104,13 @@ public class TableViewServiceImpl implements TableViewService {
                                 //判断档号项是否完整
                                 whereSql.append("(");
                                 for (int j = 0; j < systemNoFormatList.size(); j++) {
-                                    if ("pieceNo".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) || "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "jh".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
+                                    if ("pieceNo".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) || "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) || "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) || "jh".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
                                         continue;//判断件号
-                                    }else if("pageNumber".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
-                                            "quantity".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())||
-                                            "YESHU".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())){
+                                    } else if ("pageNumber".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
+                                            "quantity".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
+                                            "YESHU".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
                                         continue;//判断页号
-                                    }else{
+                                    } else {
                                         whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
                                         whereSql.append(" IS  NULL ");//如果档号项为空
                                         whereSql.append(" OR ");
@@ -124,15 +125,16 @@ public class TableViewServiceImpl implements TableViewService {
                             }
                             logger.info("待整理SQL:{}", whereSql);
                         } else if ("待归档".equals(valueStr)) {
+                            archiveFlagType = "待归档";
                             //判断未整理
                             if (systemNoFormatList != null) {
                                 columnMap = new HashMap<>();//重置查询列为档号+页数+题名
-                                columnMap.put("mainTitle".toLowerCase(),"mainTitle".toLowerCase());
+                                columnMap.put("mainTitle".toLowerCase(), "mainTitle".toLowerCase());
                                 for (int j = 0; j < inputCardFieldNameList.size(); j++) {
                                     if ("pageNumber".equalsIgnoreCase(inputCardFieldNameList.get(j)) ||
-                                            "quantity".equalsIgnoreCase(inputCardFieldNameList.get(j))||
+                                            "quantity".equalsIgnoreCase(inputCardFieldNameList.get(j)) ||
                                             "YESHU".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
-                                        columnMap.put(inputCardFieldNameList.get(j).toLowerCase(),inputCardFieldNameList.get(j).toLowerCase());
+                                        columnMap.put(inputCardFieldNameList.get(j).toLowerCase(), inputCardFieldNameList.get(j).toLowerCase());
                                     }
                                 }
                                 for (int j = 0; j < inputCardFieldNameList.size(); j++) {
@@ -148,17 +150,17 @@ public class TableViewServiceImpl implements TableViewService {
                                 whereSql.append("(");
                                 for (int j = 0; j < systemNoFormatList.size(); j++) {
                                     //添加档号为查询列
-                                    columnMap.put(systemNoFormatList.get(j).getColumnName().toLowerCase(),systemNoFormatList.get(j).getColumnName().toLowerCase());
+                                    columnMap.put(systemNoFormatList.get(j).getColumnName().toLowerCase(), systemNoFormatList.get(j).getColumnName().toLowerCase());
                                     if ("pieceNo".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
-                                            "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())||
-                                            "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())||
+                                            "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
+                                            "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
                                             "jh".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
-                                       continue;//判断件号
-                                    }else if("pageNumber".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
-                                            "quantity".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())||
-                                            "YESHU".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())){
+                                        continue;//判断件号
+                                    } else if ("pageNumber".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
+                                            "quantity".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
+                                            "YESHU".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
                                         continue;//判断页号
-                                    }else{
+                                    } else {
                                         whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
                                         whereSql.append(" IS NOT NULL ");//如果档号项为空
                                         whereSql.append(" AND ");
@@ -186,7 +188,7 @@ public class TableViewServiceImpl implements TableViewService {
                             strTemp = strTemp.substring(strTemp.length() - 3, strTemp.length());
                             if ("AND".equalsIgnoreCase(strTemp)) {//判断最后循环结束多加了OR
                                 whereSql = whereSql.replace(whereSql.lastIndexOf("AND "), whereSql.length(), "");
-                            }else{
+                            } else {
                                 whereSql.append(")");
                             }
                             logger.info("不归档SQL:{}", whereSql);
@@ -251,7 +253,9 @@ public class TableViewServiceImpl implements TableViewService {
                 PageInfo<Map<String, String>> listPageInfo;
                 listPageInfo = new PageInfo<>(tableViewMapper.getTableInfo(tableName, columnMap, String.valueOf(whereSql), String.valueOf(sortSql), type, null));//存放入分页的pageInfo中
                 mapObj.put("tableColums", arrayList);//展示列
-                setDepartementName(listPageInfo);//转换查询列的部门编号为部门名称
+                if (archiveFlagType == null) {
+                    setDepartementName(listPageInfo);
+                }//转换查询列的部门编号为部门名称
                 toDataByTime(arrayList, listPageInfo);//转换日期格式
                 mapObj.put("pageInfo", listPageInfo);//实体表内容
                 mapObj.put("sorts", sorts);//排序纪录
@@ -690,6 +694,7 @@ public class TableViewServiceImpl implements TableViewService {
      * @param parms
      * @return
      */
+    @Transactional
     @Override
     public boolean updateArchivesByRecordCode(String tableCode, List<Map<String, String>> parms) {
         String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
@@ -709,6 +714,7 @@ public class TableViewServiceImpl implements TableViewService {
      * @param parms
      * @return
      */
+    @Transactional
     @Override
     public boolean updateNoArchivesByRecordCode(String tableCode, List<Map<String, String>> parms) {
         String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
@@ -721,7 +727,9 @@ public class TableViewServiceImpl implements TableViewService {
         return true;
     }
 
-    /**查询页数为空或为0的
+    /**
+     * 查询页数为空或为0的
+     *
      * @param tableCode
      * @param parms
      * @param quantity
@@ -731,6 +739,25 @@ public class TableViewServiceImpl implements TableViewService {
     public List<String> getYSByRecordCode(String tableCode, List<String> parms, String quantity) {
         String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
         return tableViewMapper.getYSByRecordCode(tableName, parms, quantity);
+    }
+
+    /**
+     * 查询最大件号或页数
+     *
+     * @param YSMax
+     * @param tableCode
+     * @param parmsList
+     * @return
+     */
+    @Override
+    public int getYSOrJHMaxBysystemNoFormat(String YSMax, String tableCode, Map<String, String> parmsList) {
+        int result = 0;
+        String tableName = tableViewMapper.getTableNameByTableCode(tableCode);//获取表名
+        if (parmsList != null && parmsList.size() > 0) {
+            result = tableViewMapper.getYSOrJHMaxBysystemNoFormat(YSMax, tableName, parmsList);
+            System.out.println("最大件号或页数为:" + result);
+        }
+        return result;
     }
 
 

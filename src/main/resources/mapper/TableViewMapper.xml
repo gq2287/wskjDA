@@ -186,4 +186,14 @@
         </if>
     </select>
 
+    <!--查询最大件号或页数  decode(条件,值1,返回值1,值2,返回值2,...值n,返回值n,缺省值)-->
+    <select id="getYSOrJHMaxBysystemNoFormat" resultType="java.lang.Integer">
+        <if test="YSMax != null and YSMax != ''">
+            SELECT DECODE(MAX(${YSMax}) ,'',0,MAX(${YSMax})) AS max FROM ${tableName} where 1=1 AND TRASHSTATUS='0'
+            AND
+            <foreach collection="systemNoFormatMap" index="key" item="vlue" open=" " separator="AND" close=" ">
+                 ${key} =#{vlue}
+            </foreach>
+        </if>
+    </select>
 </mapper>
