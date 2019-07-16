@@ -94,7 +94,7 @@ public class TableViewServiceImpl implements TableViewService {
                                 for (int j = 0; j < inputCardFieldNameList.size(); j++) {
                                     if ("ARCHIVE_FLAG".equalsIgnoreCase(inputCardFieldNameList.get(j)) || "ARCHIVEFLAG".equalsIgnoreCase(inputCardFieldNameList.get(j))) {
                                         whereSql.append(" " + inputCardFieldNameList.get(j) + " != ");
-                                        whereSql.append("'已归档'");//值
+                                        whereSql.append("'已归档' AND　"+ inputCardFieldNameList.get(j) + " != '不归档'");//值
                                         if (j != inputCardFieldNameList.size() - 1) {
                                             whereSql.append(" AND ");
                                         }
@@ -104,7 +104,11 @@ public class TableViewServiceImpl implements TableViewService {
                                 whereSql.append("(");
                                 for (int j = 0; j < systemNoFormatList.size(); j++) {
                                     if ("pieceNo".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) || "yearfolderno".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "pageno1".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())|| "jh".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())) {
-                                        continue;
+                                        continue;//判断件号
+                                    }else if("pageNumber".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName()) ||
+                                            "quantity".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())||
+                                            "YESHU".equalsIgnoreCase(systemNoFormatList.get(j).getColumnName())){
+                                        continue;//判断页号
                                     }else{
                                         whereSql.append(systemNoFormatList.get(j).getColumnName());//列名
                                         whereSql.append(" IS  NULL ");//如果档号项为空
@@ -181,7 +185,7 @@ public class TableViewServiceImpl implements TableViewService {
                             String strTemp = whereSql.toString().replace(" ", "");
                             strTemp = strTemp.substring(strTemp.length() - 3, strTemp.length());
                             if ("AND".equalsIgnoreCase(strTemp)) {//判断最后循环结束多加了OR
-                                whereSql = whereSql.replace(whereSql.lastIndexOf("AND "), whereSql.length(), ")");
+                                whereSql = whereSql.replace(whereSql.lastIndexOf("AND "), whereSql.length(), "");
                             }else{
                                 whereSql.append(")");
                             }
