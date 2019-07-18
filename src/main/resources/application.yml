@@ -1,9 +1,13 @@
 server:
   port: 8080
 spring:
-#  datasource:
-# 读取外置config文件链接数据库
-#    type: com.alibaba.druid.pool.DruidDataSource
+  datasource:
+# 读取链接数据库
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@192.168.11.101:1521:wsda
+    username: jttzw
+    password: jttzw
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html

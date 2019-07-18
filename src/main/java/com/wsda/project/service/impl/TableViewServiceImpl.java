@@ -25,17 +25,14 @@ import java.util.*;
 @Service
 public class TableViewServiceImpl implements TableViewService {
     private Logger logger = LoggerFactory.getLogger(TableViewServiceImpl.class);
-
     @Resource
     private TableViewMapper tableViewMapper;
     @Resource
     private ClassTreeMapper classTreeMapper;
-
     @Resource
     private ClassTreeServiceImpl classTreeService;
     @Resource
     private DepartementServiceImpl departementService;
-
     @Resource
     private DictionaryServiceImpl dictionaryService;
     @Resource
@@ -534,7 +531,7 @@ public class TableViewServiceImpl implements TableViewService {
      *
      * @param tableCode
      * @param recordCode
-     * @param type       判断是档案条目还是亚原文条目（0，1）
+     * @param type       判断是档案条目还是原文条目（0，1）
      * @return
      */
     @Override

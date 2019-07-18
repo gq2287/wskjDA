@@ -6,6 +6,7 @@ import com.wsda.project.service.impl.ArchivesSealServiceImpl;
 import com.wsda.project.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +26,7 @@ public class ArchivesSealController {
 
     @ApiOperation(value = "获取当前表归档章", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getArchivesSeal", method = RequestMethod.POST)
-    public ResponseResult getArchivesSeal(String tableCode) {
+    public ResponseResult getArchivesSeal(@ApiParam(required = true, name = "tableCode", value = "表编号")String tableCode) {
         ArchivesSeal archivesSeal=archivesSealService.getArchivesSeal(tableCode);
         if(archivesSeal!=null){
             return new ResponseResult(ResponseResult.OK, "查询成功",archivesSeal, true);
@@ -36,7 +37,7 @@ public class ArchivesSealController {
 
     @ApiOperation(value = "当前表添加归档章", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/addArchivesSeal", method = RequestMethod.POST)
-    public ResponseResult addArchivesSeal(@RequestBody ArchivesSeal archivesSeal) {
+    public ResponseResult addArchivesSeal(@ApiParam(required = true, name = "archivesSeal", value = "归档章对象")@RequestBody ArchivesSeal archivesSeal) {
         archivesSeal.setId(StringUtil.getUuid());
         if(archivesSeal!=null){
             boolean bool=archivesSealService.addArchivesSeal(archivesSeal);

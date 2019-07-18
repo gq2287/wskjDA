@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsda.project.dao.FilingScopeTreeMapper">
+    <!--获取归档范围表数据-->
+    <select id="getAllFilingScopes" resultType="com.wsda.project.model.FilingScopeTree">
+       SELECT
+        nodeCode,
+        parentCode,
+        departmentName,
+        serial,
+        title,
+        dateOfCustody,
+        departmentCode,
+        description
+      FROM FILINGSCOPE
+      ORDER BY SERIAL
+    </select>
+    <!--获取指定归档范围表数据-->
+    <select id="getFilingScopesByNodeCode" resultType="com.wsda.project.model.FilingScopeTree">
+        SELECT
+        nodeCode,
+        parentCode,
+        departmentName,
+        serial,
+        title,
+        dateOfCustody,
+        departmentCode,
+        description
+        FROM FILINGSCOPE
+        <if test="nodeCode != null and nodeCode != ''">
+            where nodeCode=#{nodeCode}
+        </if>
+        ORDER BY SERIAL
+    </select>
+
+    <!--addFilingScope 添加归档范围条目-->
+    <insert id="addFilingScope" parameterType="com.wsda.project.model.FilingScopeTree">
+        INSERT INTO FILINGSCOPE(
+        NODECODE,
+        PARENTCODE,
+        DEPARTMENTNAME,
+        TITLE,
+        DATEOFCUSTODY,
+        DEPARTMENTCODE,
+        <if test="description != null and description != ''">
+            DESCRIPTION,
+        </if>
+        SERIAL
+        )
+        VALUES
+        (
+        #{nodeCode},
+        #{parentCode},
+        #{departmentName},
+        #{title},
+        #{dateOfCustody},
+        #{departmentCode},
+        <if test="description != null and description != ''">
+            #{description},
+        </if>
+        ${serial}
+        )
+    </insert>
+
+    <!--批量放入待归档-->
+    <delete id="delFilingScopeByNodeCode" parameterType="java.util.List">
+        DELETE FROM FILINGSCOPE WHERE NODECODE in
+        <foreach collection="nodeCodeList" item="nodeCode"  open="(" separator="," close=")" >
+             #{nodeCode}
+        </foreach>
+    </delete>
+
+    <!--查询最大nodeCode-->
+    <select id="getFilingScopeMaxNodeCode" resultType="java.lang.Integer">
+        SELECT DECODE(MAX(serial) ,'',0,MAX(serial)) FROM FILINGSCOPE where PARENTCODE=#{parentCode}
+    </select>
+
+    <!--upFilingScopeNodeCode 修改-->
+    <update id="upFilingScopeNodeCode" parameterType="java.lang.String">
+        update FILINGSCOPE SET
+        TITLE=#{title},
+        DATEOFCUSTODY=#{dateOfCustody}
+        where NODECODE = #{nodeCode}
+    </update>
+</mapper>

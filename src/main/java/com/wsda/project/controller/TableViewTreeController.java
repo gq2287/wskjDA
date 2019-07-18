@@ -274,4 +274,5 @@ public class TableViewTreeController {
         int result = tableViewService.getYSOrJHMaxBysystemNoFormat(ysParms,tableCode,paramsList);
         return new ResponseResult(ResponseResult.OK, "成功", result, true);
     }
+
 }
