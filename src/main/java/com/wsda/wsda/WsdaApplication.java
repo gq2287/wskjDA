@@ -7,19 +7,19 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@MapperScan(basePackages = "com.wsda.project.dao")
+@MapperScan(basePackages="com.wsda.project.dao")
 @ComponentScan("com.wsda.project.*")
 @EnableSwagger2
 @SpringBootApplication
 @EnableTransactionManagement(proxyTargetClass = true)//添加事务
-public class WsdaApplication {
+public class WsdaApplication  {
 
     public static void main(String[] args){
         SpringApplication.run(WsdaApplication.class,args);
     }
 
 
-//
+//引入外置配置文件
 //    private static String[] args;
 //    private static ConfigurableApplicationContext context;
 

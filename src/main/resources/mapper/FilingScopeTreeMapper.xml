@@ -10,13 +10,92 @@
         departmentName,
         serial,
         title,
+        name,
         dateOfCustody,
         departmentCode,
         description
       FROM FILINGSCOPE
       ORDER BY SERIAL
     </select>
-    <!--获取指定归档范围表数据-->
+
+<!--根据条件进行筛选-->
+    <select id="getFilingScopeTreeByParms" resultType="com.wsda.project.model.FilingScopeTree">
+        SELECT
+        nodeCode,
+        parentCode,
+        departmentName,
+        serial,
+        title,
+        name,
+        dateOfCustody,
+        departmentCode,
+        description
+        FROM FILINGSCOPE
+        where 1=1
+        <if test="name != null and name != ''">
+            and name=#{name}
+        </if>
+        <if test="departmentCode != null and departmentCode != ''">
+            and departmentCode=#{departmentCode}
+        </if>
+        <if test="title != null and title != ''">
+            and title  like concat('%',concat(#{title},'%'))
+        </if>
+        ORDER BY PARENTCODE
+    </select>
+
+    <!--addFilingScope 添加归档范围条目-->
+    <insert id="addFilingScope" parameterType="com.wsda.project.model.FilingScopeTree">
+        INSERT INTO FILINGSCOPE(
+        NODECODE,
+        PARENTCODE,
+        <if test="departmentName != null and departmentName != ''">
+            DEPARTMENTNAME,
+        </if>
+        <if test="name != null and name != ''">
+            NAME,
+        </if>
+        <if test="title != null and title != ''">
+            TITLE,
+        </if>
+        <if test="dateOfCustody != null and dateOfCustody != ''">
+            DATEOFCUSTODY,
+        </if>
+        <if test="departmentCode != null and departmentCode != ''">
+            DEPARTMENTCODE,
+        </if>
+        <if test="description != null and description != ''">
+            DESCRIPTION,
+        </if>
+        SERIAL
+        )
+        VALUES
+        (
+        #{nodeCode},
+        #{parentCode},
+        <if test="departmentName != null and departmentName != ''">
+            #{departmentName},
+        </if>
+        <if test="name != null and name != ''">
+            #{name},
+        </if>
+        <if test="title != null and title != ''">
+            #{title},
+        </if>
+        <if test="dateOfCustody != null and dateOfCustody != ''">
+            #{dateOfCustody},
+        </if>
+        <if test="departmentCode != null and departmentCode != ''">
+            #{departmentCode},
+        </if>
+        <if test="description != null and description != ''">
+            #{description},
+        </if>
+        ${serial}
+        )
+    </insert>
+
+    <!--获取指定归档范围表数据（删除时调用）-->
     <select id="getFilingScopesByNodeCode" resultType="com.wsda.project.model.FilingScopeTree">
         SELECT
         nodeCode,
@@ -24,6 +103,7 @@
         departmentName,
         serial,
         title,
+        name,
         dateOfCustody,
         departmentCode,
         description
@@ -34,36 +114,7 @@
         ORDER BY SERIAL
     </select>
 
-    <!--addFilingScope 添加归档范围条目-->
-    <insert id="addFilingScope" parameterType="com.wsda.project.model.FilingScopeTree">
-        INSERT INTO FILINGSCOPE(
-        NODECODE,
-        PARENTCODE,
-        DEPARTMENTNAME,
-        TITLE,
-        DATEOFCUSTODY,
-        DEPARTMENTCODE,
-        <if test="description != null and description != ''">
-            DESCRIPTION,
-        </if>
-        SERIAL
-        )
-        VALUES
-        (
-        #{nodeCode},
-        #{parentCode},
-        #{departmentName},
-        #{title},
-        #{dateOfCustody},
-        #{departmentCode},
-        <if test="description != null and description != ''">
-            #{description},
-        </if>
-        ${serial}
-        )
-    </insert>
-
-    <!--批量放入待归档-->
+    <!--删除归档范围-->
     <delete id="delFilingScopeByNodeCode" parameterType="java.util.List">
         DELETE FROM FILINGSCOPE WHERE NODECODE in
         <foreach collection="nodeCodeList" item="nodeCode"  open="(" separator="," close=")" >

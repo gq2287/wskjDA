@@ -260,11 +260,13 @@ public class OriginaFilesController {
         String upPath = OriginaPathMap.get("STORETYPE");//存放的是 LOCAL 还是FTP
         if ("LOCAL".equals(upPath)) {//上传本地
             String fileSavePath = OriginaPathMap.get("FILELOC");//获取本地上传的地址D:/archive
+            logger.info("获取档案原文保存文件夹-----{}",fileSavePath);
             String tableName = tableViewMapper.getTableNameByTableCode(tableCode);//获取档案条目表名
             fileSavePath = fileSavePath + File.separator + tableName;
 //            文件上传路径由档案表名称  yyyy MM dd hh mm ss
             String[] dates = OriginaPathMap.get("TIMESTYLEPOS").split("/");//获取文件夹名称
             fileSavePath = StringUtil.getFileData(fileSavePath, dates);
+            logger.info("获取上传文件保存的详细地址-----{}",fileSavePath);
             responseResult = upload(files, fileSavePath.trim());
         }
         if (responseResult.isSuccess()) {
