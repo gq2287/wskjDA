@@ -28,6 +28,13 @@ public class FilingScopeTreeController {
         return new ResponseResult(ResponseResult.OK, "获取归档范围菜单",treeList, true);
     }
 
+    @ApiOperation(value = "根据条件查询归档范围菜单", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/getFilingScopeTreeByParms", method = RequestMethod.POST)
+    public ResponseResult getFilingScopeTreeByParms(@RequestBody FilingScopeTree filingScopeTree) {
+        List<FilingScopeTree> treeList=filingScopeTreeService.getFilingScopeTreeByParms(filingScopeTree);
+        return new ResponseResult(ResponseResult.OK, "获取归档范围菜单",treeList, true);
+    }
+
     @ApiOperation(value = "添加归档范围节点", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/addFilingScope", method = RequestMethod.POST)
     public ResponseResult addFilingScope(@RequestBody FilingScopeTree filingScopeTree) {

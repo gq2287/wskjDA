@@ -8,6 +8,7 @@ public interface FilingScopeTreeService {
     //归档范围菜单
     List<FilingScopeTree> getFilingScopeTreeMenu();
 
+    List<FilingScopeTree> getFilingScopeTreeByParms(FilingScopeTree filingScopeTree);
     //添加档案范围条目
     boolean addFilingScope(FilingScopeTree filingScopeTree);
 

@@ -32,7 +32,7 @@ public class FilingScopeTreeServiceImpl implements FilingScopeTreeService {
         });
         List<FilingScopeTree> rootTree = new ArrayList<>();
         for (int i = 0; i < tempAll.size(); i++) {//获取根节点全部数据放到rootTree
-            if (tempAll.get(i).getParentCode() != null && "0".equals(tempAll.get(i).getParentCode())) {//根节点没有父级
+            if (tempAll.get(i).getParentCode() != null && "ROOT".equals(tempAll.get(i).getParentCode())) {//根节点没有父级
                 rootTree.add(tempAll.get(i));//放入
                 tempAll.remove(i);
             }
@@ -44,6 +44,15 @@ public class FilingScopeTreeServiceImpl implements FilingScopeTreeService {
         return rootTree;
     }
 
+    /**
+     * 根据条件进行筛选
+     * @param filingScopeTree
+     * @return
+     */
+    @Override
+    public List<FilingScopeTree> getFilingScopeTreeByParms(FilingScopeTree filingScopeTree){
+        return  filingScopeTreeMapper.getFilingScopeTreeByParms(filingScopeTree);
+    }
 
     /**
      * 添加菜单节点

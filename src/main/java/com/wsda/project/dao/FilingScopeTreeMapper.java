@@ -10,11 +10,13 @@ public interface FilingScopeTreeMapper {
     List<FilingScopeTree> getAllFilingScopes();
     //获取指定节点
     FilingScopeTree getFilingScopesByNodeCode(@Param("nodeCode")String nodeCode);
+//    根据条件进行查询
+    List<FilingScopeTree> getFilingScopeTreeByParms(FilingScopeTree filingScopeTree);
     //添加档案范围条目
     int addFilingScope(FilingScopeTree filingScopeTree);
     //删除档案范围条目
     int delFilingScopeByNodeCode(@Param("nodeCodeList")List<String> nodeCodeList);
-    //删除档案范围条目
+    //获取档案范围条目
     Integer getFilingScopeMaxNodeCode(@Param("parentCode") String parentCode);
     //修改档案范围条目
     Integer upFilingScopeNodeCode(@Param("nodeCode") String nodeCode,@Param("title") String title,@Param("dateOfCustody") String dateOfCustody);

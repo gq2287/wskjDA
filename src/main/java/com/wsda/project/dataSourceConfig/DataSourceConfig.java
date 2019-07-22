@@ -2,10 +2,12 @@
 //
 //import com.alibaba.druid.pool.DruidDataSource;
 //import com.wsda.project.util.StringUtil;
+//import com.wsda.wsda.WsdaApplication;
 //import org.apache.commons.configuration.PropertiesConfiguration;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
 //
 //import javax.annotation.Resource;
 //
@@ -37,19 +39,19 @@
 //    /**
 //     * 动态修改数据库链接
 //     */
-////    public void changeDataSource () {
-////        Thread restartThread = new Thread(new Runnable() {
-////            @Override
-////            public void run() {
-////                try {
-////                    Thread.sleep(1000);
-////                    WsdaApplication.restart();
-////                } catch (Exception ignored) {
-////                    System.out.println("启动重启项目"+ignored.getMessage());
-////                }
-////            }
-////        });
-////        restartThread.setDaemon(false);
-////        restartThread.start();
-////    }
+//    public void changeDataSource () {
+//        Thread restartThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(1000);
+//                    WsdaApplication.restart();
+//                } catch (Exception ignored) {
+//                    System.out.println("启动重启项目"+ignored.getMessage());
+//                }
+//            }
+//        });
+//        restartThread.setDaemon(false);
+//        restartThread.start();
+//    }
 //}

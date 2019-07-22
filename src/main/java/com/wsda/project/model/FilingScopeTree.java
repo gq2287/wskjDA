@@ -12,9 +12,18 @@ public class FilingScopeTree {
     private String dateOfCustody;//归档期限
     private String departmentCode;//部门编号（用不到，先放着）
     private String description;//节点描述
+    private String name;//名称
     private Object children;//旗下子节点
 
     public FilingScopeTree() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNodeCode() {
