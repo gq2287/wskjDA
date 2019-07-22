@@ -283,7 +283,7 @@ public class OriginaFilesController {
     /**
      * 上传操作,支持多文件上传
      *
-     * @param files 文件数组
+     * @param files 上传文件数组（前台不是批量上传）
      * @param files 文件保存地址
      */
     private ResponseResult upload(MultipartFile[] files, String filepath) {

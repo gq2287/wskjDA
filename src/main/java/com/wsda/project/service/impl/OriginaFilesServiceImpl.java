@@ -27,6 +27,15 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
     @Resource
     private OriginaFilesMapper originaFilesMapper;
 
+    /**
+     * 获取指定档案旗下文件
+     * @param tableCode 表编号
+     * @param recordCode 档案条目编号
+     * @param pageNum
+     * @param PageSize
+     * @param type
+     * @return
+     */
     @Override
     public Map<String, Object> getFilesByRecordCode(String tableCode, String recordCode, int pageNum, int PageSize,String type) {
         List<Map<String, String>> arrayList = new ArrayList<>();
@@ -56,7 +65,7 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
                 return null;
             }
         } catch (Exception e) {
-            System.err.println("查询视图列失败：" + e.getMessage() + "tableCode");
+            System.err.println("原文查询视图列失败：" + e.getMessage() + "tableCode");
         }
         return parmsMap;
     }
@@ -163,13 +172,22 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
         return originaFilesMapper.getUpLoadFilePath();
     }
 
+    /**
+     * 获取指定pdf查看地址
+     * @param fileCode
+     * @return
+     */
     @Override
     public OriginalFiles getPDFUrlByFileCode(String fileCode) {
         return originaFilesMapper.getPDFUrlByFileCode(fileCode);
     }
 
-
-    //删除原文条目
+    /**
+     * 删除原文条目
+     * @param tableCode
+     * @param fileCode
+     * @return
+     */
     @Override
     public boolean delOrigianFileByFileCode(String tableCode,String fileCode) {
         OriginalFiles originalFiles=originaFilesMapper.getOrigianFileInfoByFileCode(fileCode);//获取删除的原文条目
@@ -195,12 +213,23 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
         }
     }
 
-//    修改水印文字
+    /**
+     * 修改水印文字
+     * @param storeId
+     * @param watermarkTxt
+     * @return
+     */
     @Override
     public boolean upWatermarkTxt(String storeId,String watermarkTxt) {
         return originaFilesMapper.upOriginalmanagesettingBywatermarkTxt(storeId,watermarkTxt);
     }
-    //添加水印pdf路径
+
+    /**
+     * 添加水印pdf路径
+     * @param fileCode
+     * @param watermarkPath
+     * @return
+     */
     @Override
     public boolean upWatermarkPath(String fileCode, String watermarkPath) {
         return originaFilesMapper.upWatermarkPath(fileCode,watermarkPath);

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface OriginaFilesMapper {
-
+//    获取指定档案旗下文件
     List<Map<String,String>> getFilesByRecordCode(@Param("tableName") String tableName,@Param("recordCode") String recordCode,@Param("type") String type);
 
     Map<String,String> getUpLoadFilePath();
