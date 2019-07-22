@@ -3,6 +3,8 @@ package com.wsda.project.util;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.filechooser.FileSystemView;
@@ -502,7 +504,7 @@ public class StringUtil {
     public static String getFileData(String fileDirectoryPath, String[] dates) {
         StringBuffer datePath = new StringBuffer();//目录路径
         for (int i = 0; i < dates.length; i++) {
-            datePath.append(StringUtil.getDateByType(dates[i].trim()));//年月日追加形成文件夹
+            datePath.append(StringUtil.getDateByType(dates[i].trim()));
             fileDirectoryPath = fileDirectoryPath + File.separator + datePath;
         }
         return fileDirectoryPath;

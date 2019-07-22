@@ -10,6 +10,7 @@
         <if test="type != null and type != ''">
             AND  TRASHSTATUS=#{type}
         </if>
+        order by TOP DESC
     </select>
 
     <!--获取原文存放地址及水印文字-->
@@ -146,6 +147,7 @@
     <!--获取指定原文条目-->
     <select id="getOrigianFileInfoByFileCode" resultType="com.wsda.project.model.OriginalFiles">
         SELECT * FROM ORIGINALFILES  where FILECODE=#{fileCode}
+        order by TOP DESC
     </select>
 
     <!--删除原文条目-->
@@ -164,6 +166,13 @@
                 WATERMARKTXT=''
             </otherwise>
         </choose>
+        WHERE  FILECODE=#{fileCode}
+    </update>
+
+    <!--修改置顶状态 0默认显示 1置顶显示-->
+    <update id="upTopByFileCode" parameterType="java.util.Map">
+        UPDATE ORIGINALFILES SET
+        TOP=#{top}
         WHERE  FILECODE=#{fileCode}
     </update>
 </mapper>

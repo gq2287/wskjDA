@@ -215,7 +215,7 @@ public class OriginaFilesController {
                                         }
                                     }
                                     originaFilesService.upWatermarkPath(fileCode, watermarkPath);
-                                    watermarkPath = watermarkPath.substring(watermarkPath.indexOf(":") + 1, watermarkPath.length());
+//                                    watermarkPath = watermarkPath.substring(watermarkPath.indexOf(":") + 1, watermarkPath.length());
                                 } catch (IOException e) {
                                     logger.error("水印添加异常：" + e);
                                 } catch (DocumentException e) {
@@ -382,13 +382,25 @@ public class OriginaFilesController {
         if (originaFile != null && originaFile.getOriginalFilePath() != null) {
             File file = new File(String.valueOf(originaFile.getOriginalFilePath()));
             if (file.exists()) {
-                String urlPDf = file.getPath().substring(file.getPath().indexOf("\\") + 1, file.getPath().length());
+                String urlPDf = file.getPath();//要与配置文件的pdf文件的地址一致D:/一致
                 responseResult = new ResponseResult(ResponseResult.OK, "原文下载成功", urlPDf, true);
                 return responseResult;
             }
         }
         responseResult = new ResponseResult(ResponseResult.OK, "原文下载失败,当前原文不存在", false);
         return responseResult;
+    }
+
+
+    @ApiOperation(value = "置顶原文", notes = "返回信息 0成功，400失败 ")
+    @RequestMapping(value = "/upTopByFileCode", method = RequestMethod.POST)
+    public ResponseResult upTopByFileCode(@RequestParam(name = "fileCode", required = true) String fileCode,
+                                          @RequestParam(name = "oldFileCode", required = true) String oldFileCode) {
+        boolean bool=originaFilesService.upTopByFileCode(fileCode,oldFileCode);
+        if(bool){
+            return new ResponseResult(ResponseResult.OK, "置顶原文成功", bool);
+        }
+        return  new ResponseResult(ResponseResult.OK, "置顶原文失败", bool);
     }
 
 }

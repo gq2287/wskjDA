@@ -47,6 +47,7 @@ public class OriginalFiles {
     //    private String originaPath;//原文存放路径
     private String originalFilePath;//原始文件路径
     private String watermarkPath;//水印pdf存放路径
+    private String top;//置顶状态0默认显示 1置顶显示
 
     public OriginalFiles() {
     }
@@ -94,6 +95,14 @@ public class OriginalFiles {
         this.YUAN_WEN_SHU_LIANG = YUAN_WEN_SHU_LIANG;
         this.pdfPath = pdfPath;
         this.watermarkPath = watermarkPath;
+    }
+
+    public String getTop() {
+        return top;
+    }
+
+    public void setTop(String top) {
+        this.top = top;
     }
 
     public String getFileCode() {

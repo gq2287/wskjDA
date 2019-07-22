@@ -579,13 +579,13 @@ public class TableViewServiceImpl implements TableViewService {
      * 修改档案条目
      *
      * @param tableCode
-     * @param recordCode
+     * @param code
      * @param params
      * @param type       判断是档案条目还是原文条目（0，1）
      * @return
      */
     @Override
-    public boolean upArchivesByRecordCode(String tableCode, String recordCode, Map<String, String> params, int type) {
+    public boolean upArchivesByRecordCode(String tableCode, String code, Map<String, String> params, int type) {
         String tableName = tableViewMapper.getTableNameByTableCode(tableCode);
         Map<String, String> dataType = new HashMap();//数据库为Oracle字段类型
         dataType.put("1", "VARCHAR2");
@@ -617,10 +617,10 @@ public class TableViewServiceImpl implements TableViewService {
             }
         }
         boolean bool = true;
-        if (type == 0) {
-            bool = tableViewMapper.upArchivesByRecordCode(tableName, recordCode, parmsMap, "RECORDCODE");
-        } else if (type == 1) {
-            bool = tableViewMapper.upArchivesByRecordCode(tableName, recordCode, parmsMap, "FILECODE");
+        if (type == 0) {//修改档案信息
+            bool = tableViewMapper.upArchivesByRecordCode(tableName, code, parmsMap, "RECORDCODE");
+        } else if (type == 1) {//修改原文信息
+            bool = tableViewMapper.upArchivesByRecordCode(tableName, code, parmsMap, "FILECODE");
         }
         return bool;
     }

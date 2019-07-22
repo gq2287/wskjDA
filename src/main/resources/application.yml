@@ -12,7 +12,7 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
   resources:
-    static-locations: classpath:/resources/,classpath:/static/,file:${D:},file:${H:},file:${G:},file:${E:},file:${F:},file:${C:}
+    static-locations: classpath:/resources/,classpath:/static/,file:${D:},file:${H:},file:${G:},file:${E:},file:${F:},file:${C:\\}
   servlet:
     multipart:
       #允许附件上传

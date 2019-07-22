@@ -25,4 +25,6 @@ public interface OriginaFilesMapper {
 
 //    添加水印路径
     boolean upWatermarkPath(@Param("fileCode")String fileCode,@Param("watermarkPath")String watermarkPath);
+//
+    boolean upTopByFileCode(@Param("fileCode")String fileCode,@Param("top")String top);
 }

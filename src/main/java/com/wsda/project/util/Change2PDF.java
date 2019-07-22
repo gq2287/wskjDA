@@ -19,7 +19,7 @@ public class Change2PDF {
 
 
     /**
-     * text转pdf
+     * 新text转pdf
      *
      * @param filePath
      * @param pdfPath
@@ -403,13 +403,6 @@ public class Change2PDF {
     }
 
     public static void main(String[] args) throws Exception {
-        String pdfPath = "E:\\Desktop\\GQ_GuoQ\\Change2PDF.pdf";
-        File file = new File(pdfPath);
-        String path= addtextWatermark(file,"交通厅档案注意保密");
-        boolean imagepath = Graphics2DRectangleImage.initChartData("E:\\Desktop\\GQ_GuoQ\\1.png");//生成图片水印
-        file = new File(path);
-      String  imagepath1=Change2PDF.addimageWatermark(file,"E:\\Desktop\\GQ_GuoQ\\1.png");
-        System.out.println(imagepath1);
 
     }
 }
