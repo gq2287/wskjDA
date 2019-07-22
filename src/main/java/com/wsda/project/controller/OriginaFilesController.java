@@ -250,9 +250,9 @@ public class OriginaFilesController {
         ResponseResult responseResult = null;
         if (files != null && files.length > 0) {
             for (int i = 0; i < files.length; i++) {
-                boolean fileMaxBool = StringUtil.checkFileSize((long) files[i].getSize(), 100, "M");
+                boolean fileMaxBool = StringUtil.checkFileSize((long) files[i].getSize(), 500, "M");//判断最大支持单个文件上传大小
                 if (!fileMaxBool) {
-                    return new ResponseResult(ResponseResult.OK, "上传文件大于限制的100MB,无法上传", false);
+                    return new ResponseResult(ResponseResult.OK, "上传文件大于限制的500MB,无法上传", false);
                 }
             }
         }
