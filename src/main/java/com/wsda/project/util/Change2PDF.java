@@ -251,16 +251,16 @@ public class Change2PDF {
      * @return
      */
     public static boolean excel2PDF(String excelPath, String pdfPath) {
-        File pdffile = new File(pdfPath.substring(0, pdfPath.lastIndexOf("\\")));//防止路径不存在报错
-        if (!pdffile.exists()) {
-            pdffile.mkdirs();//创建存放路径
-        }
         boolean bool = true;
         OutputStream outputStream = null;
         if (!getLicense()) {
             System.out.println("授权失效,请联系管理员");
             bool = false;
             return bool;
+        }
+        File pdffile = new File(pdfPath.substring(0, pdfPath.lastIndexOf("\\")));//防止路径不存在报错
+        if (!pdffile.exists()) {
+            pdffile.mkdirs();//创建存放路径
         }
         try {
             InputStream inputStream = new FileInputStream(new File(excelPath));
