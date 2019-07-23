@@ -3,8 +3,6 @@ package com.wsda.project.util;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.filechooser.FileSystemView;
@@ -16,6 +14,8 @@ import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * .
@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
  * @author seven
  */
 public class StringUtil {
+
+
     /**
      * .
      * 判断字符串是否为空
@@ -125,6 +127,7 @@ public class StringUtil {
         String date = df.format(new Date());
         return date;
     }
+
     /**
      * .
      * 获取给定格式日期时间
@@ -132,7 +135,7 @@ public class StringUtil {
      * @param type (yyyyMMdd)
      * @return 返回当前时间字符串
      */
-    public static String getDateByType(String type,String strDate) {
+    public static String getDateByType(String type, String strDate) {
         SimpleDateFormat df = new SimpleDateFormat(type);//设置日期格式
         String date = df.format(strDate);
         return date;
@@ -512,9 +515,10 @@ public class StringUtil {
 
     /**
      * 判断文件大小
-     * @param len 文件大小
+     *
+     * @param len  文件大小
      * @param size 现在大小
-     * @param unit  限制单位（B,K,M,G）
+     * @param unit 限制单位（B,K,M,G）
      * @return
      */
     public static boolean checkFileSize(Long len, int size, String unit) {
@@ -563,6 +567,7 @@ public class StringUtil {
 
     /**
      * 判断原文是否支持在线预览
+     *
      * @param originaFilePath
      * @return
      */
@@ -593,13 +598,13 @@ public class StringUtil {
      * @param pdfPath
      * @throws IOException
      */
-    private static boolean copyFileUsingFileStreams(String originaFilePath, String pdfPath){
-        boolean bool=true;
+    private static boolean copyFileUsingFileStreams(String originaFilePath, String pdfPath) {
+        boolean bool = true;
         InputStream input = null;
         OutputStream output = null;
         try {
-            File originaFile=new File(originaFilePath);
-            File pdfFile=new File(pdfPath);
+            File originaFile = new File(originaFilePath);
+            File pdfFile = new File(pdfPath);
             input = new FileInputStream(originaFile);
             output = new FileOutputStream(pdfFile);
             byte[] buf = new byte[1024];
@@ -607,17 +612,17 @@ public class StringUtil {
             while ((bytesRead = input.read(buf)) > 0) {
                 output.write(buf, 0, bytesRead);
             }
-        }catch (Exception e){
-            bool=false;
-        }finally {
-            if(input!=null){
+        } catch (Exception e) {
+            bool = false;
+        } finally {
+            if (input != null) {
                 try {
                     input.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if(output!=null){
+            if (output != null) {
                 try {
                     output.close();
                 } catch (IOException e) {
@@ -666,7 +671,7 @@ public class StringUtil {
             originaFilePath = originaFilePath.substring(originaFilePath.indexOf("\\") + 1, originaFilePath.length());
             originaFilePath = originaFilePath.substring(originaFilePath.indexOf("\\") + 1, originaFilePath.length());//截取到D:\\archive\\
             String filePath = pdfPath + File.separator + originaFilePath.substring(0, originaFilePath.lastIndexOf("\\"));
-            originaFilePath = originaFilePath.substring(originaFilePath.lastIndexOf("\\")+1,originaFilePath.lastIndexOf(".") );
+            originaFilePath = originaFilePath.substring(originaFilePath.lastIndexOf("\\") + 1, originaFilePath.lastIndexOf("."));
             pdfPath = filePath + File.separator + originaFilePath + ".pdf";
         } catch (ConfigurationException e) {
             e.printStackTrace();
@@ -675,7 +680,46 @@ public class StringUtil {
         }
     }
 
-    public static void main(String[] args) {
 
+    /**
+     * 根据文件后缀名判断 文件是否是视频文件
+     *
+     * @param file 文件名
+     * @return 是否是视频文件
+     */
+    public static boolean IsVideo(File file) {
+        boolean isVideo = false;
+        String fileName = file.getName();//文件名称
+        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//后缀
+        //初始化视频格式集合JDK8 Stream
+        List<String> formateList = Stream.of(
+                "avi", "flv", "mpg", "mpeg", "mpe", "m1v", "m2v", "mpv2", "mp2v", "dat", "ts", "tp", "tpr", "pva", "pss", "mp4", "m4v",
+                "m4p", "m4b", "3gp", "3gpp", "3g2", "3gp2", "ogg", "mov", "qt", "amr", "rm", "ram", "rmvb", "rpm").collect(Collectors.toList());
+        if (formateList.contains(suffix.toLowerCase()))//获取后缀转小写做对比
+        {
+            isVideo = true;
+        }
+        return isVideo;
     }
+
+    /**
+     * 根据文件后缀名判断 文件是否是视频文件
+     *
+     * @param file 文件名
+     * @return 是否是音频文件
+     */
+    public static boolean IsAudio(File file) {
+        boolean IsAudio = false;
+        String fileName = file.getName();//文件名称
+        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//后缀
+        //初始化音频格式集合JDK8 Stream
+        List<String> formateList = Stream.of(
+                "mp3", "aac", "flac", "aiff", "wav", "wma", "amr").collect(Collectors.toList());
+        if (formateList.contains(suffix.toLowerCase()))//获取后缀转小写做对比
+        {
+            IsAudio = true;
+        }
+        return IsAudio;
+    }
+
 }

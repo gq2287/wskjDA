@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,16 +98,14 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
                     String originFileName = parmsMap.get("originFileName");//原文名称
                     originalFiles.setFileName(originFileName);//文件原文名称
                     originalFiles.setMainTitle(originFileName);//文件题名
+                    String suffix = originFileName.substring(originFileName.lastIndexOf(".") + 1, originFileName.length());//原文后缀
+                    originalFiles.setFileType(suffix);//文件原文后缀
                 }
-                if (parmsMap.get("originFileName") != null) {
-                    String originFileName = parmsMap.get("originFileName");
-                    originFileName = originFileName.substring(originFileName.lastIndexOf(".") + 1, originFileName.length());//原文后缀
-                    originalFiles.setFileType(originFileName);//文件原文名称
-                }
-                if (parmsMap.get("fileSize") != null) {
-                    String fileSize = parmsMap.get("fileSize");
-                    originalFiles.setFileLength(fileSize);//文件长度
-                }
+//                if (parmsMap.get("originFileName") != null) {
+//                    String originFileName = parmsMap.get("originFileName");
+//                    originFileName = originFileName.substring(originFileName.lastIndexOf(".") + 1, originFileName.length());//原文后缀
+//                    originalFiles.setFileType(originFileName);//文件原文名称
+//                }
                 if (parmsMap.get("fileSize") != null) {
                     String fileSize = parmsMap.get("fileSize");
                     originalFiles.setFileLength(fileSize);//文件长度
@@ -132,20 +131,14 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
                     String originFileName = parmsMap.get("originFileName");//原文名称
                     originalFiles.setFileName(originFileName);//文件原文名称
                     originalFiles.setMainTitle(originFileName);//文件题名
-                }
-                if (parmsMap.get("originFileName") != null) {
-                    String originFileName = parmsMap.get("originFileName");
-                    originFileName = originFileName.substring(originFileName.lastIndexOf(".") + 1, originFileName.length());//原文后缀
-                    originalFiles.setFileType(originFileName);//文件原文后缀
+                    String suffix = originFileName.substring(originFileName.lastIndexOf(".") + 1, originFileName.length());//原文后缀
+                    originalFiles.setFileType(suffix);//文件原文后缀
                 }
                 if (parmsMap.get("fileSize") != null) {
                     String fileSize = parmsMap.get("fileSize");
                     originalFiles.setFileLength(fileSize);//文件长度
                 }
-                if (parmsMap.get("fileSize") != null) {
-                    String fileSize = parmsMap.get("fileSize");
-                    originalFiles.setFileLength(fileSize);//文件长度
-                }
+
                 originalFiles.setUploadTime("TO_DATE('" + StringUtil.getDate(3) + "','YYYY-MM-DD')");//上传时间
                 originalFiles.setTrashStatus("0");//未删除的文件 0未删除，1删除
             }
@@ -198,13 +191,22 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
         OriginalFiles originalFiles = originaFilesMapper.getOrigianFileInfoByFileCode(fileCode);//获取删除的原文条目
         if (originalFiles != null) {
             if (originalFiles.getPdfPath() != null) {//删除pdf
-                DeleteFileUtil.deleteFile(originalFiles.getPdfPath());
+                File file=new File(originalFiles.getPdfPath());
+                if(file.exists()){
+                    DeleteFileUtil.deleteFile(file.getPath());
+                }
             }
-            if (originalFiles.getOriginalFilePath() != null) {//删除原文
-                DeleteFileUtil.deleteFile(originalFiles.getOriginalFilePath());
+            if (originalFiles.getOriginalFilePath() != null) {//删除原文或视频
+                File file=new File(originalFiles.getOriginalFilePath());
+                if(file.exists()){
+                    DeleteFileUtil.deleteFile(file.getPath());
+                }
             }
             if (originalFiles.getWatermarkPath() != null) {//删除水印
-                DeleteFileUtil.deleteFile(originalFiles.getWatermarkPath());
+                File file=new File(originalFiles.getWatermarkPath());
+                if(file.exists()){
+                    DeleteFileUtil.deleteFile(file.getPath());
+                }
             }
         }
 

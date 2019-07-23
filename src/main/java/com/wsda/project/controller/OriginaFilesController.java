@@ -162,9 +162,9 @@ public class OriginaFilesController {
         Map<String, String> stringMap = originaFilesService.getUpLoadFilePath();//获取保存路径
         String watermarkTxt = stringMap.get("WATERMARKTXT");
         OriginalFiles originalFiles = originaFilesService.getPDFUrlByFileCode(fileCode);//获取查看文件
-        if (originalFiles != null) {
-            File file = new File(originalFiles.getPdfPath());
-            if (file.exists()) {//如果有pdf
+        if (originalFiles != null) {//判断原文是否存在
+            if (originalFiles.getPdfPath()!=null) {//判断pdf
+                File file = new File(originalFiles.getPdfPath());
                 if (watermarkTxt != null && !"".equals(watermarkTxt)) {
                     //start 开始添加水印
                     String watermarkPath = null;
@@ -181,7 +181,7 @@ public class OriginaFilesController {
                             }
                         }
 
-                        watermarkPath = watermarkPath.substring(watermarkPath.indexOf(":") + 1, watermarkPath.length());
+//                        watermarkPath = watermarkPath.substring(watermarkPath.indexOf(":") + 1, watermarkPath.length());
                         return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", watermarkPath, true);
                     } catch (IOException e) {
                         logger.error("水印添加异常：" + e);
@@ -190,12 +190,15 @@ public class OriginaFilesController {
                     }
                     //end添加结束
                 }
-                String urlPDf = file.getPath().substring(file.getPath().indexOf("\\") + 1, file.getPath().length());
+                String urlPDf = file.getPath();
                 return new ResponseResult(ResponseResult.OK, "返回PDFUrl成功", urlPDf, true);
             } else {
                 String originaUrl = originalFiles.getOriginalFilePath();//原文路径
-                file = new File(originaUrl);
-                if (file.exists()) {
+                File file = new File(originaUrl);
+                if (file!=null&&file.exists()) {//判断原文存在，然后做转换处理
+                    if(StringUtil.IsVideo(file)){//判断是否是视频，如果是直接返回结果
+                        return new ResponseResult(ResponseResult.OK, "视频文件返回成功", file.getPath(), true);
+                    }
                     if (StringUtil.getFileType(originaUrl)) {
                         //原文支持在线查看，但pdf文件丢失就重新转换并返回路径
                         boolean bool = StringUtil.getFileSuffix(originaUrl, originalFiles.getPdfPath());
@@ -215,7 +218,6 @@ public class OriginaFilesController {
                                         }
                                     }
                                     originaFilesService.upWatermarkPath(fileCode, watermarkPath);
-//                                    watermarkPath = watermarkPath.substring(watermarkPath.indexOf(":") + 1, watermarkPath.length());
                                 } catch (IOException e) {
                                     logger.error("水印添加异常：" + e);
                                 } catch (DocumentException e) {
@@ -224,7 +226,8 @@ public class OriginaFilesController {
 //                            end添加结束
                                 return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", watermarkPath, true);
                             }
-                            String pdfPath =originalFiles.getPdfPath().substring(originalFiles.getPdfPath().indexOf(":") + 1, originalFiles.getPdfPath().length());
+//                            String pdfPath =originalFiles.getPdfPath().substring(originalFiles.getPdfPath().indexOf(":") + 1, originalFiles.getPdfPath().length());
+                            String pdfPath =originalFiles.getPdfPath();
                             return new ResponseResult(ResponseResult.OK, "pdf文件返回成功", pdfPath, true);
                         } else {
                             return new ResponseResult(ResponseResult.OK, "pdf文件丢失,转换失败,请重新上传", false);
@@ -298,8 +301,11 @@ public class OriginaFilesController {
                     if (!newFile.exists() || !newFile.isDirectory()) {
                         newFile.mkdirs();//创建文件夹
                     }
-                    parmsMap.put("originFileName", files[i].getOriginalFilename());//源文件名称
-                    String newPath = newFile.getPath() + File.separator + StringUtil.getUuid() + "-" + files[i].getOriginalFilename();//文件地址
+                    String fileName=files[i].getOriginalFilename();//获取元文件名称
+                    String fileSuffix= fileName.substring(fileName.lastIndexOf("."), fileName.length());//获取后缀
+                    parmsMap.put("originFileName", fileName);//源文件名称
+                    String newPath = newFile.getPath() + File.separator + StringUtil.getUuid() +fileSuffix;//文件地址
+                    newPath=newPath.replaceAll(" ","");//去空格
                     parmsMap.put("originFilePath", newPath);//源文件存放路径
                     // 使用UUID确保上传文件不重复
                     File newFileS = new File(newPath);//原文
