@@ -551,7 +551,7 @@ public class StringUtil {
             return uploadFileToPdf(originaFilePath, pdfPath, 1);
         } else if (".tif".equalsIgnoreCase(suffix)) {
             return uploadFileToPdf(originaFilePath, pdfPath, 2);
-        } else if (".png".equalsIgnoreCase(suffix) || ".jpg".equalsIgnoreCase(suffix) || ".jpeg".equalsIgnoreCase(suffix)) {
+        } else if (".png".equalsIgnoreCase(suffix) || ".jpg".equalsIgnoreCase(suffix) || ".jpeg".equalsIgnoreCase(suffix)|| ".bmp".equalsIgnoreCase(suffix)) {
             return uploadFileToPdf(originaFilePath, pdfPath, 3);
         } else if (".doc".equalsIgnoreCase(suffix) || ".docx".equalsIgnoreCase(suffix)) {
             return uploadFileToPdf(originaFilePath, pdfPath, 4);
@@ -577,7 +577,7 @@ public class StringUtil {
             return true;
         } else if (".tif".equalsIgnoreCase(suffix)) {
             return true;
-        } else if (".png".equalsIgnoreCase(suffix) || ".jpg".equalsIgnoreCase(suffix) || ".jpeg".equalsIgnoreCase(suffix)) {
+        } else if (".png".equalsIgnoreCase(suffix) || ".jpg".equalsIgnoreCase(suffix) || ".jpeg".equalsIgnoreCase(suffix)|| ".bmp".equalsIgnoreCase(suffix)) {
             return true;
         } else if (".doc".equalsIgnoreCase(suffix) || ".docx".equalsIgnoreCase(suffix)) {
             return true;
@@ -692,9 +692,11 @@ public class StringUtil {
         String fileName = file.getName();//文件名称
         String suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//后缀
         //初始化视频格式集合JDK8 Stream
-        List<String> formateList = Stream.of(
-                "avi", "flv", "mpg", "mpeg", "mpe", "m1v", "m2v", "mpv2", "mp2v", "dat", "ts", "tp", "tpr", "pva", "pss", "mp4", "m4v",
-                "m4p", "m4b", "3gp", "3gpp", "3g2", "3gp2", "ogg", "mov", "qt", "amr", "rm", "ram", "rmvb", "rpm").collect(Collectors.toList());
+//        格式    IE     Firefox   Opera   Chrome   Safari
+//        Ogg     No     3.5+      10.5+   5.0+      No     MP4 = MPEG 4文件使用 H264 视频编解码器和AAC音频编解码器
+//        MPEG4  9.0+     No       No     5.0+       3.0+   WebM = WebM 文件使用 VP8 视频编解码器和 Vorbis 音频编解码器
+//        WebM    No     4.0+     10.6+    6.0+      No   Ogg = Ogg 文件使用 Theora 视频编解码器和 Vorbis音频编解码器
+        List<String> formateList = Stream.of("mp4","webm","ogg").collect(Collectors.toList());
         if (formateList.contains(suffix.toLowerCase()))//获取后缀转小写做对比
         {
             isVideo = true;
@@ -703,7 +705,7 @@ public class StringUtil {
     }
 
     /**
-     * 根据文件后缀名判断 文件是否是视频文件
+     * 根据文件后缀名判断 文件是否是音频文件
      *
      * @param file 文件名
      * @return 是否是音频文件
@@ -713,8 +715,11 @@ public class StringUtil {
         String fileName = file.getName();//文件名称
         String suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//后缀
         //初始化音频格式集合JDK8 Stream
-        List<String> formateList = Stream.of(
-                "mp3", "aac", "flac", "aiff", "wav", "wma", "amr").collect(Collectors.toList());
+//        音频格式	Chrome	Firefox	IE9	Opera	Safari
+//        OGG	支持	支持	支持	支持	不支持
+//        MP3	支持	不支持	支持	不支持	支持
+//        WAV	不支持	支持	不支持	支持	不支持
+        List<String> formateList = Stream.of("mp3", "ogg",  "wav").collect(Collectors.toList());
         if (formateList.contains(suffix.toLowerCase()))//获取后缀转小写做对比
         {
             IsAudio = true;

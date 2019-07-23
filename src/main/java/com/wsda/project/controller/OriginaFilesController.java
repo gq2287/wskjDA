@@ -195,11 +195,12 @@ public class OriginaFilesController {
             } else {
                 String originaUrl = originalFiles.getOriginalFilePath();//原文路径
                 File file = new File(originaUrl);
-                if (file!=null&&file.exists()) {//判断原文存在，然后做转换处理
+                if (file!=null&&file.exists()) {//判断原文存在，然后做转换处理    视频音频现在是直接返回路径的 不做转换和视频流给前台
                     if(StringUtil.IsVideo(file)){//判断是否是视频，如果是直接返回结果
                         return new ResponseResult(ResponseResult.OK, "视频文件返回成功", file.getPath(), true);
-                    }
-                    if (StringUtil.getFileType(originaUrl)) {
+                    }else if(StringUtil.IsAudio(file)){
+                        return new ResponseResult(ResponseResult.OK, "音频文件返回成功", file.getPath(), true);
+                    }else if (StringUtil.getFileType(originaUrl)) {
                         //原文支持在线查看，但pdf文件丢失就重新转换并返回路径
                         boolean bool = StringUtil.getFileSuffix(originaUrl, originalFiles.getPdfPath());
                         if (bool) {
