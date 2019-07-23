@@ -695,7 +695,7 @@ public class StringUtil {
 //        格式    IE     Firefox   Opera   Chrome   Safari
 //        Ogg     No     3.5+      10.5+   5.0+      No     MP4 = MPEG 4文件使用 H264 视频编解码器和AAC音频编解码器
 //        MPEG4  9.0+     No       No     5.0+       3.0+   WebM = WebM 文件使用 VP8 视频编解码器和 Vorbis 音频编解码器
-//        WebM    No     4.0+     10.6+    6.0+      No   Ogg = Ogg 文件使用 Theora 视频编解码器和 Vorbis音频编解码器
+//        WebM    No     4.0+     10.6+    6.0+      No     Ogg = Ogg 文件使用 Theora 视频编解码器和 Vorbis音频编解码器
         List<String> formateList = Stream.of("mp4","webm","ogg").collect(Collectors.toList());
         if (formateList.contains(suffix.toLowerCase()))//获取后缀转小写做对比
         {
