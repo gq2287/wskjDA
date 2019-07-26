@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@Api("档号格式设置Controller")
+@Api(value = "档号格式设置",tags = {"档号格式设置Controller"})
 public class SystemNoFormatController {
     private Logger logger = LoggerFactory.getLogger(SystemNoFormatController.class);
     @Resource

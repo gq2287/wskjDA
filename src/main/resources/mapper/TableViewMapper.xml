@@ -72,7 +72,7 @@
 
     <!--获取录入界面字段的类型-->
     <select id="getInputTypeByTableCodeAndName" resultType="java.util.HashMap">
-          SELECT TYPE,INPUTTYPE,CANNULL FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode} and NAME=#{name}
+          SELECT TYPE,INPUTTYPE,CANNULL,DICTIONARYCODE  FROM TABLECOLUMNDESCRIPTION WHERE TABLECODE=#{tableCode} and NAME=#{name}
     </select>
 
     <!--添加录入实体表数据-->

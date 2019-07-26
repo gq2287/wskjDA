@@ -101,8 +101,21 @@ public class DeleteFileUtil {
     }
 
 
-    public static void main(String[] s){
-        delete("D:\\archivepdf\\NEW_WS\\2019\\201907\\20190702\\2019070209\\201907020952\\ff762295cbb24f2caa8de53a44b84885-proxool.pdf");
-        delete("D:\\archivepdf\\NEW_WS\\2019\\201907\\20190702\\2019070209\\201907020952\\ff762295cbb24f2caa8de53a44b84885-proxoolWatermark.pdf");
+    public static void getDirectoryAndFile(String dir) {
+        File dirFile = new File(dir);
+        File[] files = dirFile.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+//                System.out.println("目录清单" + i + ":" + files[i].getName());
+            }
+            else if (files[i].isDirectory()) {
+                getDirectoryAndFile(files[i].getAbsolutePath());
+                System.out.println("目录清单" + i + ":" + files[i].getName());
+            }
+        }
+    }
+
+    public static void main(String[] s) {
+        DeleteFileUtil.getDirectoryAndFile("E:\\Desktop\\离职文件整理");
     }
 }

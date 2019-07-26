@@ -3,6 +3,7 @@ package com.wsda.wsda;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -14,23 +15,23 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableTransactionManagement(proxyTargetClass = true)//添加事务
 public class WsdaApplication  {
 
-    public static void main(String[] args){
-        SpringApplication.run(WsdaApplication.class,args);
-    }
+//    public static void main(String[] args){
+//        SpringApplication.run(WsdaApplication.class,args);
+//    }
 
 
 //引入外置配置文件
-//    private static String[] args;
-//    private static ConfigurableApplicationContext context;
+    private static String[] args;
+    private static ConfigurableApplicationContext context;
 
 
-//    public static void main(String[] args) {
-//        WsdaApplication.args = args;
-//        WsdaApplication.context = SpringApplication.run(WsdaApplication.class, args);
-//    }
-//    public static void restart() {
-//        context.close();
-//        WsdaApplication.context =SpringApplication.run(WsdaApplication.class, args);
-//
-//    }
+    public static void main(String[] args) {
+        WsdaApplication.args = args;
+        WsdaApplication.context = SpringApplication.run(WsdaApplication.class, args);
+    }
+    public static void restart() {
+        context.close();
+        WsdaApplication.context =SpringApplication.run(WsdaApplication.class, args);
+
+    }
 }

@@ -192,9 +192,22 @@ public class Change2PDF {
      * @return
      */
     public static boolean getLicense() {
+        //resource下的xml打包后找不到，直接写方法里
+        String liceStr="<License>\n" +
+                "<Data>\n" +
+                "    <Products>\n" +
+                "        <Product>Aspose.Total for Java</Product>\n" +
+                "    </Products>\n" +
+                "    <EditionType>Enterprise</EditionType>\n" +
+                "    <SubscriptionExpiry>20991231</SubscriptionExpiry>\n" +
+                "    <LicenseExpiry>20991231</LicenseExpiry>\n" +
+                "    <SerialNumber>8bfe198c-7f0c-4ef8-8ff0-acc3237bf0d7</SerialNumber>\n" +
+                "</Data>\n" +
+                "<Signature>sNLLKGMUdF0r8O1kKilWAGdgfs2BvJb/2Xp8p5iuDVfZXmhppo+d0Ran1P9TKdjV4ABwAgKXxJ3jcQTqE/2IRfqwnPf8itN8aFZlV3TJPYeD3yWE7IT55Gz6EijUpC7aKeoohTb4w2fpox58wWoF3SNp6sK6jDfiAUGEHYJ9pjU=</Signature>\n" +
+                "</License>";
         boolean result = true;
         try {
-            InputStream license = Change2PDF.class.getClassLoader().getResourceAsStream("license.xml"); // license路径
+            InputStream license =  new ByteArrayInputStream(liceStr.getBytes("UTF-8"));
             License aposeLic = new License();
             aposeLic.setLicense(license);
         } catch (Exception e) {
@@ -394,7 +407,7 @@ public class Change2PDF {
 
         PdfContentByte content;
         Image img = Image.getInstance(waterImage);
-        img.setAbsolutePosition(widths-iconWidth-10, heights-iconHeight-10);//减去图片宽高和10边框线确保图片完整显示 并保留有边距
+        img.setAbsolutePosition(widths-iconWidth-20, heights-iconHeight-20);//减去图片宽高和10以上边框线确保图片完整显示 并保留有边距
         content = stamp.getOverContent(1);// 在第一页内容上方加水印
         content.addImage(img);
         stamp.close();
@@ -403,6 +416,6 @@ public class Change2PDF {
     }
 
     public static void main(String[] args) throws Exception {
-
+        getLicense();
     }
 }

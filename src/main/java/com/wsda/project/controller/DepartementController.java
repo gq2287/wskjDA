@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@Api("部门Controller")
+@Api(value="部门",tags={"部门Controller"})
 public class DepartementController {
     private Logger logger = LoggerFactory.getLogger(DepartementController.class);
     @Resource

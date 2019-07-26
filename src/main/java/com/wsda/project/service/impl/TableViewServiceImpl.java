@@ -388,11 +388,12 @@ public class TableViewServiceImpl implements TableViewService {
                                     } else if ("INPUTTYPE".equals(input) && inputTypelist.get(j).get(input) != null) {
                                         stringMap.put("INPUTTYPE", inputTypelist.get(j).get(input));
                                         if ("S".equals(inputTypelist.get(j).get(input))) {
-                                            String dictName = String.valueOf(stringMap.get("PROPERTIESINFO1"));
-                                            if (dictName != null && !"".equals(dictName)) {
-//                                                根据名称查询对应的字典
-                                                List<Dictionary> dictionaryList = dictionaryService.getAllDictionaryData(dictName);
-                                                stringMap.put("PROPERTIESINFO2", dictionaryList);
+//                                            String dictName = String.valueOf(stringMap.get("PROPERTIESINFO1"));
+                                            String code=inputTypelist.get(j).get("DICTIONARYCODE");
+                                            if (code != null && !"".equals(code)) {
+//                                              根据名称查询对应的字典
+                                                List<Dictionary> dictionaryList = dictionaryService.getAllDictionaryData(code);
+                                                stringMap.put("PROPERTIESINFO2", dictionaryList);//用PROPERTIESINFO2 数据载体
                                             }
 
                                         }
@@ -435,7 +436,8 @@ public class TableViewServiceImpl implements TableViewService {
         valuesList.add("'" + StringUtil.getRandomStr(8) + "'");//唯一主键
 
         infoMap.put("TRASHSTATUS-1", "0");//回收站标志 0默认，1删除
-        infoMap.put("OPERATETIME-5", StringUtil.getDate(1));//操作日期
+//        infoMap.put("OPERATETIME-5", StringUtil.getDate(1));//操作日期
+//        List<Map<String,Object>> inputMapList=tableViewMapper.getInputCard(tableCode);//获取录入列
         for (String column : infoMap.keySet()) {
             //例：RECORDCODE-1
             String startColumn = column.substring(0, column.lastIndexOf("-"));//获取数据列名

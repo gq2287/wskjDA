@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
  */
 
 @RestController
-@Api("登录Controller")
+@Api(value="登录",tags={"登录Controller"})
 public class LoginController {
     private Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Resource

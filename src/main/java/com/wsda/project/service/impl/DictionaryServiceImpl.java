@@ -16,11 +16,11 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     /**
      * 根据名称查询对应的字典
-     * @param dictName
+     * @param code
      * @return
      */
     @Override
-    public List<Dictionary> getAllDictionaryData(String dictName) {
-        return dictionaryMapper.getAllDictionaryData(dictName);
+    public List<Dictionary> getAllDictionaryData(String code) {
+        return dictionaryMapper.getAllDictionaryData(code);
     }
 }

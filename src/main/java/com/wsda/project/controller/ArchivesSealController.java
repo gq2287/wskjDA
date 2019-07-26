@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@Api("归档章Controller")
+@Api(value="归档章",tags={"归档章Controller"})
 public class ArchivesSealController {
     private Logger logger = LoggerFactory.getLogger(ArchivesSealController.class);
 

@@ -6,13 +6,13 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: jdbc:oracle:thin:@192.168.11.101:1521:wsda
-    username: jttzw
-    password: jttzw
+    username: JTTZW
+    password: JTTZW
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
   resources:
-    static-locations: classpath:/resources/,classpath:/static/,file:${D:},file:${H:},file:${G:},file:${E:},file:${F:},file:${C:\\}
+    static-locations: classpath:/resources/,classpath:/static/,file:${D:},file:${H:},file:${G:},file:${E:},file:${F:}
   servlet:
     multipart:
       #允许附件上传

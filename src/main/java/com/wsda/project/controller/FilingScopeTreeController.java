@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@Api("归档范围Controller")
+@Api(value="归档范围",tags={"归档范围Controller"})
 public class FilingScopeTreeController {
     private Logger logger = LoggerFactory.getLogger(FilingScopeTreeController.class);
     @Resource

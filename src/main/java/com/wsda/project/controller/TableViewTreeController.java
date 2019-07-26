@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@Api("表视图Controller")
+@Api(value = "表视图",tags = {"列表展示和录入视图Controller"})
 public class TableViewTreeController {
     private Logger logger = LoggerFactory.getLogger(TableViewTreeController.class);
     @Resource

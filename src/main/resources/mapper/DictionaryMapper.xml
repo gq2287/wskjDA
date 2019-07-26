@@ -5,7 +5,7 @@
     <!--获取数据字典表-->
     <select id="getAllDictionaryData" resultType="com.wsda.project.model.Dictionary">
         SELECT * FROM SYSTEMDICTIONARY WHERE DICTIONARYCATALOGCODE=(
-        SELECT DICTIONARYCATALOGCODE FROM SYSTEMDICTIONARYCATALOG WHERE NAME=#{dictName}
+        SELECT DICTIONARYCATALOGCODE FROM SYSTEMDICTIONARYCATALOG WHERE DICTIONARYCATALOGCODE=#{code}
         )
     </select>
 </mapper>

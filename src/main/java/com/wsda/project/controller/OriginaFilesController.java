@@ -37,7 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-@Api("原文Controller")
+@Api(value="原文",tags={"原文Controller"})
 public class OriginaFilesController {
     private Logger logger = LoggerFactory.getLogger(OriginaFilesController.class);
     @Resource
@@ -265,6 +265,10 @@ public class OriginaFilesController {
         if ("LOCAL".equals(upPath)) {//上传本地
             String fileSavePath = OriginaPathMap.get("FILELOC");//获取本地上传的地址D:/archive
             logger.info("获取档案原文保存文件夹-----{}",fileSavePath);
+            File oFile=new File(fileSavePath);
+            if(!oFile.exists()){//判断文件夹是否存在否则创建
+                oFile.mkdirs();
+            }
             String tableName = tableViewMapper.getTableNameByTableCode(tableCode);//获取档案条目表名
             fileSavePath = fileSavePath + File.separator + tableName;
 //            文件上传路径由档案表名称  yyyy MM dd hh mm ss

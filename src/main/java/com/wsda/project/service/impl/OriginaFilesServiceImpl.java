@@ -253,8 +253,8 @@ public class OriginaFilesServiceImpl implements OriginaFilesService {
      */
     public boolean upTopByFileCode(String fileCode, String oldFileCode) {
         if (fileCode != null &&fileCode!=null&& oldFileCode != null&&oldFileCode!=null) {
-            originaFilesMapper.upTopByFileCode(fileCode, "1");
-            originaFilesMapper.upTopByFileCode(oldFileCode, "0");
+            originaFilesMapper.upTopByFileCode(fileCode, "1");//新的置顶原文编号
+            originaFilesMapper.upTopByFileCode(oldFileCode, "0");//老的置顶原文编号
             return true;
         } else {
             return false;

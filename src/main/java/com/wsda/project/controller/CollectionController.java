@@ -25,7 +25,7 @@ import java.util.List;
  * 收藏
  */
 @RestController
-@Api("收藏Controller")
+@Api(value = "收藏", tags = {"收藏Controller"})
 public class CollectionController {
     private Logger logger = LoggerFactory.getLogger(CollectionController.class);
     @Resource
@@ -36,12 +36,15 @@ public class CollectionController {
     public ResponseResult getAllCollectionByUserCode(@ApiParam(required = true, name = "cid", value = "收藏夹编号") @RequestParam(name = "cid", required = true) String cid, HttpServletRequest request) {
         HttpSession session = request.getSession();
         SystemUser user = (SystemUser) session.getAttribute("user");
-        if (cid != null) {
-            List<SystemUserCollection> collections = systemUserCollectionService.getAllCollectionByUserCode(cid, user, null);
-            return new ResponseResult(ResponseResult.OK, "获取用户收藏列表成功", collections, true);
-        } else {
-            return new ResponseResult(ResponseResult.OK, "获取用户收藏列表失败", false);
+        if (user != null) {
+            if (cid != null) {
+                List<SystemUserCollection> collections = systemUserCollectionService.getAllCollectionByUserCode(cid, user, null);
+                return new ResponseResult(ResponseResult.OK, "获取用户收藏列表成功", collections, true);
+            }else{
+                return new ResponseResult(ResponseResult.OK, "暂未创建收藏列表",false);
+            }
         }
+        return new ResponseResult(ResponseResult.OK, "当前用户未登录", false);
     }
 
     @ApiOperation(value = "添加收藏", notes = "返回信息 0成功，400失败 ")
@@ -52,12 +55,8 @@ public class CollectionController {
         HttpSession session = request.getSession();
         SystemUser user = (SystemUser) session.getAttribute("user");
         if (user != null) {
-            List<SystemUserCollection> systemUserCollectionList = systemUserCollectionService.getAllCollectionByUserCode(null,user, archivesCode);
+            List<SystemUserCollection> systemUserCollectionList = systemUserCollectionService.getAllCollectionByUserCode(null, user, archivesCode);
             if (systemUserCollectionList != null && systemUserCollectionList.size() > 0) {//已被收藏
-                SystemUserCollection userCollection = null;
-                for (int i = 0; i < systemUserCollectionList.size(); i++) {
-                    userCollection = systemUserCollectionList.get(i);
-                }
                 return new ResponseResult(ResponseResult.OK, "该档案已被收藏", false);
             }
             SystemUserCollection userCollection = new SystemUserCollection();
@@ -73,9 +72,8 @@ public class CollectionController {
             } else {
                 return new ResponseResult(ResponseResult.OK, "添加用户收藏失败", bool);
             }
-        } else {
-            return new ResponseResult(ResponseResult.OK, "参数错误", false);
         }
+        return new ResponseResult(ResponseResult.OK, "当前用户未登录", false);
     }
 
     @ApiOperation(value = "删除收藏条目", notes = "返回信息 0成功，400失败 ")
@@ -99,8 +97,11 @@ public class CollectionController {
     public ResponseResult getAllCreateCollectionFiles(HttpServletRequest request) {
         HttpSession session = request.getSession();
         SystemUser user = (SystemUser) session.getAttribute("user");
-        List<CreateCollectionFiles> createCollectionFiles = systemUserCollectionService.getCreateCollectionFiles(user.getUserCode());
-        return new ResponseResult(ResponseResult.OK, "返回收藏夹成功", createCollectionFiles, true);
+        if (user != null) {
+            List<CreateCollectionFiles> createCollectionFiles = systemUserCollectionService.getCreateCollectionFiles(user.getUserCode());
+            return new ResponseResult(ResponseResult.OK, "返回收藏夹成功", createCollectionFiles, true);
+        }
+        return new ResponseResult(ResponseResult.OK, "当前用户未登录", false);
     }
 
     @ApiOperation(value = "添加收藏夹", notes = "返回信息 0成功，400失败 ")
@@ -108,16 +109,19 @@ public class CollectionController {
     public ResponseResult addCreateCollectionFiles(@ApiParam(required = true, name = "collectionFilesName", value = "收藏夹名称") @RequestParam(name = "collectionFilesName", required = true) String collectionFilesName, HttpServletRequest request) {
         HttpSession session = request.getSession();
         SystemUser user = (SystemUser) session.getAttribute("user");
-        CreateCollectionFiles createCollectionFiles = new CreateCollectionFiles();
-        createCollectionFiles.setId(StringUtil.getUuid());
-        createCollectionFiles.setCreateTime(StringUtil.getDateByType("yyyy-MM-dd"));
-        createCollectionFiles.setUserCode(user.getUserCode());
-        createCollectionFiles.setCollectionName(collectionFilesName);
-        boolean bool = systemUserCollectionService.addCreateCollectionFiles(createCollectionFiles);
-        if (bool) {
-            return new ResponseResult(ResponseResult.OK, "OK", true);
+        if (user != null) {
+            CreateCollectionFiles createCollectionFiles = new CreateCollectionFiles();
+            createCollectionFiles.setId(StringUtil.getUuid());
+            createCollectionFiles.setCreateTime(StringUtil.getDateByType("yyyy-MM-dd"));
+            createCollectionFiles.setUserCode(user.getUserCode());
+            createCollectionFiles.setCollectionName(collectionFilesName);
+            boolean bool = systemUserCollectionService.addCreateCollectionFiles(createCollectionFiles);
+            if (bool) {
+                return new ResponseResult(ResponseResult.OK, "OK", true);
+            }
+            return new ResponseResult(ResponseResult.OK, "No", false);
         }
-        return new ResponseResult(ResponseResult.OK, "No", false);
+        return new ResponseResult(ResponseResult.OK, "当前用户未登录", false);
     }
 
     @ApiOperation(value = "删除收藏夹", notes = "返回信息 0成功，400失败 ")
@@ -134,19 +138,17 @@ public class CollectionController {
 
     @ApiOperation(value = "是否被收藏", notes = "返回信息 0成功，400失败 ")
     @RequestMapping(value = "/getThisIsCollection", method = RequestMethod.POST)
-    public ResponseResult getThisIsCollection(@ApiParam(required = true, name = "archivesCode", value = "档案编号") @RequestParam(name = "archivesCode", required = true) String archivesCode,HttpServletRequest request) {
-        SystemUser systemUser=(SystemUser)request.getSession().getAttribute("user");
-        if(systemUser!=null){
-            List<SystemUserCollection> userCollection= systemUserCollectionService.getAllCollectionByUserCode(null,systemUser,archivesCode);
-            if (userCollection!=null&&userCollection.size()>0) {
-                return new ResponseResult(ResponseResult.OK, "已收藏", true,true);
+    public ResponseResult getThisIsCollection(@ApiParam(required = true, name = "archivesCode", value = "档案编号") @RequestParam(name = "archivesCode", required = true) String archivesCode, HttpServletRequest request) {
+        SystemUser systemUser = (SystemUser) request.getSession().getAttribute("user");
+        if (systemUser != null) {
+            List<SystemUserCollection> userCollection = systemUserCollectionService.getAllCollectionByUserCode(null, systemUser, archivesCode);
+            if (userCollection != null && userCollection.size() > 0) {
+                return new ResponseResult(ResponseResult.OK, "已收藏", true, true);
             } else {
-                return new ResponseResult(ResponseResult.OK, "未收藏",false, true);
+                return new ResponseResult(ResponseResult.OK, "未收藏", false, true);
             }
-        }else{
-            return new ResponseResult(ResponseResult.OK, "当前用户未登录",false);
         }
-
-
+        return new ResponseResult(ResponseResult.OK, "当前用户未登录", false);
     }
+
 }

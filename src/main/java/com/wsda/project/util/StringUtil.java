@@ -668,6 +668,11 @@ public class StringUtil {
         try {
             properties = new PropertiesConfiguration(StringUtil.getRealPathByPack());
             pdfPath = properties.getString("pdffilepath");//pdf保存地址
+            System.out.println("PDF保存文件夹:"+pdfPath);
+            File oFile=new File(pdfPath);
+            if(!oFile.exists()){//判断文件夹是否存在否则创建
+                oFile.mkdirs();
+            }
             originaFilePath = originaFilePath.substring(originaFilePath.indexOf("\\") + 1, originaFilePath.length());
             originaFilePath = originaFilePath.substring(originaFilePath.indexOf("\\") + 1, originaFilePath.length());//截取到D:\\archive\\
             String filePath = pdfPath + File.separator + originaFilePath.substring(0, originaFilePath.lastIndexOf("\\"));

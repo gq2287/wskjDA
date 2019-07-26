@@ -1,7 +1,6 @@
 package com.wsda.project.filter;
 
 import com.wsda.project.dao.SystemUserMapper;
-import com.wsda.project.model.SystemUser;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,54 +26,54 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
     @Resource
     private SystemUserMapper userMapper;
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
-        try {
-            //得到session
-            HttpSession session = request.getSession(true);
-            //得到对象
-            SystemUser admin = (SystemUser) session.getAttribute("user");
-            // 获取request里面的cookie cookie里面存值方式也是 键值对的方式  cookie
-            String token=null;
-            Cookie[] cookie = request.getCookies();
-            if(cookie!=null){
-                for (int i = 0; i < cookie.length; i++) {
-                    Cookie cook = cookie[i];
-                    if(cook.getName().equalsIgnoreCase("token")){ //获取token键 
-                        token=cook.getValue().toString();
-                    }
-                }
-            }
-            //判断对象是否存在
-            if (token != null && admin != null) {//
-                String tokenUser = userMapper.getToken(admin.getUserCode());//获取数据库的token
-                if (tokenUser != null && token.equals(tokenUser)) {
-                    return true;
-                }
-                for (int i = 0; i < cookie.length; i++) {
-                    Cookie cook = cookie[i];
-                    cook.setMaxAge(0);
-                }
-                session.invalidate();
-                response.setStatus(401);
-                return false;
-            } else {
-                if ("/loginCheck".equals(request.getServletPath()) || "/loginOut".equals(request.getServletPath())) {
-                    System.err.println("正常访问");
-                    return true;
-                }
-                String requestUrl = String.valueOf(request.getRequestURL());
-                logger.info("拦截未登录访问拦截IP：{}", requestUrl);
-                response.setStatus(401);
-                return false;
-            }
-        } catch (Exception e) {
-            logger.info("日志拦截出现异常：{}", e.getMessage());
-        }
-        return true;
-    }
+//暂时不需要验证登录
+//    @Override
+//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+//            throws Exception {
+//        try {
+//            //得到session
+//            HttpSession session = request.getSession(true);
+//            //得到对象
+//            SystemUser admin = (SystemUser) session.getAttribute("user");
+//            // 获取request里面的cookie cookie里面存值方式也是 键值对的方式  cookie
+//            String token=null;
+//            Cookie[] cookie = request.getCookies();
+//            if(cookie!=null){
+//                for (int i = 0; i < cookie.length; i++) {
+//                    Cookie cook = cookie[i];
+//                    if(cook.getName().equalsIgnoreCase("token")){ //获取token键 
+//                        token=cook.getValue().toString();
+//                    }
+//                }
+//            }
+//            //判断对象是否存在
+//            if (token != null && admin != null) {//
+//                String tokenUser = userMapper.getToken(admin.getUserCode());//获取数据库的token
+//                if (tokenUser != null && token.equals(tokenUser)) {
+//                    return true;
+//                }
+//                for (int i = 0; i < cookie.length; i++) {
+//                    Cookie cook = cookie[i];
+//                    cook.setMaxAge(0);
+//                }
+//                session.invalidate();
+//                response.setStatus(401);
+//                return false;
+//            } else {
+//                if ("/loginCheck".equals(request.getServletPath()) || "/loginOut".equals(request.getServletPath())) {
+//                    System.err.println("正常访问");
+//                    return true;
+//                }
+//                String requestUrl = String.valueOf(request.getRequestURL());
+//                logger.info("拦截未登录访问拦截IP：{}", requestUrl);
+//                response.setStatus(401);
+//                return false;
+//            }
+//        } catch (Exception e) {
+//            logger.info("日志拦截出现异常：{}", e.getMessage());
+//        }
+//        return true;
+//    }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {

@@ -59,6 +59,11 @@ public class ArchivesSealServiceImpl implements ArchivesSealService {
             List<String> columnContentList= Arrays.asList(archivesSeal.getColumnContent().split(","));
             properties = new PropertiesConfiguration(StringUtil.getRealPathByPack());
             pdfPath = properties.getString("archivesealpath");//归档章图片保存地址
+            System.out.println("归档章保存文件夹:"+pdfPath);
+            File oFile=new File(pdfPath);
+            if(!oFile.exists()){//判断文件夹是否存在否则创建
+                oFile.mkdirs();
+            }
             pdfPath=pdfPath+"\\"+archivesSeal.getTableCode()+".png";
             bool=Graphics2DRectangleImage.graphicsGeneration(null,columnContentList.size()/2,pdfPath);
             if(bool){
